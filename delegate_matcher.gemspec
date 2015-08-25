@@ -19,11 +19,9 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency 'bundler', '~>  1.7'
-  gem.add_development_dependency 'rspec',   '~>  3.0'
-  gem.add_development_dependency 'rubocop', '~>  0.30'
-  # gem.add_development_dependency 'rake',             '~> 10.0'
-  # gem.add_development_dependency 'rspec-its'
-  # gem.add_development_dependency 'shoulda-matchers', '~>  2.8'
-  # gem.add_development_dependency 'coveralls'
+  gem.add_development_dependency 'bundler',   '~> 1.7'
+  gem.add_development_dependency 'rspec',     '~> 3.0'
+  gem.add_development_dependency 'rubocop',   '~> 0.30'
+  gem.add_development_dependency 'simplecov', '~> 0.9'
+  gem.add_development_dependency 'rspec-its', '~> 1.1'
 end
