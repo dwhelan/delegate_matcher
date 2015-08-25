@@ -1,0 +1,17 @@
+Metrics/LineLength:
+  Max: 160
+
+Metrics/CyclomaticComplexity:
+  Max: 10
+
+Style/SingleSpaceBeforeFirstArg:
+  Enabled: false
+
+Style/ExtraSpacing:
+  Enabled: false
+
+Lint/Eval:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
