@@ -229,20 +229,11 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def failure_message_details(negated)
     [
-      return_value_failure_message(negated),
       argument_failure_message(negated),
       block_failure_message(negated),
+      return_value_failure_message(negated),
       allow_nil_failure_message(negated)
     ].reject(&:empty?).join(' and ')
-  end
-
-  def return_value_failure_message(negated)
-    case
-    when !@delegated || return_value_ok?
-      ''
-    else
-      format('a return value of %p was returned instead of the delegate return value', actual_return_value)
-    end
   end
 
   def argument_failure_message(negated)
@@ -264,6 +255,15 @@ RSpec::Matchers.define(:delegate) do |method|
       actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
     else
       'a block was passed'
+    end
+  end
+
+  def return_value_failure_message(_negated)
+    case
+    when !@delegated || return_value_ok?
+      ''
+    else
+      format('a return value of %p was returned instead of the delegate return value', actual_return_value)
     end
   end
 
