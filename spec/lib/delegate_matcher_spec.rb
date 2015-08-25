@@ -8,6 +8,8 @@ describe 'Delegate matcher' do
     Class.new do
       attr_accessor :author
 
+      @@authors = ['Ann Rand', 'Catherine Asaro']
+
       def name
         author.name
       end
@@ -76,6 +78,18 @@ describe 'Delegate matcher' do
 
       def age
         60
+      end
+
+      def class_name
+        self.class.class_name
+      end
+
+      def count
+        @@authors.count
+      end
+
+      def self.class_name
+        'Post'
       end
 
       def inspect
@@ -171,16 +185,24 @@ describe 'Delegate matcher' do
     expect(DelegateMatcher::VERSION).to_not be_empty
   end
 
-  describe 'delegation to method' do
+  describe 'delegation to instance method' do
     it { should     delegate(:name).to(:author)   }
     it { should     delegate(:writer).to(:author).as(:name) }
     it { should_not delegate(:age).to(:author) }
   end
 
-  describe 'delegation to attribute' do
+  describe 'delegation to class method' do
+    it { should delegate(:class_name).to(:class)   }
+  end
+
+  describe 'delegation to instance attribute' do
     it { should     delegate(:name).to(:@author)   }
     it { should     delegate(:writer).to(:@author).as(:name) }
     it { should_not delegate(:age).to(:@author) }
+  end
+
+  describe 'delegation to class attribute' do
+    it { should delegate(:count).to(:@@authors)   }
   end
 
   describe 'delegation to object' do
@@ -436,6 +458,8 @@ describe 'Delegate matcher' do
   end
 end
 
+# TODO: delegate to class instance variable
+# TODO: delegate to contant
 # TODO: works with all pad delegation
 # TODO: works with rails delegator
 # TODO: works with regular ruby delegator

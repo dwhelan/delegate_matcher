@@ -73,6 +73,8 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def delegate?(test_delegate = delegate_double)
     case
+    when delegate_is_a_class_attribute?
+      delegate_to_class_attribute?(test_delegate)
     when delegate_is_an_attribute?
       delegate_to_attribute?(test_delegate)
     when delegate_is_a_method?
@@ -80,6 +82,10 @@ RSpec::Matchers.define(:delegate) do |method|
     else
       delegate_to_object?
     end
+  end
+
+  def delegate_is_a_class_attribute?
+    delegate.to_s.start_with?('@@')
   end
 
   def delegate_is_an_attribute?
@@ -96,6 +102,14 @@ RSpec::Matchers.define(:delegate) do |method|
     delegate_called?
   ensure
     delegator.instance_variable_set(delegate, actual_delegate)
+  end
+
+  def delegate_to_class_attribute?(test_delegate)
+    actual_delegate = delegator.class.class_variable_get(delegate)
+    delegator.class.class_variable_set(delegate, test_delegate)
+    delegate_called?
+  ensure
+    delegator.class.class_variable_set(delegate, actual_delegate)
   end
 
   def delegate_to_method?(test_delegate)

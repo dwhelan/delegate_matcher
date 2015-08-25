@@ -9,8 +9,8 @@ Gem::Specification.new do |gem|
   gem.version       = DelegateMatcher::VERSION
   gem.authors       = ['Declan Whelan']
   gem.email         = ['declan@pleanintuit.com']
-  gem.summary       = 'A matcher for validating ruby delegation'
-  gem.description   = 'A matcher for validating ruby delegation'
+  gem.summary       = 'A matcher for testing ruby delegation.'
+  gem.description   = 'A matcher for testing ruby delegation.'
   gem.homepage      = 'https://github.com/dwhelan/delegate_matcher'
   gem.license       = 'MIT'
 
