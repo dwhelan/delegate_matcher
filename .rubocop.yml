@@ -10,8 +10,11 @@ Style/SingleSpaceBeforeFirstArg:
 Style/ExtraSpacing:
   Enabled: false
 
-Lint/Eval:
+Style/Documentation:
   Enabled: false
 
-Style/Documentation:
+Style/Semicolon:
+  Enabled: false
+
+Lint/Eval:
   Enabled: false

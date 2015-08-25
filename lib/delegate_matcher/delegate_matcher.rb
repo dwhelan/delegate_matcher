@@ -52,21 +52,24 @@ RSpec::Matchers.define(:delegate) do |method|
     message.empty? ? super : message
   end
 
-  chain(:to)              { |delegate|         @delegate         = delegate }
-  chain(:as)              { |delegate_method|  @delegate_method  = delegate_method }
-  chain(:allow_nil)       { |allow_nil = true| @nil_allowed      = allow_nil }
-  chain(:with_prefix)     { |prefix = nil|     @prefix           = prefix || delegate.to_s.sub(/@/, '') }
-  chain(:with)            { |*args|            @expected_args    = args; @args ||= args }
-  chain(:with_a_block)    {                    @expected_block   = true  }
-  chain(:without_a_block) {                    @expected_block   = false }
+  chain(:to)              { |delegate|         @delegate           = delegate }
+  chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
+  chain(:allow_nil)       { |allow_nil = true| @expected_nil_check = allow_nil }
+  chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || delegate.to_s.sub(/@/, '') }
+  chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
+  chain(:with_a_block)    {                    @expected_block     = true  }
+  chain(:without_a_block) {                    @expected_block     = false }
 
   alias_method :with_block,    :with_a_block
   alias_method :without_block, :without_a_block
 
   private
 
-  attr_reader :method, :delegator, :delegate, :prefix, :expected_args, :args
-  attr_reader
+  attr_reader :method, :delegator, :delegate, :prefix, :args
+  attr_reader :expected_nil_check, :actual_nil_check
+  attr_reader :expected_args,      :actual_args
+  attr_reader :expected_block,     :actual_block
+  attr_reader :actual_return_value
 
   def delegate?(test_delegate = delegate_double)
     case
@@ -109,7 +112,7 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def delegate_to_object?
-    fail 'cannot verify "allow_nil" expectations when delegating to an object' unless @nil_allowed.nil?
+    fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected_nil_check.nil?
     stub_delegation(delegate)
     delegate_called?
   end
@@ -123,8 +126,8 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def delegate_called?
-    @return_value = delegator.send(delegator_method, *args, &block)
-    @return_value == self
+    @actual_return_value = delegator.send(delegator_method, *args, &block)
+    return_value_ok?
   end
 
   def block
@@ -138,41 +141,49 @@ RSpec::Matchers.define(:delegate) do |method|
   def stub_delegation(delegate)
     @delegated = false
     allow(delegate).to(receive(delegate_method)) do |*args, &block|
-      @actual_args = args
+      @actual_args  = args
       @actual_block = block
-      @delegated = true
-      self
+      @delegated    = true
+      expected_return_value
     end
+  end
+
+  def expected_return_value
+    self
   end
 
   def allow_nil_ok?
-    return true if @nil_allowed.nil?
+    return true if expected_nil_check.nil?
     return true unless delegate.is_a?(String) || delegate.is_a?(Symbol)
 
     begin
-      @allowed_nil = true
+      actual_nil_check = true
       delegate?(nil)
-      @return_value_when_delegate_nil = @return_value
+      @return_value_when_delegate_nil = actual_return_value
     rescue NoMethodError
-      @allowed_nil = false
+      actual_nil_check = false
     end
 
-    @nil_allowed == @allowed_nil && @return_value_when_delegate_nil.nil?
+    expected_nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
   end
 
   def arguments_ok?
-    expected_args.nil? || @actual_args.eql?(expected_args)
+    expected_args.nil? || actual_args.eql?(expected_args)
   end
 
   def block_ok?
     case
-    when @expected_block.nil?
+    when expected_block.nil?
       true
-    when @expected_block
-      @actual_block == @block
+    when expected_block
+      actual_block == block
     else
-      @actual_block.nil?
+      actual_block.nil?
     end
+  end
+
+  def return_value_ok?
+    actual_return_value == expected_return_value
   end
 
   def delegator_description
@@ -196,9 +207,9 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def nil_description
     case
-    when @nil_allowed.nil?
+    when expected_nil_check.nil?
       ''
-    when @nil_allowed
+    when expected_nil_check
       ' with nil allowed'
     else
       ' with nil not allowed'
@@ -207,9 +218,9 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def block_description
     case
-    when @expected_block.nil?
+    when expected_block.nil?
       ''
-    when @expected_block
+    when expected_block
       ' with a block'
     else
       ' without a block'
@@ -227,32 +238,30 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def return_value_failure_message(negated)
     case
-    when !@delegated || @return_value == self
+    when !@delegated || return_value_ok?
       ''
     else
-      format('a return value of %p was returned instead of the delegate return value', @return_value)
+      format('a return value of %p was returned instead of the delegate return value', actual_return_value)
     end
   end
 
   def argument_failure_message(negated)
     case
-    when negated
-      arguments_ok? && expected_args ? "was called with #{argument_description(@actual_args)}" : ''
-    when arguments_ok?
+    when expected_args.nil? || negated ^ arguments_ok?
       ''
     else
-      "was called with #{argument_description(@actual_args)}"
+      "was called with #{argument_description(actual_args)}"
     end
   end
 
   def block_failure_message(negated)
     case
-    when @expected_block.nil? || (negated ^ block_ok?)
+    when expected_block.nil? || (negated ^ block_ok?)
       ''
     when negated
-      "a block was #{@expected_block ? '' : 'not '}passed"
-    when @expected_block
-      @actual_block.nil? ? 'a block was not passed' : "a different block #{@actual_block} was passed"
+      "a block was #{expected_block ? '' : 'not '}passed"
+    when expected_block
+      actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
     else
       'a block was passed'
     end
@@ -260,14 +269,14 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def allow_nil_failure_message(negated)
     case
-    when @nil_allowed.nil? || (negated ^ allow_nil_ok?)
+    when expected_nil_check.nil? || negated ^ allow_nil_ok?
       ''
     when !@return_value_when_delegate_nil.nil?
       'did not return nil'
     when negated
-      "#{delegate} was #{@nil_allowed ? '' : 'not '}allowed to be nil"
+      "#{delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
     else
-      "#{delegate} was #{@nil_allowed ? 'not ' : ''}allowed to be nil"
+      "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
     end
   end
 end
