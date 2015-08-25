@@ -8,7 +8,7 @@ describe 'Delegate matcher' do
     Class.new do
       attr_accessor :author
 
-      @@authors = ['Ann Rand', 'Catherine Asaro']
+      class_variable_set(:@@authors, ['Ann Rand', 'Catherine Asaro'])
 
       def name
         author.name
@@ -85,7 +85,7 @@ describe 'Delegate matcher' do
       end
 
       def count
-        @@authors.count
+        self.class.class_variable_get(:@@authors).count
       end
 
       def self.class_name
