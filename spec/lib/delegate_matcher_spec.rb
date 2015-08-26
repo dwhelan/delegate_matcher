@@ -1,7 +1,6 @@
 # noinspection RubyResolve
 
 require 'spec_helper'
-require 'rspec/its'
 
 describe 'Delegate matcher' do
   let(:post) do

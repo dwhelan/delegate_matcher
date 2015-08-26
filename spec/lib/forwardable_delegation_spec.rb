@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'rspec/its'
 
 module ForwardableDelegation
   class Post

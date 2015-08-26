@@ -1,5 +1,5 @@
 require 'rspec'
-# require 'rspec/its'
+require 'rspec/its'
 require 'coveralls'
 
 require 'simplecov'

@@ -1,6 +1,6 @@
 # Delegate Matcher
 
-TODO: Write a gem description
+Provides matchers for validating delegation.
 
 ## Installation
 
@@ -20,6 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
+### Active Support
 
 ## Contributing
 
