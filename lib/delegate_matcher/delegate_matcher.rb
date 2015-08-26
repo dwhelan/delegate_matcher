@@ -110,7 +110,7 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def delegate_is_a_constant?
-    (delegate.is_a?(String) || delegate.is_a?(Symbol) ) && (delegate.to_s =~ /^[A-Z]/)
+    (delegate.is_a?(String) || delegate.is_a?(Symbol)) && (delegate.to_s =~ /^[A-Z]/)
   end
 
   def delegate_is_a_method?
@@ -152,7 +152,7 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def ensure_allow_nil_is_not_specified_for(target)
-    fail %Q{cannot verify "allow_nil" expectations when delegating to #{target}} unless expected_nil_check.nil?
+    fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected_nil_check.nil?
   end
 
   def ensure_delegate_method_is_valid
