@@ -9,6 +9,7 @@ describe 'Delegate matcher' do
       attr_accessor :author
 
       class_variable_set(:@@authors, ['Ann Rand', 'Catherine Asaro'])
+      GENRES ||= ['Fiction', 'Science Fiction']
 
       def name
         author.name
@@ -88,8 +89,8 @@ describe 'Delegate matcher' do
         self.class.class_variable_get(:@@authors).count
       end
 
-      def self.class_name
-        'Post'
+      def first
+        GENRES.first
       end
 
       def inspect
@@ -161,6 +162,8 @@ describe 'Delegate matcher' do
     its(:writer)                { should eq 'Catherine Asaro' }
     its(:writer_name)           { should eq 'Catherine Asaro' }
     its(:age)                   { should eq 60                }
+    its(:count)                 { should eq 2                 }
+    its(:first)                 { should eq 'Fiction'         }
 
     it { expect(post.name_with_arg('The author')).to                 eq 'The author Catherine Asaro' }
     it { expect(post.name_with_arg2('The author')).to                eq 'The author Catherine Asaro' }
@@ -195,14 +198,18 @@ describe 'Delegate matcher' do
     it { should delegate(:class_name).to(:class)   }
   end
 
-  describe 'delegation to instance attribute' do
+  describe 'delegation to instance variable' do
     it { should     delegate(:name).to(:@author)   }
     it { should     delegate(:writer).to(:@author).as(:name) }
     it { should_not delegate(:age).to(:@author) }
   end
 
-  describe 'delegation to class attribute' do
+  describe 'delegation to class variable' do
     it { should delegate(:count).to(:@@authors)   }
+  end
+
+  describe 'delegation to constant' do
+    it { should delegate(:first).to(:GENRES)   }
   end
 
   describe 'delegation to object' do
@@ -458,10 +465,7 @@ describe 'Delegate matcher' do
   end
 end
 
-# TODO: delegate to class instance variable
-# TODO: delegate to contant
-# TODO: works with all pad delegation
-# TODO: works with rails delegator
+# TODO: works with active_support delegator
 # TODO: works with regular ruby delegator
 # TODO: works with mini test
 # TODO: separate gem

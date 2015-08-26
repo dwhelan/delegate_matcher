@@ -77,6 +77,8 @@ RSpec::Matchers.define(:delegate) do |method|
       delegate_to_class_variable?(test_delegate)
     when delegate_is_an_instance_variable?
       delegate_to_instance_variable?(test_delegate)
+    when delegate_is_a_constant?
+      delegate_to_constant?(test_delegate)
     when delegate_is_a_method?
       delegate_to_method?(test_delegate)
     else
@@ -90,6 +92,10 @@ RSpec::Matchers.define(:delegate) do |method|
 
   def delegate_is_an_instance_variable?
     delegate.to_s[0] == '@'
+  end
+
+  def delegate_is_a_constant?
+    (delegate.is_a?(String) || delegate.is_a?(Symbol) ) && (delegate.to_s =~ /^[A-Z]/)
   end
 
   def delegate_is_a_method?
@@ -110,6 +116,11 @@ RSpec::Matchers.define(:delegate) do |method|
     delegate_called?
   ensure
     delegator.class.class_variable_set(delegate, actual_delegate)
+  end
+
+  def delegate_to_constant?(test_delegate)
+    stub_delegation(delegator.class.const_get(delegate))
+    delegate_called?
   end
 
   def delegate_to_method?(test_delegate)
