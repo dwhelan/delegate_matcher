@@ -471,6 +471,4 @@ describe 'Delegate matcher' do
   end
 end
 
-# TODO: works with regular ruby delegator
 # TODO: works with mini test
-# TODO: separate gem
