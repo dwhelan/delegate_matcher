@@ -1,5 +1,3 @@
-# noinspection RubyResolve
-
 require 'spec_helper'
 require 'rspec/its'
 

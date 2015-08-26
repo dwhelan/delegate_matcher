@@ -311,6 +311,12 @@ describe 'Delegate matcher' do
         expect(error.message).to match(/cannot verify "allow_nil" expectations when delegating to an object/)
       end
     end
+
+    it 'with delegation to a constant with "allow_nil" expectations' do
+      expect { should should delegate(:first).to(:GENRES).allow_nil }.to raise_error do |error|
+        expect(error.message).to match(/cannot verify "allow_nil" expectations when delegating to a constant/)
+      end
+    end
   end
 
   describe 'description' do

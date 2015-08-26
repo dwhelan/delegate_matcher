@@ -4,25 +4,38 @@
 # Usage:
 #
 # describe Post do
-#   it { should delegate(:name).to(:author) }                         # name         => author.name
-#   it { should delegate(:name).to(:author).as(:name) }               # name         => author.name
+#   Method delegation
+#   it { should delegate(:name).to(:author) }                         # name         => author().name
+#   it { should delegate(:name).to(:author).as(:name) }               # name         => author().name
 #
+#   Instance variable delegation
 #   it { should delegate(:name).to(:@author) }                        # name         => @author.name
 #   it { should delegate(:name).to(:@author).as(:name) }              # name         => @author.name
 #
+#   Class variable delegation
+#   it { should delegate(:name).to(:@@author) }                       # name         => @@author.name
+#   it { should delegate(:name).to(:@@author).as(:name) }             # name         => @@author.name
+#
+#   Object delegation
 #   it { should delegate(:name).to(author) }                          # name         => author.name
 #   it { should delegate(:name).to(author).as(:name) }                # name         => author.name
 #
-#   it { should delegate(:name).to(:author).with_prefix }             # author_name  => author.name
-#   it { should delegate(:name).to(:author).with_prefix(:writer) }    # writer_name  => author.name
-#   it { should delegate(:writer).to(:author).as(:name) }             # writer       => author.name
+#   Delegation with arguments
+#   it { should delegate(:name).with('Ms.')to(author) }               # name('Ms.')  => author.name('Ms.')
+#   it { should delegate(:name).with('Ms.')to(author).with('Miss') }  # name('Ms.')  => author.name('Miss')
 #
-#   it { should delegate(:name).with('Ms.')to(:author) }              # name('Ms.')  => author.name('Ms.')
-#   it { should delegate(:name).with('Ms.')to(:author).with('Miss') } # name('Ms.')  => author.name('Miss')
+#   Delegation with blocks
+#   it { should delegate(:name).to(author).with_a_block }             # name(&block) => author.name(&block)
+#   it { should delegate(:name).to(author).without_a_block }          # name(&block) => author.name
 #
-#   it { should delegate(:name).to(:author).with_a_block }            # name(&block) => author.name(&block)
-#   it { should delegate(:name).to(:author).without_a_block }         # name(&block) => author.name
+#   Prefix support for active_support delegate method
+#   it { should delegate(:name).to(author).with_prefix }              # author_name  => author.name
+#   it { should delegate(:name).to(author).with_prefix(:writer) }     # writer_name  => author.name
 #
+#   Support for arbitrary method names
+#   it { should delegate(:writer).to(author).as(:name) }              # writer       => author.name
+#
+#   Allow nil support for active_support delegate method
 #   it { should delegate(:name).to(:author).allow_nil }               # name         => author && author.name
 #   it { should delegate(:name).to(:author).allow_nil(true) }         # name         => author && author.name
 #   it { should delegate(:name).to(:author).allow_nil(false) }        # name         => author.name
@@ -74,16 +87,18 @@ RSpec::Matchers.define(:delegate) do |method|
   def delegate?(test_delegate = delegate_double)
     case
     when delegate_is_a_class_variable?
-      delegate_to_class_variable?(test_delegate)
+      delegate_to_class_variable(test_delegate)
     when delegate_is_an_instance_variable?
-      delegate_to_instance_variable?(test_delegate)
+      delegate_to_instance_variable(test_delegate)
     when delegate_is_a_constant?
-      delegate_to_constant?(test_delegate)
+      delegate_to_constant
     when delegate_is_a_method?
-      delegate_to_method?(test_delegate)
+      delegate_to_method(test_delegate)
     else
-      delegate_to_object?
+      delegate_to_object
     end
+
+    return_value_ok?
   end
 
   def delegate_is_a_class_variable?
@@ -102,44 +117,47 @@ RSpec::Matchers.define(:delegate) do |method|
     delegate.is_a?(String) || delegate.is_a?(Symbol)
   end
 
-  def delegate_to_instance_variable?(test_delegate)
-    actual_delegate = delegator.instance_variable_get(delegate)
-    delegator.instance_variable_set(delegate, test_delegate)
-    delegate_called?
-  ensure
-    delegator.instance_variable_set(delegate, actual_delegate)
-  end
-
-  def delegate_to_class_variable?(test_delegate)
+  def delegate_to_class_variable(test_delegate)
     actual_delegate = delegator.class.class_variable_get(delegate)
     delegator.class.class_variable_set(delegate, test_delegate)
-    delegate_called?
+    call
   ensure
     delegator.class.class_variable_set(delegate, actual_delegate)
   end
 
-  def delegate_to_constant?(test_delegate)
+  def delegate_to_instance_variable(test_delegate)
+    actual_delegate = delegator.instance_variable_get(delegate)
+    delegator.instance_variable_set(delegate, test_delegate)
+    call
+  ensure
+    delegator.instance_variable_set(delegate, actual_delegate)
+  end
+
+  def delegate_to_constant
+    ensure_allow_nil_is_not_specified_for('a constant')
     stub_delegation(delegator.class.const_get(delegate))
-    delegate_called?
+    call
   end
 
-  def delegate_to_method?(test_delegate)
-    enure_delegate_method_is_valid
-
+  def delegate_to_method(test_delegate)
+    ensure_delegate_method_is_valid
     allow(delegator).to receive(delegate) { test_delegate }
-
-    delegate_called?
+    call
   end
 
-  def enure_delegate_method_is_valid
+  def delegate_to_object
+    ensure_allow_nil_is_not_specified_for('an object')
+    stub_delegation(delegate)
+    call
+  end
+
+  def ensure_allow_nil_is_not_specified_for(target)
+    fail %Q{cannot verify "allow_nil" expectations when delegating to #{target}} unless expected_nil_check.nil?
+  end
+
+  def ensure_delegate_method_is_valid
     fail "#{delegator} does not respond to #{delegate}"          unless delegator.respond_to?(delegate, true)
     fail "#{delegator}'s' #{delegate} method expects parameters" unless [0, -1].include?(delegator.method(delegate).arity)
-  end
-
-  def delegate_to_object?
-    fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected_nil_check.nil?
-    stub_delegation(delegate)
-    delegate_called?
   end
 
   def delegator_method
@@ -150,9 +168,8 @@ RSpec::Matchers.define(:delegate) do |method|
     @delegate_method || method
   end
 
-  def delegate_called?
+  def call
     @actual_return_value = delegator.send(delegator_method, *args, &block)
-    return_value_ok?
   end
 
   def block
