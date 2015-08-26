@@ -82,7 +82,7 @@ describe 'Delegate matcher' do
       end
 
       def class_name
-        self.class.class_name
+        self.class.name
       end
 
       def count
@@ -164,6 +164,7 @@ describe 'Delegate matcher' do
     its(:age)                   { should eq 60                }
     its(:count)                 { should eq 2                 }
     its(:first)                 { should eq 'Fiction'         }
+    its(:class_name)            { should be_nil         }
 
     it { expect(post.name_with_arg('The author')).to                 eq 'The author Catherine Asaro' }
     it { expect(post.name_with_arg2('The author')).to                eq 'The author Catherine Asaro' }
@@ -195,7 +196,7 @@ describe 'Delegate matcher' do
   end
 
   describe 'delegation to class method' do
-    it { should delegate(:class_name).to(:class)   }
+    it { should delegate(:class_name).to(:class).as(:name)   }
   end
 
   describe 'delegation to instance variable' do

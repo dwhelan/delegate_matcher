@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rspec/its'
 
-module SimpleDelegation
+module ActiveSupportDelegation
   class Post
     attr_accessor :author
 
