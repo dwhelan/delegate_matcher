@@ -1,7 +1,7 @@
 # Delegate Matcher
 
 An RSpec matcher for validating delegation. This matcher works with delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module,
-the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem or for
+the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem or with
 simple custom delegation.
 
 ## Installation
@@ -22,6 +22,13 @@ Or install it yourself as:
 
 ```bash
 $ gem install delegate_matcher
+```
+
+Then add the following to your ```spec_helper.rb``` file:
+
+
+```ruby
+require 'delegate_matcher'
 ```
 
 ## Usage
