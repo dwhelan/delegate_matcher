@@ -470,5 +470,3 @@ describe 'Delegate matcher' do
     end
   end
 end
-
-# TODO: works with mini test
