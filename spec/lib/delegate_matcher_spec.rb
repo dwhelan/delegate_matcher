@@ -183,11 +183,6 @@ describe 'Delegate matcher' do
     end
   end
 
-  it 'should have a VERSION' do
-    load './lib/delegate_matcher/version.rb'
-    expect(DelegateMatcher::VERSION).to_not be_empty
-  end
-
   describe 'delegation to instance method' do
     it { should     delegate(:name).to(:author)   }
     it { should     delegate(:writer).to(:author).as(:name) }
