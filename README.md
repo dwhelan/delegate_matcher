@@ -26,7 +26,6 @@ $ gem install delegate_matcher
 
 Then add the following to your ```spec_helper.rb``` file:
 
-
 ```ruby
 require 'delegate_matcher'
 ```
@@ -86,8 +85,8 @@ object since the matcher cannot validate ```nil``` handling in these cases.
 
 ### Arguments
 
-If the method being delegated takes arguments then you can supply them with the ```with``` method. The matcher
-will ensure that the provided arguments are in turn passed to the delegate.
+If the method being delegated takes arguments you can supply them with the ```with``` method. The matcher
+will check that the provided arguments are in turn passed to the delegate.
 
 ```ruby
 describe Post do
@@ -112,14 +111,14 @@ You can check that a block passed is in turn passed to the delegate via the ```w
 ```ruby
 describe Post do
   it { should delegate(:name).to(author).with_a_block }    # name(&block) => author.name(&block)
-  it { should delegate(:name).to(author).with_block }      # name(&block) => author.name(&block) alias for with_a_block
+  it { should delegate(:name).to(author).with_block }      # name(&block) => author.name(&block) # alias for with_a_block
 
   it { should delegate(:name).to(author).without_a_block } # name(&block) => author.name
-  it { should delegate(:name).to(author).without_block }   # name(&block) => author.name         alias for without_a_block
+  it { should delegate(:name).to(author).without_block }   # name(&block) => author.name         # alias for without_a_block
 end
 ```
 
-By default, block delegated is only check if ```with_a_block``` or ```without_a_block``` is specified.
+By default, block delegation is only checked if ```with_a_block``` or ```without_a_block``` is specified.
 
 ### Active Support
 
