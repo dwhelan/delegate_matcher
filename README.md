@@ -234,4 +234,4 @@ However, don't use the following features as they are not supported by the Forwa
 
 ## Notes
 
-This matcher was inspired by [Alan Winograd](https://gist.github.com/awinograd) via the gist https://gist.github.com/awinograd/6158961
+This matcher was inspired by [Alan Winograd](https://github.com/awinograd) via the gist https://gist.github.com/awinograd/6158961
