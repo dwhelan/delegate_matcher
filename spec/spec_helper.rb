@@ -10,10 +10,6 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start
 
-# require 'pry'
-# require 'awesome_print'
-
-# I18n.enforce_available_locales = true
 Coveralls.wear!
 
 require 'delegate_matcher'
