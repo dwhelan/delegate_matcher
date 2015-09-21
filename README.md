@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/dwhelan/delegate_matcher.png?branch=master)](https://travis-ci.org/dwhelan/delegate_matcher)
+
 # Delegate Matcher
 
 An RSpec matcher for validating delegation. This matcher works with delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module,
