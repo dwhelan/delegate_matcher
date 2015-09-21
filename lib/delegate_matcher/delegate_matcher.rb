@@ -1,3 +1,5 @@
+require 'rspec/matchers'
+
 RSpec::Matchers.define(:delegate) do |method|
   match do |delegator|
     fail 'need to provide a "to"' unless delegate
