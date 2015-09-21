@@ -13,13 +13,11 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def failure_message
-    message = failure_message_details(false)
-    message.empty? ? super : message
+    failure_message_details(false) || super
   end
 
   def failure_message_when_negated
-    message = failure_message_details(true)
-    message.empty? ? super : message
+    failure_message_details(true) || super
   end
 
   chain(:to)              { |delegate|         @delegate           = delegate }
@@ -227,12 +225,13 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def failure_message_details(negated)
-    [
+    message = [
       argument_failure_message(negated),
       block_failure_message(negated),
       return_value_failure_message(negated),
       allow_nil_failure_message(negated)
     ].reject(&:empty?).join(' and ')
+    message.empty? ? nil : message
   end
 
   def argument_failure_message(negated)
