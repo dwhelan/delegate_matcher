@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 module ForwardableDelegation
+# :nocov:
   class Post
     extend Forwardable
 
@@ -25,6 +26,7 @@ module ForwardableDelegation
       "#{block.call} #{name}"
     end
   end
+# :nocov:
 
   describe Post do
     it { should delegate(:name).to(:author) }

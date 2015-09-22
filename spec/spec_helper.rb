@@ -1,7 +1,7 @@
 require 'rspec'
 require 'rspec/its'
-require 'coveralls'
 require 'simplecov'
+require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
     SimpleCov::Formatter::HTMLFormatter,
@@ -9,7 +9,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start
 
-Coveralls.wear!
+Coveralls.wear! if Coveralls.will_run?
 
 require 'delegate_matcher'
 

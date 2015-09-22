@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 describe 'Delegate matcher' do
+  # :nocov:
   let(:post) do
     Class.new do
       attr_accessor :author
@@ -149,6 +150,7 @@ describe 'Delegate matcher' do
       end
     end.new
   end
+  # :nocov:
 
   subject { post }
   before  { post.author = author }

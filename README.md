@@ -82,7 +82,7 @@ end
 
 Nil handling is only checked if ```allow_nil``` is specified.
 
-Note that matcher will raise an error if you use this when checking delegation to a constant or an
+Note that the matcher will raise an error if you use this when checking delegation to a constant or an
 object since the matcher cannot validate ```nil``` handling in these cases.
 
 ### Arguments
@@ -92,7 +92,7 @@ will check that the provided arguments are in turn passed to the delegate.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.')to(:author) }  # name('Ms.')  => author.name('Ms.')
+  it { should delegate(:name).with('Ms.').to(:author) }  # name('Ms.')  => author.name('Ms.')
 end
 ```
 
