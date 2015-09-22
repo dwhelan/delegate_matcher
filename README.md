@@ -1,4 +1,7 @@
+[![Gem Version](https://badge.fury.io/rb/delegate_matcher.png)](http://badge.fury.io/rb/delegate_matcher)
 [![Build Status](https://travis-ci.org/dwhelan/delegate_matcher.png?branch=master)](https://travis-ci.org/dwhelan/delegate_matcher)
+[![Code Climate](https://codeclimate.com/github/dwhelan/delegate_matcher/badges/gpa.svg)](https://codeclimate.com/github/dwhelan/delegate_matcher)
+[![Coverage Status](https://coveralls.io/repos/dwhelan/delegate_matcher/badge.svg?branch=master&service=github)](https://coveralls.io/github/dwhelan/delegate_matcher?branch=master)
 
 # Delegate Matcher
 
