@@ -77,6 +77,11 @@ describe 'Delegate matcher' do
         author.name_with_different_arg_and_block('Miss', &proc {})
       end
 
+      def name_without_return
+        author.name_without_return
+        'should not be checked'
+      end
+
       def age
         60
       end
@@ -143,6 +148,10 @@ describe 'Delegate matcher' do
 
       def name_with_different_arg_and_block(arg, &block)
         "#{arg} #{block.call} #{name}"
+      end
+
+      def name_without_return
+        name
       end
 
       def inspect
@@ -276,6 +285,10 @@ describe 'Delegate matcher' do
 
   describe 'arguments and blocks' do
     it { should delegate(:name_with_arg_and_block).to(:author).with(true).with_block }
+  end
+
+  describe 'without_return' do
+    it { should delegate(:name_without_return).to(:author).without_return }
   end
 
   describe 'should raise error' do

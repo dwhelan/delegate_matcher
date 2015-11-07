@@ -4,13 +4,11 @@
 [![Coverage Status](https://coveralls.io/repos/dwhelan/delegate_matcher/badge.svg?branch=master&service=github)](https://coveralls.io/github/dwhelan/delegate_matcher?branch=master)
 
 # Delegate Matcher
-
 An RSpec matcher for validating delegation. This matcher works with delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module,
 the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem or with
 simple custom delegation.
 
 ## Installation
-
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -36,7 +34,6 @@ require 'delegate_matcher'
 ```
 
 ## Usage
-
 This matcher allows you to validate delegation to:
 * instance methods
 * class methods
@@ -48,7 +45,7 @@ This matcher allows you to validate delegation to:
 ```ruby
 describe Post do
   it { should delegate(:name).to(:author)   } # name  => author().name    instance method
-  it { should delegate(:name).to(:class))   } # name  => self.class.name  class method
+  it { should delegate(:name).to(:class)    } # name  => self.class.name  class method
   it { should delegate(:name).to(:@author)  } # name  => @author.name     instance variable
   it { should delegate(:name).to(:@@author) } # name  => @@author.name    class variable
   it { should delegate(:first).to(:GENRES)  } # first => GENRES.first     constant
@@ -71,7 +68,6 @@ end
 ```
 
 ### Handling Nil Delegates
-
 If you expect the delegate to return ```nil``` when the delegate is ```nil``` rather than raising an error
 then you can check this using the ```allow_nil``` method.
 
@@ -89,7 +85,6 @@ Note that the matcher will raise an error if you use this when checking delegati
 object since the matcher cannot validate ```nil``` handling in these cases.
 
 ### Arguments
-
 If the method being delegated takes arguments you can supply them with the ```with``` method. The matcher
 will check that the provided arguments are in turn passed to the delegate.
 
@@ -110,7 +105,6 @@ end
 ```
 
 ### Blocks
-
 You can check that a block passed is in turn passed to the delegate via the ```with_block``` method.
 
 ```ruby
@@ -123,10 +117,18 @@ describe Post do
 end
 ```
 
+### Return Value
+Normally the matcher will check that the value return is the same as the value
+returned from the delegate. You can skip this check by using ```without_return```.
+```ruby
+describe Post do
+  it { should delegate(:name).to(author).without_return }
+end
+```
+
 By default, block delegation is only checked if ```with_a_block``` or ```without_a_block``` is specified.
 
 ### Active Support
-
 You can test delegation based on the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem.
 
 ```ruby
@@ -184,7 +186,6 @@ However, don't use the following features as they are not supported by the deleg
 * different arguments passed to delegate
 
 ### Forwardable Module
-
 You can test delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module.
 
 ```ruby
@@ -229,7 +230,6 @@ However, don't use the following features as they are not supported by the Forwa
 * different arguments passed to delegate
 
 ## Contributing
-
 1. Fork it ( https://github.com/dwhelan/delegate_matcher/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
@@ -237,5 +237,4 @@ However, don't use the following features as they are not supported by the Forwa
 5. Create a new Pull Request
 
 ## Notes
-
 This matcher was inspired by [Alan Winograd](https://github.com/awinograd) via the gist https://gist.github.com/awinograd/6158961

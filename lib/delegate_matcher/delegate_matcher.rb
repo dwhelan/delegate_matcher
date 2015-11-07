@@ -29,6 +29,7 @@ RSpec::Matchers.define(:delegate) do |method|
   chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
   chain(:with_a_block)    {                    @expected_block     = true  }
   chain(:without_a_block) {                    @expected_block     = false }
+  chain(:without_return)  {                    @skip_return_check  = true }
 
   alias_method :with_block,    :with_a_block
   alias_method :without_block, :without_a_block
@@ -40,6 +41,7 @@ RSpec::Matchers.define(:delegate) do |method|
   attr_reader :expected_args,      :actual_args
   attr_reader :expected_block,     :actual_block
   attr_reader :actual_return_value
+  attr_reader :skip_return_check
 
   def delegate?(test_delegate = delegate_double)
     case
@@ -182,7 +184,7 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def return_value_ok?
-    actual_return_value == expected_return_value
+    skip_return_check || actual_return_value == expected_return_value
   end
 
   def delegator_description
