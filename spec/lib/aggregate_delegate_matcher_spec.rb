@@ -8,16 +8,12 @@ describe 'Delegate matcher' do
     Class.new do
       attr_accessor :authors, :any
 
-      def mapped_names
-        authors.map { |author| author.name }
-      end
-
       def any_alive?
-        authors.any? { |author| author.alive? }
+        authors.any?(&:alive?)
       end
 
       def all_alive?
-        authors.all? { |author| author.alive? }
+        authors.all?(&:alive?)
       end
 
       def inspect
@@ -49,24 +45,18 @@ describe 'Delegate matcher' do
   subject { post }
   before  { post.authors = authors }
 
-  describe 'test support' do
-    its(:mapped_names) { should eq ['Catherine Asaro', 'Catherine Asaro'] }
+  describe 'to_any' do
+    context('with no authors alive') {                                        its(:any_alive?) { should be false } }
+    context('with one author alive') { before { authors.first.alive = true }; its(:any_alive?) { should be true } }
+
+    it { should delegate(:any_alive?).to_any(:authors) }
   end
 
-  xdescribe 'to_any' do
-    # context('with no authors alive') { its(:any_alive?) { should be false } }
-    # context('with one author alive') { before {authors.first.alive = true }; its(:any_alive?) { should be true } }
+  describe 'to_all' do
+    context('with no authors alive')  {                                                 its(:all_alive?) { should be false } }
+    context('with one author alive')  { before { authors.first.alive = true };          its(:all_alive?) { should be false } }
+    context('with all authors alive') { before { authors.each { |a| a.alive = true } }; its(:all_alive?) { should be true } }
 
-    it { should delegate(:any_alive?).to(:@authors).as(:alive).via(:any?).without_return }
-    # it { should_not delegate(:any_alive?).to_all(authors).as(:alive?) }
+    it { should delegate(:all_alive?).to_all(authors) }
   end
-
-  # describe 'to_all' do
-  #   context('with no authors alive')  { its(:all_alive?) { should be false } }
-  #   context('with one author alive')  { before {authors.first.alive = true }; its(:all_alive?) { should be false } }
-  #   context('with all authors alive') { before {authors.each { |a| a.alive = true} }; its(:all_alive?) { should be true } }
-  #
-  #   it { should delegate(:all_alive?).to_all(authors).as(:alive?) }
-  # end
 end
-

@@ -23,9 +23,8 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   chain(:to)              { |delegate|         @delegate           = delegate }
-  chain(:to_any)          { |delegate|         @delegate           = delegate; @to_any = true }
-  chain(:via)             { |via|              @via           = via }
-  # chain(:to_all)          { |delegate|         @delegates           = delegate; @to_all = true; @skip_return_check = true }
+  chain(:to_any)          { |delegate|         @delegate           = delegate; @via = :any? }
+  chain(:to_all)          { |delegate|         @delegate           = delegate; @via = :all? }
   chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
   chain(:allow_nil)       { |allow_nil = true| @expected_nil_check = allow_nil }
   chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || delegate.to_s.sub(/@/, '') }
@@ -39,27 +38,14 @@ RSpec::Matchers.define(:delegate) do |method|
 
   private
 
-  attr_reader :method, :delegator, :prefix, :args
+  attr_reader :method, :delegator, :delegate, :prefix, :args
   attr_reader :expected_nil_check, :actual_nil_check
   attr_reader :expected_args,      :actual_args
   attr_reader :expected_block,     :actual_block
   attr_reader :actual_return_value
   attr_reader :skip_return_check
 
-  def delegate
-    @via ? @delegate.send(@via) : @delegate
-  end
-
   def delegate?(test_delegate = delegate_double)
-    case
-    when @to_any
-      delegate_one?(test_delegate)
-    else
-      delegate_one?(test_delegate)
-    end
-  end
-
-  def delegate_one?(test_delegate = delegate_double)
     case
     when delegate_is_a_class_variable?
       delegate_to_class_variable(test_delegate)

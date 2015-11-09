@@ -21,3 +21,7 @@ Style/Semicolon:
 
 Lint/Eval:
   Enabled: false
+
+AllCops:
+  Exclude:
+    - 'tmp/**/*'
