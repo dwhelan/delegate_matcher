@@ -2,12 +2,12 @@ require 'rspec/matchers'
 
 RSpec::Matchers.define(:delegate) do |method|
   match do |delegator|
-    fail 'need to provide a "to"' unless delegate
+    fail 'need to provide a "to"' unless @delegate || @delegates
 
     @method    = method
     @delegator = delegator
 
-    allow_nil_ok? && delegate? && arguments_ok? && block_ok?
+    allow_nil_ok? && delegate? && arguments_ok? && block_ok? && return_value_ok?
   end
 
   description do
@@ -23,6 +23,9 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   chain(:to)              { |delegate|         @delegate           = delegate }
+  chain(:to_any)          { |delegate|         @delegate           = delegate; @to_any = true }
+  chain(:via)             { |via|              @via           = via }
+  # chain(:to_all)          { |delegate|         @delegates           = delegate; @to_all = true; @skip_return_check = true }
   chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
   chain(:allow_nil)       { |allow_nil = true| @expected_nil_check = allow_nil }
   chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || delegate.to_s.sub(/@/, '') }
@@ -36,14 +39,27 @@ RSpec::Matchers.define(:delegate) do |method|
 
   private
 
-  attr_reader :method, :delegator, :delegate, :prefix, :args
+  attr_reader :method, :delegator, :prefix, :args
   attr_reader :expected_nil_check, :actual_nil_check
   attr_reader :expected_args,      :actual_args
   attr_reader :expected_block,     :actual_block
   attr_reader :actual_return_value
   attr_reader :skip_return_check
 
+  def delegate
+    @via ? @delegate.send(@via) : @delegate
+  end
+
   def delegate?(test_delegate = delegate_double)
+    case
+    when @to_any
+      delegate_one?(test_delegate)
+    else
+      delegate_one?(test_delegate)
+    end
+  end
+
+  def delegate_one?(test_delegate = delegate_double)
     case
     when delegate_is_a_class_variable?
       delegate_to_class_variable(test_delegate)
@@ -56,8 +72,6 @@ RSpec::Matchers.define(:delegate) do |method|
     else
       delegate_to_object
     end
-
-    return_value_ok?
   end
 
   def delegate_is_a_class_variable?
@@ -124,11 +138,12 @@ RSpec::Matchers.define(:delegate) do |method|
   end
 
   def delegate_method
-    @delegate_method || method
+    @via || @delegate_method || method
   end
 
   def call
     @actual_return_value = delegator.send(delegator_method, *args, &block)
+    @delegated
   end
 
   def block
@@ -194,11 +209,11 @@ RSpec::Matchers.define(:delegate) do |method|
   def delegate_description
     case
     when !args.eql?(expected_args)
-      "#{delegate}.#{delegate_method}#{argument_description(expected_args)}"
+      "#{@delegate}.#{delegate_method}#{argument_description(expected_args)}"
     when delegate_method.eql?(delegator_method)
-      "#{delegate}"
+      "#{@delegate}"
     else
-      "#{delegate}.#{delegate_method}"
+      "#{@delegate}.#{delegate_method}"
     end
   end
 
@@ -282,3 +297,6 @@ RSpec::Matchers.define(:delegate) do |method|
     end
   end
 end
+
+# TODO: Add 'as' logic to description
+# TODO: Add 'via' logic to description
