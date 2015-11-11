@@ -8,6 +8,8 @@ module RSpec
         attr_accessor :delegator, :delegator_method, :args
         attr_accessor :skip_return_check
         attr_accessor :actual_return_value
+        attr_accessor :expected_args
+        attr_accessor :expected_block
 
         RSpec::Mocks::Syntax.enable_expect(self)
 
@@ -55,6 +57,60 @@ module RSpec
         def return_value_ok?
           skip_return_check || actual_return_value == expected_return_value
         end
+
+        def failure_message(negated)
+          message = [
+              argument_failure_message(negated),
+              block_failure_message(negated),
+              return_value_failure_message(negated),
+              allow_nil_failure_message(negated)
+          ].reject(&:empty?).join(' and ')
+          message.empty? ? nil : message
+        end
+
+        def argument_failure_message(negated)
+          case
+          when expected_args.nil? || negated ^ arguments_ok?
+            ''
+          else
+            "was called with #{argument_description(actual_args)}"
+          end
+        end
+
+        def block_failure_message(negated)
+          case
+          when expected_block.nil? || (negated ^ block_ok?)
+            ''
+          when negated
+            "a block was #{expected_block ? '' : 'not '}passed"
+          when expected_block
+            actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
+          else
+            'a block was passed'
+          end
+        end
+
+        def return_value_failure_message(_negated)
+          case
+          when !@delegated || return_value_ok?
+            ''
+          else
+            format('a return value of %p was returned instead of the delegate return value', actual_return_value)
+          end
+        end
+
+        def allow_nil_failure_message(negated)
+          case
+          when expected_nil_check.nil? || negated ^ allow_nil_ok?
+            ''
+          when !@return_value_when_delegate_nil.nil?
+            'did not return nil'
+          when negated
+            "#{delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
+          else
+            "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
+          end
+        end
       end
     end
 
@@ -73,6 +129,9 @@ module RSpec
       end
 
       def failure_message
+        return matcher.failure_message(false) || super if matcher
+
+        failure_message_details(false) || super
         failure_message_details(false) || super
       end
 
@@ -174,6 +233,8 @@ module RSpec
         matcher.delegator_method = delegator_method
         matcher.args = args
         matcher.skip_return_check = skip_return_check
+        matcher.expected_args = expected_args
+        matcher.expected_block = expected_block
         matcher.do_delegate
       end
 

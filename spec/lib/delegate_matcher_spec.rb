@@ -154,6 +154,10 @@ describe 'Delegate matcher' do
         name
       end
 
+      def to_s
+        'author'
+      end
+
       def inspect
         'author'
       end
@@ -339,13 +343,9 @@ describe 'Delegate matcher' do
       its(:failure_message_when_negated) { should match(/expected .* not to delegate name to author/) }
     end
 
-    context 'delegate(:age).to(:author)' do
+    context 'delegate(:age).to(author)' do
       its(:description)     { should eq 'delegate age to author' }
       its(:failure_message) { should match(/expected .* to delegate age to author/) }
-    end
-
-    context 'delegate(:name).to(:author).with_prefix' do
-      its(:description) { should eq 'delegate author_name to author.name' }
     end
 
     context 'delegate(:writer).to(:author).as(:name)' do
