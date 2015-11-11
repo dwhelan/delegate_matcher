@@ -3,7 +3,7 @@ require 'rspec/matchers'
 module RSpec
   module Matchers
     module DelegateMatcher
-      class ObjectMatcher
+      class DelegateToObject
         attr_accessor :delegate, :expected_nil_check, :method, :via, :delegate_method
         attr_accessor :delegator, :delegator_method, :args
         attr_accessor :skip_return_check
@@ -223,7 +223,7 @@ module RSpec
       end
 
       def delegate_to_object
-        self.matcher = DelegateMatcher::ObjectMatcher.new
+        self.matcher = DelegateMatcher::DelegateToObject.new
         matcher.expected_nil_check = expected_nil_check
         matcher.via = @via
         matcher.delegate = delegate
