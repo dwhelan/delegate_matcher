@@ -3,24 +3,32 @@ require 'rspec/matchers'
 module RSpec
   module Matchers
     module DelegateMatcher
-      class DelegateToObject
-        attr_accessor :delegate, :expected_nil_check, :method, :via, :delegate_method
-        attr_accessor :delegator, :delegator_method, :args
+      class Delegate
+        attr_accessor :method
+        attr_accessor :delegator
+        attr_accessor :delegator_method
+        attr_accessor :expected_args
+        attr_accessor :actual_args
+        attr_accessor :args
+        attr_accessor :expected_block
+        attr_accessor :actual_block
+
+        attr_accessor :expected_nil_check
+        attr_accessor :via
+        attr_accessor :delegate
+        attr_accessor :delegate_method
         attr_accessor :skip_return_check
         attr_accessor :actual_return_value
-        attr_accessor :expected_args
-        attr_accessor :expected_block
 
+        include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        def do_delegate
-          ensure_allow_nil_is_not_specified_for('an object')
-          stub_delegation(delegate)
-          call
+        def delegate_double
+          double('delegate').tap { |delegate| stub_delegation(delegate) }
         end
 
-        def ensure_allow_nil_is_not_specified_for(target)
-          fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected_nil_check.nil?
+        def delegate_method
+          via || @delegate_method || method
         end
 
         def stub_delegation(delegate)
@@ -33,17 +41,9 @@ module RSpec
           end
         end
 
-        def delegate_method
-          via || @delegate_method || method
-        end
-
         def call
           @actual_return_value = delegator.send(delegator_method, *args, &block)
           @delegated
-        end
-
-        def delegator_method
-          @delegator_method || (prefix ? :"#{prefix}_#{method}" : method)
         end
 
         def block
@@ -54,8 +54,8 @@ module RSpec
           self
         end
 
-        def return_value_ok?
-          skip_return_check || actual_return_value == expected_return_value
+        def argument_description(args)
+          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 
         def failure_message(negated)
@@ -111,12 +111,83 @@ module RSpec
             "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
           end
         end
+
+        # TODO: pernaps move delegation earlier
+        def allow_nil_ok?
+          return true if expected_nil_check.nil?
+          return true unless delegate.is_a?(String) || delegate.is_a?(Symbol)
+
+          begin
+            actual_nil_check = true
+            do_delegate(nil)
+            @return_value_when_delegate_nil = actual_return_value
+          rescue NoMethodError
+            actual_nil_check = false
+          end
+
+          expected_nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
+        end
+
+        def arguments_ok?
+          expected_args.nil? || actual_args.eql?(expected_args)
+        end
+
+        def block_ok?
+          case
+          when expected_block.nil?
+            true
+          when expected_block
+            actual_block == block
+          else
+            actual_block.nil?
+          end
+        end
+
+        def return_value_ok?
+          skip_return_check || actual_return_value == expected_return_value
+        end
+      end
+
+      class DelegateToMethod < Delegate
+
+        def do_delegate(test_delegate = delegate_double)
+          ensure_delegate_method_is_valid
+          allow(delegator).to receive(delegate) { test_delegate }
+          call
+        end
+
+        def ensure_delegate_method_is_valid
+          fail "#{delegator} does not respond to #{delegate}"          unless delegator.respond_to?(delegate, true)
+          fail "#{delegator}'s' #{delegate} method expects parameters" unless [0, -1].include?(delegator.method(delegate).arity)
+        end
+
+      end
+
+      class DelegateToObject < Delegate
+
+        def do_delegate(test_delegate = delegate_double)
+          ensure_allow_nil_is_not_specified_for('an object')
+          stub_delegation(delegate)
+          call
+        end
+
+        def ensure_allow_nil_is_not_specified_for(target)
+          fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected_nil_check.nil?
+        end
+
+        def delegator_method
+          @delegator_method || (prefix ? :"#{prefix}_#{method}" : method)
+        end
+
+        def block
+          @block ||= proc {}
+        end
       end
     end
 
     define(:delegate) do |method|
       match do |delegator|
-        fail 'need to provide a "to"' unless @delegate || @delegates
+        fail 'need to provide a "to"' unless @delegate
 
         @method    = method
         @delegator = delegator
@@ -132,10 +203,11 @@ module RSpec
         return matcher.failure_message(false) || super if matcher
 
         failure_message_details(false) || super
-        failure_message_details(false) || super
       end
 
       def failure_message_when_negated
+        return matcher.failure_message(true) || super if matcher
+
         failure_message_details(true) || super
       end
 
@@ -163,7 +235,39 @@ module RSpec
       attr_reader :skip_return_check
       attr_accessor :matcher
 
+      def matcher
+        @matcher ||= begin
+          case
+          when delegate_is_a_class_variable?
+          when delegate_is_an_instance_variable?
+          when delegate_is_a_constant?
+          when delegate_is_a_method?
+            create_matcher(DelegateMatcher::DelegateToMethod)
+          else
+            create_matcher(DelegateMatcher::DelegateToObject)
+          end
+        end
+      end
+
+      def create_matcher(klass)
+        klass.new.tap do |matcher|
+          matcher.expected_nil_check = expected_nil_check
+          matcher.via = @via
+          matcher.delegate = delegate
+          matcher.delegate_method = @delegate_method
+          matcher.method = method
+          matcher.delegator = delegator
+          matcher.delegator_method = delegator_method
+          matcher.args = args
+          matcher.skip_return_check = skip_return_check
+          matcher.expected_args = expected_args
+          matcher.expected_block = expected_block
+        end
+      end
+
       def delegate?(test_delegate = delegate_double)
+        return matcher.do_delegate() if matcher
+
         case
         when delegate_is_a_class_variable?
           delegate_to_class_variable(test_delegate)
@@ -174,7 +278,7 @@ module RSpec
         when delegate_is_a_method?
           delegate_to_method(test_delegate)
         else
-          delegate_to_object
+          delegate_to_object(test_delegate)
         end
       end
 
@@ -213,34 +317,6 @@ module RSpec
       def delegate_to_constant
         ensure_allow_nil_is_not_specified_for('a constant')
         stub_delegation(delegator.class.const_get(delegate))
-        call
-      end
-
-      def delegate_to_method(test_delegate)
-        ensure_delegate_method_is_valid
-        allow(delegator).to receive(delegate) { test_delegate }
-        call
-      end
-
-      def delegate_to_object
-        self.matcher = DelegateMatcher::DelegateToObject.new
-        matcher.expected_nil_check = expected_nil_check
-        matcher.via = @via
-        matcher.delegate = delegate
-        matcher.delegate_method = @delegate_method
-        matcher.method = method
-        matcher.delegator = delegator
-        matcher.delegator_method = delegator_method
-        matcher.args = args
-        matcher.skip_return_check = skip_return_check
-        matcher.expected_args = expected_args
-        matcher.expected_block = expected_block
-        matcher.do_delegate
-      end
-
-      def delegate_to_object_orig
-        ensure_allow_nil_is_not_specified_for('an object')
-        stub_delegation(delegate)
         call
       end
 
@@ -289,6 +365,7 @@ module RSpec
       end
 
       def allow_nil_ok?
+        return matcher.allow_nil_ok? if matcher
         return true if expected_nil_check.nil?
         return true unless delegate.is_a?(String) || delegate.is_a?(Symbol)
 
@@ -304,10 +381,12 @@ module RSpec
       end
 
       def arguments_ok?
+        return matcher.arguments_ok? if matcher
         expected_args.nil? || actual_args.eql?(expected_args)
       end
 
       def block_ok?
+        return matcher.block_ok? if matcher
         case
         when expected_block.nil?
           true

@@ -477,6 +477,6 @@ describe 'Delegate matcher' do
           its(:failure_message_when_negated) { should match(/and a block was not passed/) }
         end
       end
-    end
+     end
   end
 end
