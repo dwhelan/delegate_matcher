@@ -112,6 +112,10 @@ module RSpec
           end
         end
 
+        def delegation_ok?
+          allow_nil_ok? && do_delegate && arguments_ok? && block_ok? && return_value_ok?
+        end
+
         # TODO: pernaps move delegation earlier
         def allow_nil_ok?
           return true if expected_nil_check.nil?
@@ -192,7 +196,7 @@ module RSpec
         @method    = method
         @delegator = delegator
 
-        allow_nil_ok? && delegate? && arguments_ok? && block_ok? && return_value_ok?
+        delegation_ok?
       end
 
       description do
@@ -226,6 +230,11 @@ module RSpec
       alias_method :without_block, :without_a_block
 
       private
+
+      def delegation_ok?
+        return matcher.delegation_ok? if matcher
+        allow_nil_ok? && delegate? && arguments_ok? && block_ok? && return_value_ok?
+      end
 
       attr_reader :method, :delegator, :delegate, :prefix, :args
       attr_reader :expected_nil_check, :actual_nil_check
@@ -266,8 +275,6 @@ module RSpec
       end
 
       def delegate?(test_delegate = delegate_double)
-        return matcher.do_delegate() if matcher
-
         case
         when delegate_is_a_class_variable?
           delegate_to_class_variable(test_delegate)
