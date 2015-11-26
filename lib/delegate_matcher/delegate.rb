@@ -1,11 +1,11 @@
 require 'rspec/matchers'
+require 'forwardable'
 
 module RSpec
   module Matchers
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
       class Delegate
-        attr_accessor :method
         attr_accessor :delegator
         attr_accessor :delegator_method
         attr_accessor :expected_args
@@ -34,7 +34,7 @@ module RSpec
         end
 
         def delegate_method
-          via || @delegate_method || method
+          via || @delegate_method || settings.method
         end
 
         def stub_delegation(delegate)

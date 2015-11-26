@@ -1,5 +1,4 @@
 require 'rspec/matchers'
-require 'forwardable'
 
 # rubocop:disable Metrics/ModuleLength
 module RSpec
@@ -8,7 +7,7 @@ module RSpec
       match do |delegator|
         fail 'need to provide a "to"' unless delegate
 
-        @method    = method
+        settings.method = method
         @delegator = delegator
 
         matcher.delegation_ok?
@@ -46,7 +45,7 @@ module RSpec
 
       private
 
-      attr_reader :method, :delegator, :delegate, :prefix, :args
+      attr_reader :delegator, :delegate, :prefix, :args
       attr_reader :expected_nil_check
       attr_reader :expected_args
       attr_reader :expected_block
@@ -81,7 +80,6 @@ module RSpec
           matcher.via = @via
           matcher.delegate = delegate
           matcher.delegate_method = @delegate_method
-          matcher.method = method
           matcher.delegator = delegator
           matcher.delegator_method = delegator_method
           matcher.args = args
@@ -108,11 +106,11 @@ module RSpec
       end
 
       def delegator_method
-        @delegator_method || (prefix ? :"#{prefix}_#{method}" : method)
+        @delegator_method || (prefix ? :"#{prefix}_#{settings.method}" : settings.method)
       end
 
       def delegate_method
-        @via || @delegate_method || method
+        @via || @delegate_method || settings.method
       end
 
       def delegator_description
