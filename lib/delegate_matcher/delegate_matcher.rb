@@ -1,4 +1,5 @@
 require 'rspec/matchers'
+require 'forwardable'
 
 # rubocop:disable Metrics/ModuleLength
 module RSpec
@@ -10,7 +11,7 @@ module RSpec
         @method    = method
         @delegator = delegator
 
-        delegation_ok?
+        matcher.delegation_ok?
       end
 
       description do
@@ -45,38 +46,37 @@ module RSpec
 
       private
 
-      def delegation_ok?
-        return matcher.delegation_ok? if matcher
-        allow_nil_ok? && delegate? && arguments_ok? && block_ok? && return_value_ok?
-      end
-
       attr_reader :method, :delegator, :delegate, :prefix, :args
-      attr_reader :expected_nil_check, :actual_nil_check
-      attr_reader :expected_args,      :actual_args
-      attr_reader :expected_block,     :actual_block
-      attr_reader :actual_return_value
+      attr_reader :expected_nil_check
+      attr_reader :expected_args
+      attr_reader :expected_block
       attr_reader :skip_return_check
       attr_accessor :matcher
 
       def matcher
         @matcher ||= begin
-          case
-          when delegate_is_a_class_variable?
-            create_matcher(DelegateMatcher::DelegateToClassVariable)
-          when delegate_is_an_instance_variable?
-            create_matcher(DelegateMatcher::DelegateToInstanceVariable)
-          when delegate_is_a_constant?
-            create_matcher(DelegateMatcher::DelegateToConstant)
-          when delegate_is_a_method?
-            create_matcher(DelegateMatcher::DelegateToMethod)
-          else
-            create_matcher(DelegateMatcher::DelegateToObject)
-          end
+          klass = case
+                  when delegate_is_a_class_variable?
+                    DelegateMatcher::DelegateToClassVariable
+                  when delegate_is_an_instance_variable?
+                    DelegateMatcher::DelegateToInstanceVariable
+                  when delegate_is_a_constant?
+                    DelegateMatcher::DelegateToConstant
+                  when delegate_is_a_method?
+                    DelegateMatcher::DelegateToMethod
+                  else
+                    DelegateMatcher::DelegateToObject
+                  end
+          create_matcher(klass)
         end
       end
 
+      def settings
+        @settings ||= DelegateMatcher::Settings.new
+      end
+
       def create_matcher(klass)
-        klass.new.tap do |matcher|
+        klass.new(settings).tap do |matcher|
           matcher.expected_nil_check = expected_nil_check
           matcher.via = @via
           matcher.delegate = delegate
@@ -92,15 +92,15 @@ module RSpec
       end
 
       def delegate_is_a_class_variable?
-        delegate.to_s.start_with?('@@')
+        delegate_name.start_with?('@@')
       end
 
       def delegate_is_an_instance_variable?
-        delegate.to_s[0] == '@'
+        delegate_name[0] == '@'
       end
 
       def delegate_is_a_constant?
-        (delegate.is_a?(String) || delegate.is_a?(Symbol)) && (delegate.to_s =~ /^[A-Z]/)
+        (delegate.is_a?(String) || delegate.is_a?(Symbol)) && (delegate_name =~ /^[A-Z]/)
       end
 
       def delegate_is_a_method?
@@ -113,19 +113,6 @@ module RSpec
 
       def delegate_method
         @via || @delegate_method || method
-      end
-
-      def call
-        @actual_return_value = delegator.send(delegator_method, *args, &block)
-        @delegated
-      end
-
-      def block
-        @block ||= proc {}
-      end
-
-      def delegate_double
-        double('delegate').tap { |delegate| stub_delegation(delegate) }
       end
 
       def delegator_description
@@ -143,9 +130,11 @@ module RSpec
         end
       end
 
-      def argument_description(args)
-        args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
-      end
+      delegate :argument_description, to: :matcher
+
+      # def argument_description(args)
+      #   args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+      # end
 
       def nil_description
         case
@@ -222,6 +211,10 @@ module RSpec
           "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
         end
       end
+    end
+
+    def delegate_name
+      delegate.to_s
     end
   end
 end

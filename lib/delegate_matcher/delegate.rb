@@ -20,9 +20,14 @@ module RSpec
         attr_accessor :delegate_method
         attr_accessor :skip_return_check
         attr_accessor :actual_return_value
+        attr_accessor :settings
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
+
+        def initialize(settings)
+          self.settings = settings
+        end
 
         def delegate_double
           double('delegate').tap { |delegate| stub_delegation(delegate) }
@@ -154,18 +159,6 @@ module RSpec
 
         def return_value_ok?
           skip_return_check || actual_return_value == expected_return_value
-        end
-      end
-
-      class DelegateToObject < Delegate
-        def do_delegate(_test_delegate = delegate_double)
-          ensure_allow_nil_is_not_specified_for('an object')
-          stub_delegation(delegate)
-          call
-        end
-
-        def delegator_method
-          @delegator_method || (prefix ? :"#{prefix}_#{method}" : method)
         end
       end
     end
