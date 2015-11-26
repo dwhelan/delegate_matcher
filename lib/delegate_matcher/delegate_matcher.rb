@@ -7,8 +7,8 @@ module RSpec
       match do |delegator|
         fail 'need to provide a "to"' unless delegate
 
-        settings.method    = method
-        settings.delegator = delegator
+        expected.method    = method
+        expected.delegator = delegator
 
         matcher.delegation_ok?
       end
@@ -70,12 +70,12 @@ module RSpec
         end
       end
 
-      def settings
-        @settings ||= DelegateMatcher::Settings.new
+      def expected
+        @expected ||= DelegateMatcher::Expected.new
       end
 
       def create_matcher(klass)
-        klass.new(settings).tap do |matcher|
+        klass.new(expected).tap do |matcher|
           matcher.expected_nil_check = expected_nil_check
           matcher.via = @via
           matcher.delegate = delegate
@@ -105,11 +105,11 @@ module RSpec
       end
 
       def delegator_method
-        @delegator_method || (prefix ? :"#{prefix}_#{settings.method}" : settings.method)
+        @delegator_method || (prefix ? :"#{prefix}_#{expected.method}" : expected.method)
       end
 
       def delegate_method
-        @via || @delegate_method || settings.method
+        @via || @delegate_method || expected.method
       end
 
       def delegator_description

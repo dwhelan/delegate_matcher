@@ -19,17 +19,17 @@ module RSpec
         attr_accessor :delegate_method
         attr_accessor :skip_return_check
         attr_accessor :actual_return_value
-        attr_accessor :settings
+        attr_accessor :expected
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
 
         extend Forwardable
 
-        delegate delegator: :settings
+        delegate delegator: :expected
 
-        def initialize(settings)
-          self.settings = settings
+        def initialize(expected)
+          self.expected = expected
         end
 
         def delegate_double
@@ -37,7 +37,7 @@ module RSpec
         end
 
         def delegate_method
-          via || @delegate_method || settings.method
+          via || @delegate_method || expected.method
         end
 
         def stub_delegation(delegate)
@@ -51,7 +51,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = settings.delegator.send(delegator_method, *args, &block)
+          @actual_return_value = delegator.send(delegator_method, *args, &block)
           @delegated
         end
 

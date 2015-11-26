@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     module DelegateMatcher
-      class Settings
+      class Expected
         attr_accessor :method, :delegator
       end
     end
