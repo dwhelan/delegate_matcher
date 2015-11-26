@@ -4,7 +4,7 @@ module RSpec
       class DelegateToObject < Delegate
         def do_delegate(_test_delegate = delegate_double)
           ensure_allow_nil_is_not_specified_for('an object')
-          stub_delegation(delegate)
+          stub_delegation(expected.delegate)
           call
         end
 

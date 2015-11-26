@@ -5,7 +5,7 @@ module RSpec
   module Matchers
     define(:delegate) do |method|
       match do |delegator|
-        fail 'need to provide a "to"' unless delegate
+        fail 'need to provide a "to"' unless expected.delegate
 
         expected.method    = method
         expected.delegator = delegator
@@ -29,12 +29,12 @@ module RSpec
         failure_message_details(true) || super
       end
 
-      chain(:to)              { |delegate|         @delegate           = delegate }
-      chain(:to_any)          { |delegate|         @delegate           = delegate; @via = :any? }
-      chain(:to_all)          { |delegate|         @delegate           = delegate; @via = :all? }
+      chain(:to)              { |delegate|         expected.delegate           = delegate }
+      chain(:to_any)          { |delegate|         expected.delegate           = delegate; @via = :any? }
+      chain(:to_all)          { |delegate|         expected.delegate           = delegate; @via = :all? }
       chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
       chain(:allow_nil)       { |allow_nil = true| @expected_nil_check = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || delegate.to_s.sub(/@/, '') }
+      chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
       chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
       chain(:with_a_block)    {                    @expected_block     = true  }
       chain(:without_a_block) {                    @expected_block     = false }
@@ -45,7 +45,7 @@ module RSpec
 
       private
 
-      attr_reader :delegate, :prefix, :args
+      attr_reader :prefix, :args
       attr_reader :expected_nil_check
       attr_reader :expected_args
       attr_reader :expected_block
@@ -78,7 +78,6 @@ module RSpec
         klass.new(expected).tap do |matcher|
           matcher.expected_nil_check = expected_nil_check
           matcher.via = @via
-          matcher.delegate = delegate
           matcher.delegate_method = @delegate_method
           matcher.delegator_method = delegator_method
           matcher.args = args
@@ -97,11 +96,11 @@ module RSpec
       end
 
       def delegate_is_a_constant?
-        (delegate.is_a?(String) || delegate.is_a?(Symbol)) && (delegate_name =~ /^[A-Z]/)
+        (expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)) && (delegate_name =~ /^[A-Z]/)
       end
 
       def delegate_is_a_method?
-        delegate.is_a?(String) || delegate.is_a?(Symbol)
+        expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
       end
 
       def delegator_method
@@ -119,11 +118,11 @@ module RSpec
       def delegate_description
         case
         when !args.eql?(expected_args)
-          "#{@delegate}.#{delegate_method}#{argument_description(expected_args)}"
+          "#{expected.delegate}.#{delegate_method}#{argument_description(expected_args)}"
         when delegate_method.eql?(delegator_method)
-          "#{@delegate}"
+          "#{expected.delegate}"
         else
-          "#{@delegate}.#{delegate_method}"
+          "#{expected.delegate}.#{delegate_method}"
         end
       end
 
@@ -203,15 +202,15 @@ module RSpec
         when !@return_value_when_delegate_nil.nil?
           'did not return nil'
         when negated
-          "#{delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
+          "#{expected.delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
         else
-          "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
+          "#{expected.delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
         end
       end
     end
 
     def delegate_name
-      delegate.to_s
+      expected.delegate.to_s
     end
   end
 end

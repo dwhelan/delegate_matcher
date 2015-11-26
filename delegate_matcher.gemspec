@@ -24,6 +24,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'coveralls',     '~>  0.7'
   gem.add_development_dependency 'guard',         '~>  2.13'
   gem.add_development_dependency 'guard-rspec',   '~>  4.6'
+  gem.add_development_dependency 'pry-byebug'#,  '~> 0.2'
   gem.add_development_dependency 'rake',          '~> 10.0'
   gem.add_development_dependency 'rspec',         '~>  3.0'
   gem.add_development_dependency 'rspec-its',     '~>  1.1'

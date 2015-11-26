@@ -15,7 +15,6 @@ module RSpec
 
         attr_accessor :expected_nil_check
         attr_accessor :via
-        attr_accessor :delegate
         attr_accessor :delegate_method
         attr_accessor :skip_return_check
         attr_accessor :actual_return_value
@@ -27,6 +26,7 @@ module RSpec
         extend Forwardable
 
         delegate delegator: :expected
+        delegate delegate: :expected
 
         def initialize(expected)
           self.expected = expected
