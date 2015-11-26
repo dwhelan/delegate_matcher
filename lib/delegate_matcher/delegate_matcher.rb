@@ -1,8 +1,10 @@
 require 'rspec/matchers'
 
+# rubocop:disable Metrics/ModuleLength
 module RSpec
   module Matchers
     module DelegateMatcher
+      # rubocop:disable Metrics/ClassLength
       class Delegate
         attr_accessor :method
         attr_accessor :delegator
@@ -60,10 +62,10 @@ module RSpec
 
         def failure_message(negated)
           message = [
-              argument_failure_message(negated),
-              block_failure_message(negated),
-              return_value_failure_message(negated),
-              allow_nil_failure_message(negated)
+            argument_failure_message(negated),
+            block_failure_message(negated),
+            return_value_failure_message(negated),
+            allow_nil_failure_message(negated)
           ].reject(&:empty?).join(' and ')
           message.empty? ? nil : message
         end
@@ -153,7 +155,6 @@ module RSpec
       end
 
       class DelegateToMethod < Delegate
-
         def do_delegate(test_delegate = delegate_double)
           ensure_delegate_method_is_valid
           allow(delegator).to receive(delegate) { test_delegate }
@@ -164,12 +165,10 @@ module RSpec
           fail "#{delegator} does not respond to #{delegate}"          unless delegator.respond_to?(delegate, true)
           fail "#{delegator}'s' #{delegate} method expects parameters" unless [0, -1].include?(delegator.method(delegate).arity)
         end
-
       end
 
       class DelegateToObject < Delegate
-
-        def do_delegate(test_delegate = delegate_double)
+        def do_delegate(_test_delegate = delegate_double)
           ensure_allow_nil_is_not_specified_for('an object')
           stub_delegation(delegate)
           call
@@ -507,5 +506,6 @@ module RSpec
   end
 end
 
+# TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description
 # TODO: Add 'via' logic to description
