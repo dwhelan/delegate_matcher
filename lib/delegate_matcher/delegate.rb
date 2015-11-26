@@ -6,7 +6,6 @@ module RSpec
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
       class Delegate
-        attr_accessor :delegator
         attr_accessor :delegator_method
         attr_accessor :expected_args
         attr_accessor :actual_args
@@ -24,6 +23,10 @@ module RSpec
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
+
+        extend Forwardable
+
+        delegate delegator: :settings
 
         def initialize(settings)
           self.settings = settings
@@ -48,7 +51,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.send(delegator_method, *args, &block)
+          @actual_return_value = settings.delegator.send(delegator_method, *args, &block)
           @delegated
         end
 
