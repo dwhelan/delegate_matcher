@@ -25,6 +25,7 @@ Lint/Eval:
 AllCops:
   Exclude:
     - 'tmp/**/*'
+    - 'vendor/**/*'
 
 Metrics/AbcSize:
   Max: 20
