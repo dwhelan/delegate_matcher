@@ -5,7 +5,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
-      class Delegate
+      class DelegateTo
         attr_accessor :delegator_method
         attr_accessor :actual_args
         attr_accessor :args

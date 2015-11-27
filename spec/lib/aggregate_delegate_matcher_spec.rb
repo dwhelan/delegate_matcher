@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'Delegate matcher' do
+describe 'DelegateTo matcher' do
   # :nocov:
   let(:post) do
     Class.new do

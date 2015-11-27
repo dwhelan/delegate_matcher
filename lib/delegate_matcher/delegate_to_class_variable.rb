@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     module DelegateMatcher
-      class DelegateToClassVariable < Delegate
+      class DelegateToClassVariable < DelegateTo
         def do_delegate(test_delegate = delegate_double)
           actual_delegate = delegator.class.class_variable_get(delegate)
           delegator.class.class_variable_set(delegate, test_delegate)
