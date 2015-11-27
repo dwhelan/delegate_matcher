@@ -32,11 +32,11 @@ module RSpec
       chain(:to)              { |to|               expected.delegate   = to }
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
-      chain(:with_prefix)     { |prefix=nil|       expected.prefix             = prefix  }
-      chain(:with)            { |*args|            expected.args      = args; @args ||= args }
-      chain(:with_a_block)    {                    expected.block     = true  }
-      chain(:without_a_block) {                    expected.block     = false }
-      chain(:without_return)  {                    @skip_return_check  = true }
+      chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix  }
+      chain(:with)            { |*args|            expected.args       = args; @args ||= args }
+      chain(:with_a_block)    {                    expected.block      = true  }
+      chain(:without_a_block) {                    expected.block      = false }
+      chain(:without_return)  {                    expected.skip_return_check  = true }
 
       alias_method :with_block,    :with_a_block
       alias_method :without_block, :without_a_block
@@ -44,7 +44,6 @@ module RSpec
       private
 
       attr_reader :args
-      attr_reader :skip_return_check
       attr_accessor :matcher
 
       def matcher
@@ -74,7 +73,6 @@ module RSpec
           matcher.via = @via
           matcher.delegator_method = delegator_method
           matcher.args = args
-          matcher.skip_return_check = skip_return_check
         end
       end
 

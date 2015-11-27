@@ -14,7 +14,6 @@ module RSpec
 
         attr_accessor :via
         attr_accessor :delegate_method
-        attr_accessor :skip_return_check
         attr_accessor :actual_return_value
         attr_accessor :expected
 
@@ -160,7 +159,7 @@ module RSpec
         end
 
         def return_value_ok?
-          skip_return_check || actual_return_value == expected_return_value
+          expected.skip_return_check || actual_return_value == expected_return_value
         end
       end
     end
