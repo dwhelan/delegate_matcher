@@ -7,10 +7,6 @@ module RSpec
           stub_delegation(expected.delegate)
           call
         end
-
-        def delegator_method
-          @delegator_method || (prefix ? :"#{prefix}_#{method}" : method)
-        end
       end
     end
   end

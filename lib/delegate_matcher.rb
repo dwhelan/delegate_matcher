@@ -9,5 +9,6 @@ require 'delegate_matcher/delegate_to_constant'
 require 'delegate_matcher/delegate_to_class_variable'
 require 'delegate_matcher/delegate_to_instance_variable'
 require 'delegate_matcher/delegate_to_object'
+require 'delegate_matcher/delegate_factory'
 
 require 'delegate_matcher/delegate_matcher'

@@ -48,37 +48,7 @@ module RSpec
       end
 
       def matcher
-        @matcher ||= begin
-          klass = case
-                  when delegate_is_a_class_variable?
-                    DelegateMatcher::DelegateToClassVariable
-                  when delegate_is_an_instance_variable?
-                    DelegateMatcher::DelegateToInstanceVariable
-                  when delegate_is_a_constant?
-                    DelegateMatcher::DelegateToConstant
-                  when delegate_is_a_method?
-                    DelegateMatcher::DelegateToMethod
-                  else
-                    DelegateMatcher::DelegateToObject
-                  end
-          klass.new(expected, delegator)
-        end
-      end
-
-      def delegate_is_a_class_variable?
-        delegate_name.start_with?('@@')
-      end
-
-      def delegate_is_an_instance_variable?
-        delegate_name[0] == '@'
-      end
-
-      def delegate_is_a_constant?
-        (expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)) && (delegate_name =~ /^[A-Z]/)
-      end
-
-      def delegate_is_a_method?
-        expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
+        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.delegate, expected, delegator)
       end
 
       # rubocop:disable Metrics/AbcSize
