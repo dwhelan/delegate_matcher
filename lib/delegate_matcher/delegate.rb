@@ -12,7 +12,6 @@ module RSpec
         attr_accessor :expected_block
         attr_accessor :actual_block
 
-        attr_accessor :via
         attr_accessor :delegate_method
         attr_accessor :actual_return_value
         attr_accessor :expected
@@ -35,7 +34,7 @@ module RSpec
         end
 
         def delegate_method
-          via || expected.delegate_method || expected.method
+          expected.delegate_method || expected.method
         end
 
         def stub_delegation(delegate)
@@ -168,4 +167,3 @@ end
 
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description
-# TODO: Add 'via' logic to description

@@ -18,15 +18,11 @@ module RSpec
       end
 
       def failure_message
-        return matcher.failure_message(false) || super if matcher
-
-        failure_message_details(false) || super
+        matcher.failure_message(false) || super
       end
 
       def failure_message_when_negated
-        return matcher.failure_message(true) || super if matcher
-
-        failure_message_details(true) || super
+        matcher.failure_message(true) || super
       end
 
       chain(:to)              { |to|               expected.delegate   = to }
@@ -69,7 +65,6 @@ module RSpec
 
       def create_matcher(klass)
         klass.new(expected).tap do |matcher|
-          matcher.via = @via
           matcher.delegator_method = delegator_method
         end
       end
@@ -95,7 +90,7 @@ module RSpec
       end
 
       def delegate_method
-        @via || expected.delegate_method || expected.method
+        expected.delegate_method || expected.method
       end
 
       def delegator_description
@@ -141,60 +136,6 @@ module RSpec
           ' without a block'
         end
       end
-
-      def failure_message_details(negated)
-        message = [
-          argument_failure_message(negated),
-          block_failure_message(negated),
-          return_value_failure_message(negated),
-          allow_nil_failure_message(negated)
-        ].reject(&:empty?).join(' and ')
-        message.empty? ? nil : message
-      end
-
-      def argument_failure_message(negated)
-        case
-        when expected.delegate_args.nil? || negated ^ arguments_ok?
-          ''
-        else
-          "was called with #{argument_description(actual_args)}"
-        end
-      end
-
-      def block_failure_message(negated)
-        case
-        when expected.block.nil? || (negated ^ block_ok?)
-          ''
-        when negated
-          "a block was #{expected.block ? '' : 'not '}passed"
-        when expected.block
-          actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
-        else
-          'a block was passed'
-        end
-      end
-
-      def return_value_failure_message(_negated)
-        case
-        when !@delegated || return_value_ok?
-          ''
-        else
-          format('a return value of %p was returned instead of the delegate return value', actual_return_value)
-        end
-      end
-
-      def allow_nil_failure_message(negated)
-        case
-        when expected.nil_check.nil? || negated ^ allow_nil_ok?
-          ''
-        when !@return_value_when_delegate_nil.nil?
-          'did not return nil'
-        when negated
-          "#{expected.delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
-        else
-          "#{expected.delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
-        end
-      end
     end
 
     def delegate_name
@@ -206,4 +147,3 @@ end
 # TODO: Put all settings in Struct or OpenStruct
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description
-# TODO: Add 'via' logic to description
