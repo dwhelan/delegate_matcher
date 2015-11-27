@@ -42,6 +42,14 @@ module RSpec
 
       attr_accessor :matcher
 
+      def expected
+        @expected ||= DelegateMatcher::Expected.new
+      end
+
+      def delegator
+        @delegator ||= DelegateMatcher::Delegator.new
+      end
+
       def matcher
         @matcher ||= begin
           klass = case
@@ -56,20 +64,8 @@ module RSpec
                   else
                     DelegateMatcher::DelegateToObject
                   end
-          create_matcher(klass)
+          klass.new(expected, delegator)
         end
-      end
-
-      def expected
-        @expected ||= DelegateMatcher::Expected.new
-      end
-
-      def delegator
-        @delegator ||= DelegateMatcher::Delegator.new
-      end
-
-      def create_matcher(klass)
-        klass.new(expected, delegator)
       end
 
       def delegate_is_a_class_variable?
@@ -88,10 +84,6 @@ module RSpec
         expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
       end
 
-      def delegator_method
-        @delegator_method || (delegator.prefix ? :"#{delegator.prefix}_#{delegator.method}" : delegator.method)
-      end
-
       def delegate_method
         expected.delegate_method || expected.method
       end
@@ -101,7 +93,7 @@ module RSpec
         case
         when !expected.delegate_args.eql?(delegator.args)
           "#{expected.delegate}.#{delegate_method}#{argument_description(expected.delegate_args)}"
-        when delegate_method.eql?(delegator_method)
+        when delegate_method.eql?(delegator.method)
           "#{expected.delegate}"
         else
           "#{expected.delegate}.#{expected.delegate_method}"
