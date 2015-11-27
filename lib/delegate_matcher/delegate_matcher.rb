@@ -25,13 +25,13 @@ module RSpec
         matcher.failure_message(true) || super
       end
 
-      chain(:to)              { |to|               expected.delegate   = to }
+      chain(:to)              { |to|               expected.delegate  = to }
       chain(:as)              { |as|               expected.method    = as }
-      chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     delegator.prefix             = prefix || expected.delegate.to_s.sub('@', '') }
-      chain(:with)            { |*args|            expected.args       = args; delegator.args ||= args }
-      chain(:with_a_block)    {                    expected.block      = true  }
-      chain(:without_a_block) {                    expected.block      = false }
+      chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
+      chain(:with_prefix)     { |prefix = nil|     delegator.prefix   = prefix || expected.delegate.to_s.sub('@', '') }
+      chain(:with)            { |*args|            expected.args      = args; delegator.args ||= args }
+      chain(:with_a_block)    {                    expected.block     = true  }
+      chain(:without_a_block) {                    expected.block     = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
 
       alias_method :with_block,    :with_a_block
@@ -87,15 +87,13 @@ module RSpec
       def delegate_description
         case
         when !expected.args.eql?(delegator.args)
-          "#{expected.delegate}.#{expected.method}#{argument_description(expected.args)}"
+          "#{expected.delegate}.#{expected.method}#{expected.argument_description}"
         when expected.method.eql?(delegator.method)
           "#{expected.delegate}"
         else
           "#{expected.delegate}.#{expected.method}"
         end
       end
-
-      delegate :argument_description, to: :matcher
 
       def nil_description
         case

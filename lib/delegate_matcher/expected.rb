@@ -14,6 +14,10 @@ module RSpec
         def method
           @delegate_method || @method
         end
+
+        def argument_description
+          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+        end
       end
     end
   end

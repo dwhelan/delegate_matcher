@@ -43,12 +43,8 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.sender.send(delegator.method, *delegator.args, &block)
+          @actual_return_value = delegator.sender.send(delegator.method, *delegator.args, &delegator.block)
           @delegated
-        end
-
-        def block
-          @block ||= proc {}
         end
 
         def expected_return_value
@@ -146,7 +142,7 @@ module RSpec
           when expected.block.nil?
             true
           when expected.block
-            actual_block == block
+            actual_block == delegator.block
           else
             actual_block.nil?
           end
