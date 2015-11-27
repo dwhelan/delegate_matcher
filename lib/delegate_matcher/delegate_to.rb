@@ -15,6 +15,7 @@ module RSpec
         attr_accessor :delegate_method
         attr_accessor :actual_return_value
         attr_accessor :expected
+        attr_accessor :delegator
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
@@ -23,10 +24,10 @@ module RSpec
 
         delegate delegator: :expected
         delegate delegate: :expected
-        delegate delegate: :expected
 
-        def initialize(expected)
-          self.expected = expected
+        def initialize(expected, delegator)
+          self.expected  = expected
+          self.delegator = delegator
         end
 
         def delegate_double

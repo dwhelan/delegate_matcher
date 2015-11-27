@@ -14,7 +14,7 @@ module RSpec
       end
 
       description do
-        "delegate #{delegator_description} to #{delegate_description}#{nil_description}#{block_description}"
+        "delegate #{delegator.description} to #{delegate_description}#{nil_description}#{block_description}"
       end
 
       def failure_message
@@ -63,8 +63,15 @@ module RSpec
         @expected ||= DelegateMatcher::Expected.new
       end
 
+      def delegator
+        @delegator ||= DelegateMatcher::Delegator.new
+      end
+
       def create_matcher(klass)
-        klass.new(expected).tap do |matcher|
+        delegator.args = expected.delegator_args
+        delegator.method = (expected.prefix ? :"#{expected.prefix}_#{expected.method}" : expected.method)
+
+        klass.new(expected, delegator).tap do |matcher|
           matcher.delegator_method = delegator_method
         end
       end
@@ -91,10 +98,6 @@ module RSpec
 
       def delegate_method
         expected.delegate_method || expected.method
-      end
-
-      def delegator_description
-        "#{delegator_method}#{argument_description(expected.delegator_args)}"
       end
 
       # rubocop:disable Metrics/AbcSize
