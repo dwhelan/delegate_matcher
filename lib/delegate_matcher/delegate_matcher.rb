@@ -29,11 +29,11 @@ module RSpec
         failure_message_details(true) || super
       end
 
-      chain(:to)              { |delegate|         expected.delegate   = delegate }
+      chain(:to)              { |to|               expected.delegate   = to }
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
-      chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
+      chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
+      chain(:with)            { |*args|            expected.args      = args; @args ||= args }
       chain(:with_a_block)    {                    @expected_block     = true  }
       chain(:without_a_block) {                    @expected_block     = false }
       chain(:without_return)  {                    @skip_return_check  = true }
@@ -43,8 +43,7 @@ module RSpec
 
       private
 
-      attr_reader :prefix, :args
-      attr_reader :expected_args
+      attr_reader :args
       attr_reader :expected_block
       attr_reader :skip_return_check
       attr_accessor :matcher
@@ -77,7 +76,6 @@ module RSpec
           matcher.delegator_method = delegator_method
           matcher.args = args
           matcher.skip_return_check = skip_return_check
-          matcher.expected_args = expected_args
           matcher.expected_block = expected_block
         end
       end
@@ -99,7 +97,7 @@ module RSpec
       end
 
       def delegator_method
-        @delegator_method || (prefix ? :"#{prefix}_#{expected.method}" : expected.method)
+        @delegator_method || (expected.prefix ? :"#{expected.prefix}_#{expected.method}" : expected.method)
       end
 
       def delegate_method
@@ -110,10 +108,11 @@ module RSpec
         "#{delegator_method}#{argument_description(args)}"
       end
 
+      # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !args.eql?(expected_args)
-          "#{expected.delegate}.#{delegate_method}#{argument_description(expected_args)}"
+        when !args.eql?(expected.args)
+          "#{expected.delegate}.#{delegate_method}#{argument_description(expected.args)}"
         when delegate_method.eql?(delegator_method)
           "#{expected.delegate}"
         else
@@ -161,7 +160,7 @@ module RSpec
 
       def argument_failure_message(negated)
         case
-        when expected_args.nil? || negated ^ arguments_ok?
+        when expected.args.nil? || negated ^ arguments_ok?
           ''
         else
           "was called with #{argument_description(actual_args)}"

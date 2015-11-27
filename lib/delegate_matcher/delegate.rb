@@ -7,7 +7,6 @@ module RSpec
       # rubocop:disable Metrics/ClassLength
       class Delegate
         attr_accessor :delegator_method
-        attr_accessor :expected_args
         attr_accessor :actual_args
         attr_accessor :args
         attr_accessor :expected_block
@@ -25,6 +24,7 @@ module RSpec
         extend Forwardable
 
         delegate delegator: :expected
+        delegate delegate: :expected
         delegate delegate: :expected
 
         def initialize(expected)
@@ -82,7 +82,7 @@ module RSpec
 
         def argument_failure_message(negated)
           case
-          when expected_args.nil? || negated ^ arguments_ok?
+          when expected.args.nil? || negated ^ arguments_ok?
             ''
           else
             "was called with #{argument_description(actual_args)}"
@@ -145,7 +145,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected_args.nil? || actual_args.eql?(expected_args)
+          expected.args.nil? || actual_args.eql?(expected.args)
         end
 
         def block_ok?

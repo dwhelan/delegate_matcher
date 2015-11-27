@@ -131,7 +131,7 @@ DEPENDENCIES
   delegate_matcher!
   guard (~> 2.13)
   guard-rspec (~> 4.6)
-  pry-byebug
+  pry-byebug (~> 3.3)
   rake (~> 10.0)
   rspec (~> 3.0)
   rspec-its (~> 1.1)

@@ -7,6 +7,8 @@ module RSpec
         attr_accessor :delegate
         attr_accessor :delegate_method
         attr_accessor :nil_check
+        attr_accessor :prefix
+        attr_accessor :args
 
         def delegate_method
           @via || @delegate_method || @method
