@@ -6,13 +6,11 @@ module RSpec
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
       class DelegateTo
-        attr_accessor :delegator_method
         attr_accessor :actual_args
         attr_accessor :args
         attr_accessor :expected_block
         attr_accessor :actual_block
 
-        attr_accessor :delegate_method
         attr_accessor :actual_return_value
         attr_accessor :expected
         attr_accessor :delegator
@@ -34,13 +32,9 @@ module RSpec
           double('delegate').tap { |delegate| stub_delegation(delegate) }
         end
 
-        def delegate_method
-          expected.delegate_method || expected.method
-        end
-
         def stub_delegation(delegate)
           @delegated = false
-          allow(delegate).to(receive(delegate_method)) do |*args, &block|
+          allow(delegate).to(receive(expected.method)) do |*args, &block|
             @actual_args  = args
             @actual_block = block
             @delegated    = true
