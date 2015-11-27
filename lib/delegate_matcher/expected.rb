@@ -2,10 +2,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :delegator
         attr_accessor :method
-        attr_accessor :delegator_args
-        attr_reader :prefix
 
         attr_accessor :delegate
         attr_writer :delegate_method
@@ -17,10 +14,6 @@ module RSpec
 
         def delegate_method
           @delegate_method || @method
-        end
-
-        def prefix=(prefix)
-          @prefix = prefix || delegate.to_s.sub(/@/, '')
         end
       end
     end

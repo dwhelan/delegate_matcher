@@ -8,8 +8,7 @@ module RSpec
         fail 'need to provide a "to"' unless expected.delegate
 
         expected.method    = method
-        expected.delegator = d
-        delegator.object   = d
+        delegator.sender   = d
         delegator.method   = method
 
         matcher.delegation_ok?
@@ -140,6 +139,5 @@ module RSpec
   end
 end
 
-# TODO: Put all settings in Struct or OpenStruct
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description

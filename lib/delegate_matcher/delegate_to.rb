@@ -49,7 +49,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.object.send(delegator.method, *delegator.args, &block)
+          @actual_return_value = delegator.sender.send(delegator.method, *delegator.args, &block)
           @delegated
         end
 

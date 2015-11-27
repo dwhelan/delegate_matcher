@@ -2,7 +2,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Delegator
-        attr_accessor :object
+        attr_accessor :sender
         attr_accessor :prefix
         attr_accessor :method
         attr_accessor :args
