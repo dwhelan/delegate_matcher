@@ -91,11 +91,11 @@ module RSpec
 
         def block_failure_message(negated)
           case
-          when expected_block.nil? || (negated ^ block_ok?)
+          when expected.block.nil? || (negated ^ block_ok?)
             ''
           when negated
-            "a block was #{expected_block ? '' : 'not '}passed"
-          when expected_block
+            "a block was #{expected.block ? '' : 'not '}passed"
+          when expected.block
             actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
           else
             'a block was passed'
@@ -150,9 +150,9 @@ module RSpec
 
         def block_ok?
           case
-          when expected_block.nil?
+          when expected.block.nil?
             true
-          when expected_block
+          when expected.block
             actual_block == block
           else
             actual_block.nil?

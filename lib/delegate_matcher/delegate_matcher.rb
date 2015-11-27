@@ -34,8 +34,8 @@ module RSpec
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
       chain(:with)            { |*args|            expected.args      = args; @args ||= args }
-      chain(:with_a_block)    {                    @expected_block     = true  }
-      chain(:without_a_block) {                    @expected_block     = false }
+      chain(:with_a_block)    {                    expected.block     = true  }
+      chain(:without_a_block) {                    expected.block     = false }
       chain(:without_return)  {                    @skip_return_check  = true }
 
       alias_method :with_block,    :with_a_block
@@ -44,7 +44,6 @@ module RSpec
       private
 
       attr_reader :args
-      attr_reader :expected_block
       attr_reader :skip_return_check
       attr_accessor :matcher
 
@@ -76,7 +75,6 @@ module RSpec
           matcher.delegator_method = delegator_method
           matcher.args = args
           matcher.skip_return_check = skip_return_check
-          matcher.expected_block = expected_block
         end
       end
 
@@ -139,9 +137,9 @@ module RSpec
 
       def block_description
         case
-        when expected_block.nil?
+        when expected.block.nil?
           ''
-        when expected_block
+        when expected.block
           ' with a block'
         else
           ' without a block'
@@ -169,11 +167,11 @@ module RSpec
 
       def block_failure_message(negated)
         case
-        when expected_block.nil? || (negated ^ block_ok?)
+        when expected.block.nil? || (negated ^ block_ok?)
           ''
         when negated
-          "a block was #{expected_block ? '' : 'not '}passed"
-        when expected_block
+          "a block was #{expected.block ? '' : 'not '}passed"
+        when expected.block
           actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
         else
           'a block was passed'
