@@ -19,7 +19,6 @@ module RSpec
 
         extend Forwardable
 
-        # delegate delegator: :expected
         delegate delegate: :expected
 
         def initialize(expected, delegator)
@@ -39,11 +38,6 @@ module RSpec
             @delegated    = true
             expected_return_value
           end
-        end
-
-        def call
-          delegator.call
-          @delegated
         end
 
         def expected_return_value
@@ -113,7 +107,8 @@ module RSpec
         end
 
         def delegation_ok?
-          allow_nil_ok? && do_delegate && arguments_ok? && block_ok? && return_value_ok?
+          ok = allow_nil_ok? && do_delegate { delegator.call }
+          ok && @delegated && arguments_ok? && block_ok? && return_value_ok?
         end
 
         # TODO: pernaps move delegation earlier
@@ -123,7 +118,7 @@ module RSpec
 
           begin
             actual_nil_check = true
-            do_delegate(nil)
+            do_delegate(nil) { delegator.call }
             @return_value_when_delegate_nil = delegator.return_value
           rescue NoMethodError
             actual_nil_check = false

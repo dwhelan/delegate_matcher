@@ -5,7 +5,7 @@ module RSpec
         def do_delegate(test_delegate = delegate_double)
           delegator.ensure_valid_delegate_method(delegate)
           allow(delegator.sender).to receive(delegate) { test_delegate }
-          call
+          yield
         end
       end
     end
