@@ -29,7 +29,7 @@ module RSpec
       chain(:as)              { |as|               expected.method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     delegator.prefix             = prefix || expected.delegate.to_s.sub('@', '') }
-      chain(:with)            { |*args|            expected.delegate_args       = args; delegator.args ||= args }
+      chain(:with)            { |*args|            expected.args       = args; delegator.args ||= args }
       chain(:with_a_block)    {                    expected.block      = true  }
       chain(:without_a_block) {                    expected.block      = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -86,8 +86,8 @@ module RSpec
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !expected.delegate_args.eql?(delegator.args)
-          "#{expected.delegate}.#{expected.method}#{argument_description(expected.delegate_args)}"
+        when !expected.args.eql?(delegator.args)
+          "#{expected.delegate}.#{expected.method}#{argument_description(expected.args)}"
         when expected.method.eql?(delegator.method)
           "#{expected.delegate}"
         else
