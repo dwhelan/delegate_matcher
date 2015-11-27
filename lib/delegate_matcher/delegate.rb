@@ -49,7 +49,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.send(delegator_method, *args, &block)
+          @actual_return_value = delegator.send(delegator_method, *expected.delegator_args, &block)
           @delegated
         end
 
@@ -81,7 +81,7 @@ module RSpec
 
         def argument_failure_message(negated)
           case
-          when expected.delegator_args.nil? || negated ^ arguments_ok?
+          when expected.delegate_args.nil? || negated ^ arguments_ok?
             ''
           else
             "was called with #{argument_description(actual_args)}"
@@ -144,7 +144,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.delegator_args.nil? || actual_args.eql?(expected.delegator_args)
+          expected.delegate_args.nil? || actual_args.eql?(expected.delegate_args)
         end
 
         def block_ok?

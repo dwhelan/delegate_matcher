@@ -9,6 +9,7 @@ module RSpec
         attr_accessor :nil_check
         attr_reader :prefix
         attr_accessor :delegator_args
+        attr_accessor :delegate_args
         attr_accessor :block
         attr_accessor :skip_return_check
 

@@ -33,7 +33,7 @@ module RSpec
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix  }
-      chain(:with)            { |*args|            expected.delegator_args       = args; @args ||= args }
+      chain(:with)            { |*args|            expected.delegate_args       = args; expected.delegator_args ||= args }
       chain(:with_a_block)    {                    expected.block      = true  }
       chain(:without_a_block) {                    expected.block      = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -43,7 +43,6 @@ module RSpec
 
       private
 
-      attr_reader :args
       attr_accessor :matcher
 
       def matcher
@@ -72,7 +71,6 @@ module RSpec
         klass.new(expected).tap do |matcher|
           matcher.via = @via
           matcher.delegator_method = delegator_method
-          matcher.args = args
         end
       end
 
@@ -101,14 +99,14 @@ module RSpec
       end
 
       def delegator_description
-        "#{delegator_method}#{argument_description(args)}"
+        "#{delegator_method}#{argument_description(expected.delegator_args)}"
       end
 
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !args.eql?(expected.delegator_args)
-          "#{expected.delegate}.#{delegate_method}#{argument_description(expected.delegator_args)}"
+        when !expected.delegate_args.eql?(expected.delegator_args)
+          "#{expected.delegate}.#{delegate_method}#{argument_description(expected.delegate_args)}"
         when delegate_method.eql?(delegator_method)
           "#{expected.delegate}"
         else
@@ -156,7 +154,7 @@ module RSpec
 
       def argument_failure_message(negated)
         case
-        when expected.delegator_args.nil? || negated ^ arguments_ok?
+        when expected.delegate_args.nil? || negated ^ arguments_ok?
           ''
         else
           "was called with #{argument_description(actual_args)}"
