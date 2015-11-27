@@ -14,7 +14,7 @@ module RSpec
       end
 
       description do
-        "delegate #{delegator.description} to #{delegate_description}#{nil_description}#{block_description}"
+        "delegate #{delegator.description} to #{delegate_description}#{expected.nil_description}#{expected.block_description}"
       end
 
       def failure_message
@@ -38,8 +38,6 @@ module RSpec
       alias_method :without_block, :without_a_block
 
       private
-
-      attr_accessor :matcher
 
       def expected
         @expected ||= DelegateMatcher::Expected.new
@@ -95,31 +93,9 @@ module RSpec
         end
       end
 
-      def nil_description
-        case
-        when expected.nil_check.nil?
-          ''
-        when expected.nil_check
-          ' with nil allowed'
-        else
-          ' with nil not allowed'
-        end
+      def delegate_name
+        expected.delegate.to_s
       end
-
-      def block_description
-        case
-        when expected.block.nil?
-          ''
-        when expected.block
-          ' with a block'
-        else
-          ' without a block'
-        end
-      end
-    end
-
-    def delegate_name
-      expected.delegate.to_s
     end
   end
 end
