@@ -22,7 +22,7 @@ module RSpec
 
         extend Forwardable
 
-        delegate delegator: :expected
+        # delegate delegator: :expected
         delegate delegate: :expected
 
         def initialize(expected, delegator)
@@ -49,7 +49,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.send(delegator_method, *expected.delegator_args, &block)
+          @actual_return_value = delegator.object.send(delegator.method, *delegator.args, &block)
           @delegated
         end
 

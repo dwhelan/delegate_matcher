@@ -4,11 +4,12 @@ require 'rspec/matchers'
 module RSpec
   module Matchers
     define(:delegate) do |method|
-      match do |delegator|
+      match do |d|
         fail 'need to provide a "to"' unless expected.delegate
 
         expected.method    = method
-        expected.delegator = delegator
+        expected.delegator = d
+        delegator.object   = d
 
         matcher.delegation_ok?
       end
@@ -29,7 +30,7 @@ module RSpec
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix  }
-      chain(:with)            { |*args|            expected.delegate_args       = args; expected.delegator_args ||= args }
+      chain(:with)            { |*args|            expected.delegate_args       = args; delegator.args ||= args }
       chain(:with_a_block)    {                    expected.block      = true  }
       chain(:without_a_block) {                    expected.block      = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -68,7 +69,6 @@ module RSpec
       end
 
       def create_matcher(klass)
-        delegator.args = expected.delegator_args
         delegator.method = (expected.prefix ? :"#{expected.prefix}_#{expected.method}" : expected.method)
 
         klass.new(expected, delegator).tap do |matcher|
@@ -103,7 +103,7 @@ module RSpec
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !expected.delegate_args.eql?(expected.delegator_args)
+        when !expected.delegate_args.eql?(delegator.args)
           "#{expected.delegate}.#{delegate_method}#{argument_description(expected.delegate_args)}"
         when delegate_method.eql?(delegator_method)
           "#{expected.delegate}"
@@ -113,10 +113,6 @@ module RSpec
       end
 
       delegate :argument_description, to: :matcher
-
-      # def argument_description(args)
-      #   args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
-      # end
 
       def nil_description
         case
