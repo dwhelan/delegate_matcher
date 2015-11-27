@@ -1,13 +1,12 @@
 require 'rspec/matchers'
 
-# rubocop:disable Metrics/ModuleLength
 module RSpec
   module Matchers
     define(:delegate) do |method|
       match do |d|
         fail 'need to provide a "to"' unless expected.delegate
 
-        expected.method    = method
+        expected.method ||= method
         delegator.sender   = d
         delegator.method   = method
 
@@ -27,7 +26,7 @@ module RSpec
       end
 
       chain(:to)              { |to|               expected.delegate   = to }
-      chain(:as)              { |as|               expected.delegate_method    = as }
+      chain(:as)              { |as|               expected.method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     delegator.prefix             = prefix || expected.delegate.to_s.sub('@', '') }
       chain(:with)            { |*args|            expected.delegate_args       = args; delegator.args ||= args }
@@ -84,19 +83,15 @@ module RSpec
         expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
       end
 
-      def delegate_method
-        expected.delegate_method || expected.method
-      end
-
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
         when !expected.delegate_args.eql?(delegator.args)
-          "#{expected.delegate}.#{delegate_method}#{argument_description(expected.delegate_args)}"
-        when delegate_method.eql?(delegator.method)
+          "#{expected.delegate}.#{expected.method}#{argument_description(expected.delegate_args)}"
+        when expected.method.eql?(delegator.method)
           "#{expected.delegate}"
         else
-          "#{expected.delegate}.#{expected.delegate_method}"
+          "#{expected.delegate}.#{expected.method}"
         end
       end
 

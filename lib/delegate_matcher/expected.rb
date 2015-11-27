@@ -15,6 +15,10 @@ module RSpec
         def delegate_method
           @delegate_method || @method
         end
+
+        def method
+          @delegate_method || @method
+        end
       end
     end
   end
