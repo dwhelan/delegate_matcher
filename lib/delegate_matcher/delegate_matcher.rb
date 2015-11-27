@@ -33,7 +33,7 @@ module RSpec
       chain(:to_any)          { |delegate|         expected.delegate           = delegate; @via = :any? }
       chain(:to_all)          { |delegate|         expected.delegate           = delegate; @via = :all? }
       chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
-      chain(:allow_nil)       { |allow_nil = true| @expected_nil_check = allow_nil }
+      chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
       chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
       chain(:with_a_block)    {                    @expected_block     = true  }
@@ -46,7 +46,6 @@ module RSpec
       private
 
       attr_reader :prefix, :args
-      attr_reader :expected_nil_check
       attr_reader :expected_args
       attr_reader :expected_block
       attr_reader :skip_return_check
@@ -76,7 +75,6 @@ module RSpec
 
       def create_matcher(klass)
         klass.new(expected).tap do |matcher|
-          matcher.expected_nil_check = expected_nil_check
           matcher.via = @via
           matcher.delegate_method = @delegate_method
           matcher.delegator_method = delegator_method
@@ -134,9 +132,9 @@ module RSpec
 
       def nil_description
         case
-        when expected_nil_check.nil?
+        when expected.nil_check.nil?
           ''
-        when expected_nil_check
+        when expected.nil_check
           ' with nil allowed'
         else
           ' with nil not allowed'
@@ -197,14 +195,14 @@ module RSpec
 
       def allow_nil_failure_message(negated)
         case
-        when expected_nil_check.nil? || negated ^ allow_nil_ok?
+        when expected.nil_check.nil? || negated ^ allow_nil_ok?
           ''
         when !@return_value_when_delegate_nil.nil?
           'did not return nil'
         when negated
-          "#{expected.delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
+          "#{expected.delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
         else
-          "#{expected.delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
+          "#{expected.delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
         end
       end
     end

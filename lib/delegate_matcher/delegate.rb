@@ -13,7 +13,6 @@ module RSpec
         attr_accessor :expected_block
         attr_accessor :actual_block
 
-        attr_accessor :expected_nil_check
         attr_accessor :via
         attr_accessor :delegate_method
         attr_accessor :skip_return_check
@@ -64,7 +63,7 @@ module RSpec
         end
 
         def ensure_allow_nil_is_not_specified_for(target)
-          fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected_nil_check.nil?
+          fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected.nil_check.nil?
         end
 
         def argument_description(args)
@@ -114,14 +113,14 @@ module RSpec
 
         def allow_nil_failure_message(negated)
           case
-          when expected_nil_check.nil? || negated ^ allow_nil_ok?
+          when expected.nil_check.nil? || negated ^ allow_nil_ok?
             ''
           when !@return_value_when_delegate_nil.nil?
             'did not return nil'
           when negated
-            "#{delegate} was #{expected_nil_check ? '' : 'not '}allowed to be nil"
+            "#{delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
           else
-            "#{delegate} was #{expected_nil_check ? 'not ' : ''}allowed to be nil"
+            "#{delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
           end
         end
 
@@ -131,7 +130,7 @@ module RSpec
 
         # TODO: pernaps move delegation earlier
         def allow_nil_ok?
-          return true if expected_nil_check.nil?
+          return true if expected.nil_check.nil?
           return true unless delegate.is_a?(String) || delegate.is_a?(Symbol)
 
           begin
@@ -142,7 +141,7 @@ module RSpec
             actual_nil_check = false
           end
 
-          expected_nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
+          expected.nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
         end
 
         def arguments_ok?
