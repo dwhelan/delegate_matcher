@@ -10,6 +10,7 @@ module RSpec
         expected.method    = method
         expected.delegator = d
         delegator.object   = d
+        delegator.method   = method
 
         matcher.delegation_ok?
       end
@@ -29,7 +30,7 @@ module RSpec
       chain(:to)              { |to|               expected.delegate   = to }
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix  }
+      chain(:with_prefix)     { |prefix = nil|     delegator.prefix             = prefix || expected.delegate.to_s.sub('@', '') }
       chain(:with)            { |*args|            expected.delegate_args       = args; delegator.args ||= args }
       chain(:with_a_block)    {                    expected.block      = true  }
       chain(:without_a_block) {                    expected.block      = false }
@@ -69,11 +70,7 @@ module RSpec
       end
 
       def create_matcher(klass)
-        delegator.method = (expected.prefix ? :"#{expected.prefix}_#{expected.method}" : expected.method)
-
-        klass.new(expected, delegator).tap do |matcher|
-          matcher.delegator_method = delegator_method
-        end
+        klass.new(expected, delegator)
       end
 
       def delegate_is_a_class_variable?
@@ -93,7 +90,7 @@ module RSpec
       end
 
       def delegator_method
-        @delegator_method || (expected.prefix ? :"#{expected.prefix}_#{expected.method}" : expected.method)
+        @delegator_method || (delegator.prefix ? :"#{delegator.prefix}_#{delegator.method}" : delegator.method)
       end
 
       def delegate_method

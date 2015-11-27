@@ -3,6 +3,7 @@ module RSpec
     module DelegateMatcher
       class Delegator
         attr_accessor :object
+        attr_accessor :prefix
         attr_accessor :method
         attr_accessor :args
 
@@ -12,6 +13,10 @@ module RSpec
 
         def argument_description
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+        end
+
+        def method
+          prefix ? :"#{prefix}_#{@method}" : @method
         end
       end
     end
