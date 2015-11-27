@@ -29,11 +29,9 @@ module RSpec
         failure_message_details(true) || super
       end
 
-      chain(:to)              { |delegate|         expected.delegate           = delegate }
-      chain(:to_any)          { |delegate|         expected.delegate           = delegate; @via = :any? }
-      chain(:to_all)          { |delegate|         expected.delegate           = delegate; @via = :all? }
-      chain(:as)              { |delegate_method|  @delegate_method    = delegate_method }
-      chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
+      chain(:to)              { |delegate|         expected.delegate   = delegate }
+      chain(:as)              { |as|               expected.delegate_method    = as }
+      chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     @prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
       chain(:with)            { |*args|            @expected_args      = args; @args ||= args }
       chain(:with_a_block)    {                    @expected_block     = true  }
@@ -76,7 +74,6 @@ module RSpec
       def create_matcher(klass)
         klass.new(expected).tap do |matcher|
           matcher.via = @via
-          matcher.delegate_method = @delegate_method
           matcher.delegator_method = delegator_method
           matcher.args = args
           matcher.skip_return_check = skip_return_check
@@ -106,7 +103,7 @@ module RSpec
       end
 
       def delegate_method
-        @via || @delegate_method || expected.method
+        @via || expected.delegate_method || expected.method
       end
 
       def delegator_description
@@ -120,7 +117,7 @@ module RSpec
         when delegate_method.eql?(delegator_method)
           "#{expected.delegate}"
         else
-          "#{expected.delegate}.#{delegate_method}"
+          "#{expected.delegate}.#{expected.delegate_method}"
         end
       end
 

@@ -36,7 +36,7 @@ module RSpec
         end
 
         def delegate_method
-          via || @delegate_method || expected.method
+          via || expected.delegate_method || expected.method
         end
 
         def stub_delegation(delegate)
