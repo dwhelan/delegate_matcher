@@ -6,6 +6,11 @@ module RSpec
         attr_accessor :prefix
         attr_accessor :method
         attr_accessor :args
+        attr_accessor :return_value
+
+        def call
+          self.return_value = sender.send(method, *args, &block)
+        end
 
         def method
           prefix ? :"#{prefix}_#{@method}" : @method

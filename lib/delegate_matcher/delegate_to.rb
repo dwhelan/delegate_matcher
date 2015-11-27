@@ -11,7 +11,6 @@ module RSpec
         attr_accessor :expected_block
         attr_accessor :actual_block
 
-        attr_accessor :actual_return_value
         attr_accessor :expected
         attr_accessor :delegator
 
@@ -43,7 +42,7 @@ module RSpec
         end
 
         def call
-          @actual_return_value = delegator.sender.send(delegator.method, *delegator.args, &delegator.block)
+          delegator.call
           @delegated
         end
 
@@ -96,7 +95,7 @@ module RSpec
           when !@delegated || return_value_ok?
             ''
           else
-            format('a return value of %p was returned instead of the delegate return value', actual_return_value)
+            format('a return value of %p was returned instead of the delegate return value', delegator.return_value)
           end
         end
 
@@ -125,7 +124,7 @@ module RSpec
           begin
             actual_nil_check = true
             do_delegate(nil)
-            @return_value_when_delegate_nil = actual_return_value
+            @return_value_when_delegate_nil = delegator.return_value
           rescue NoMethodError
             actual_nil_check = false
           end
@@ -149,7 +148,7 @@ module RSpec
         end
 
         def return_value_ok?
-          expected.skip_return_check || actual_return_value == expected_return_value
+          expected.skip_return_check || delegator.return_value == expected_return_value
         end
       end
     end
