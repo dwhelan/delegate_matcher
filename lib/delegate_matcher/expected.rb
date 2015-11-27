@@ -14,6 +14,10 @@ module RSpec
         def delegate_method
           @via || @delegate_method || @method
         end
+
+        def prefix=(prefix)
+          @prefix = prefix || delegate.to_s.sub(/@/, '')
+        end
       end
     end
   end

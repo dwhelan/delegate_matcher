@@ -32,7 +32,7 @@ module RSpec
       chain(:to)              { |to|               expected.delegate   = to }
       chain(:as)              { |as|               expected.delegate_method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check  = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     expected.prefix             = prefix || expected.delegate.to_s.sub(/@/, '') }
+      chain(:with_prefix)     { |prefix=nil|       expected.prefix             = prefix  }
       chain(:with)            { |*args|            expected.args      = args; @args ||= args }
       chain(:with_a_block)    {                    expected.block     = true  }
       chain(:without_a_block) {                    expected.block     = false }
