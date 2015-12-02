@@ -9,7 +9,6 @@ describe 'DelegateTo matcher' do
       attr_accessor :author
 
       class_variable_set(:@@authors, ['Ann Rand', 'Catherine Asaro'])
-      GENRES ||= ['Fiction', 'Science Fiction']
 
       def name
         author.name
@@ -94,10 +93,6 @@ describe 'DelegateTo matcher' do
         self.class.class_variable_get(:@@authors).count
       end
 
-      def first
-        GENRES.first
-      end
-
       def inspect
         'post'
       end
@@ -177,8 +172,7 @@ describe 'DelegateTo matcher' do
     its(:writer_name)           { should eq 'Catherine Asaro' }
     its(:age)                   { should eq 60                }
     its(:count)                 { should eq 2                 }
-    its(:first)                 { should eq 'Fiction'         }
-    its(:class_name)            { should be_nil         }
+    its(:class_name)            { should be_nil               }
 
     it { expect(post.name_with_arg('The author')).to                 eq 'The author Catherine Asaro' }
     it { expect(post.name_with_arg2('The author')).to                eq 'The author Catherine Asaro' }
@@ -218,10 +212,6 @@ describe 'DelegateTo matcher' do
     it { should delegate(:count).to(:@@authors)   }
   end
 
-  describe 'delegation to constant' do
-    it { should delegate(:first).to(:GENRES)   }
-  end
-
   describe 'delegation to object' do
     it { should delegate(:name).to(author) }
     it { should delegate(:writer).to(author).as(:name) }
@@ -237,18 +227,6 @@ describe 'DelegateTo matcher' do
     it { should delegate(:name).to(:author).with_prefix           }
     it { should delegate(:name).to(:author).with_prefix(:writer)  }
     it { should delegate(:name).to(:author).with_prefix('writer') }
-  end
-
-  shared_examples 'allow_nil' do |method, delegate|
-    it { should     delegate(method).to(delegate).allow_nil(true)  }
-    it { should     delegate(method).to(delegate).allow_nil  }
-    it { should_not delegate(method).to(delegate).allow_nil(false)  }
-  end
-
-  shared_examples 'disallow_nil' do |method, delegate|
-    it { should     delegate(method).to(delegate).allow_nil(false)  }
-    it { should_not delegate(method).to(delegate).allow_nil(true)  }
-    it { should_not delegate(method).to(delegate).allow_nil  }
   end
 
   include_examples 'disallow_nil', :name, :author
@@ -320,12 +298,6 @@ describe 'DelegateTo matcher' do
     it 'with delegation to an object with "allow_nil" expectations' do
       expect { should delegate(:name).to(author).allow_nil }.to raise_error do |error|
         expect(error.message).to match(/cannot verify "allow_nil" expectations when delegating to an object/)
-      end
-    end
-
-    it 'with delegation to a constant with "allow_nil" expectations' do
-      expect { should should delegate(:first).to(:GENRES).allow_nil }.to raise_error do |error|
-        expect(error.message).to match(/cannot verify "allow_nil" expectations when delegating to a constant/)
       end
     end
   end

@@ -2,9 +2,8 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class DelegateToConstant < DelegateTo
-        def do_delegate(_test_delegate = delegate_double)
-          ensure_allow_nil_is_not_specified_for('a constant')
-          stub_delegation(delegator.sender.class.const_get(delegate))
+        def do_delegate(test_delegate = delegate_double)
+          stub_const("#{delegator.sender.class}::#{delegate}", test_delegate)
           yield
         end
       end

@@ -27,7 +27,7 @@ Or install it yourself as:
 $ gem install delegate_matcher
 ```
 
-Then add the following to your ```spec_helper.rb``` file:
+Then add the following to your `spec_helper.rb` file:
 
 ```ruby
 require 'delegate_matcher'
@@ -56,8 +56,8 @@ end
 ### Delegate Method Name
 
 If the name of the method being invoked on the delegate is different from the method being called you
-can check this using the ```with_prefix``` method (based on Active Support ```delegate``` method) or the
-```as``` method.
+can check this using the `with_prefix` method (based on Active Support `delegate` method) or the
+`as` method.
 
 ```ruby
 describe Post do
@@ -68,8 +68,8 @@ end
 ```
 
 ### Handling Nil Delegates
-If you expect the delegate to return ```nil``` when the delegate is ```nil``` rather than raising an error
-then you can check this using the ```allow_nil``` method.
+If you expect the delegate to return `nil` when the delegate is `nil` rather than raising an error
+then you can check this using the `allow_nil` method.
 
 ```ruby
 describe Post do
@@ -79,13 +79,14 @@ describe Post do
 end
 ```
 
-Nil handling is only checked if ```allow_nil``` is specified.
+Nil handling is only checked if `allow_nil` is specified.
 
-Note that the matcher will raise an error if you use this when checking delegation to a constant or an
-object since the matcher cannot validate ```nil``` handling in these cases.
+Note that the matcher will raise an error if you use this when checking delegation to an
+object since the matcher cannot validate `nil` handling as it cannot gain access to the subject
+reference to the object to set it `nil`.
 
 ### Arguments
-If the method being delegated takes arguments you can supply them with the ```with``` method. The matcher
+If the method being delegated takes arguments you can supply them with the `with` method. The matcher
 will check that the provided arguments are in turn passed to the delegate.
 
 ```ruby
@@ -95,7 +96,7 @@ end
 ```
 
 Also, in some cases the delegator might make minor changes to the arguments. While this is arguably no
-longer true delegation you can still check that arguments are correctly passed by using a second ```with```
+longer true delegation you can still check that arguments are correctly passed by using a second `with`
 method to specify the arguments expected by the delegate.
 
 ```ruby
@@ -105,7 +106,7 @@ end
 ```
 
 ### Blocks
-You can check that a block passed is in turn passed to the delegate via the ```with_block``` method.
+You can check that a block passed is in turn passed to the delegate via the `with_block` method.
 
 ```ruby
 describe Post do
@@ -119,14 +120,14 @@ end
 
 ### Return Value
 Normally the matcher will check that the value return is the same as the value
-returned from the delegate. You can skip this check by using ```without_return```.
+returned from the delegate. You can skip this check by using `without_return`.
 ```ruby
 describe Post do
   it { should delegate(:name).to(author).without_return }
 end
 ```
 
-By default, block delegation is only checked if ```with_a_block``` or ```without_a_block``` is specified.
+By default, block delegation is only checked if `with_a_block` or `without_a_block` is specified.
 
 ### Active Support
 You can test delegation based on the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem.
@@ -223,7 +224,7 @@ describe Post do
 end
 ```
 However, don't use the following features as they are not supported by the Forwardable module:
-* allow_nil
+* `allow_nil`
 * delegation to class variables
 * delegation to constants
 * delegation to objects
