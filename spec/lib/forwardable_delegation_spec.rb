@@ -28,11 +28,11 @@ module ForwardableDelegation
   end
   # :nocov:
 
-  # describe Post do
-  #   it { should delegate(:name).to(:author) }
-  #   it { should delegate(:name).to(:@author) }
-  #   it { should delegate(:writer).to(:author).as(:name) }
-  #   it { should delegate(:name_with_arg).to(:author).with('Ms.') }
-  #   it { should delegate(:name_with_block).to(:author).with_block }
-  # end
+  describe Post do
+    it { should delegate(:name).to(:author) }
+    it { should delegate(:name).to(:@author) }
+    it { should delegate(:writer).to(:author).as(:name) }
+    it { should delegate(:name_with_arg).to(:author).with('Ms.') }
+    it { should delegate(:name_with_block).to(:author).with_block }
+  end
 end

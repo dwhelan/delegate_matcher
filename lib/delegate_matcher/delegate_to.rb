@@ -1,5 +1,4 @@
 require 'rspec/matchers'
-require 'forwardable'
 
 module RSpec
   module Matchers
@@ -17,13 +16,13 @@ module RSpec
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        extend Forwardable
-
-        delegate delegate: :expected
-
         def initialize(expected, delegator)
           self.expected  = expected
           self.delegator = delegator
+        end
+
+        def delegate
+          expected.delegate
         end
 
         def delegate_double

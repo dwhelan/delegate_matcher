@@ -62,10 +62,6 @@ module RSpec
           "#{expected.delegate}.#{expected.method}"
         end
       end
-
-      def delegate_name
-        expected.delegate.to_s
-      end
     end
   end
 end

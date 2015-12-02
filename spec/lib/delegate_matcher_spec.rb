@@ -239,23 +239,20 @@ describe 'DelegateTo matcher' do
     it { should delegate(:name).to(:author).with_prefix('writer') }
   end
 
-  describe 'allow_nil' do
-    context 'when delegator checks that delegate is nil' do
-      before { post.author = nil }
-
-      it { should     delegate(:name_with_nil_check).to(:author).allow_nil(true)  }
-      it { should     delegate(:name_with_nil_check).to(:author).allow_nil        }
-
-      it { should_not delegate(:name_with_nil_check).to(:author).allow_nil(false) }
-      it { should_not delegate(:name_with_nil_check_and_bad_return).to(:author).allow_nil }
-    end
-
-    context 'when delegator does not check that delegate is nil' do
-      it { should     delegate(:name).to(:author).allow_nil(false) }
-      it { should_not delegate(:name).to(:author).allow_nil(true)  }
-      it { should_not delegate(:name).to(:author).allow_nil        }
-    end
+  shared_examples 'allow_nil' do |method, delegate|
+    it { should     delegate(method).to(delegate).allow_nil(true)  }
+    it { should     delegate(method).to(delegate).allow_nil  }
+    it { should_not delegate(method).to(delegate).allow_nil(false)  }
   end
+
+  shared_examples 'disallow_nil' do |method, delegate|
+    it { should     delegate(method).to(delegate).allow_nil(false)  }
+    it { should_not delegate(method).to(delegate).allow_nil(true)  }
+    it { should_not delegate(method).to(delegate).allow_nil  }
+  end
+
+  include_examples 'disallow_nil', :name, :author
+  include_examples 'allow_nil', :name_with_nil_check, :author
 
   describe 'with arguments' do
     it { should delegate(:name_with_arg).with('Ms.').to(:author)                                     }

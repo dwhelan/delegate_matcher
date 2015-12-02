@@ -2,7 +2,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :method
+        attr_writer :method
 
         attr_accessor :delegate
         attr_accessor :args

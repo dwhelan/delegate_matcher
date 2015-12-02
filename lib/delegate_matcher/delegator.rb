@@ -2,7 +2,8 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Delegator
-        attr_accessor :sender, :prefix, :method, :args, :return_value
+        attr_writer :method
+        attr_accessor :sender, :prefix, :args, :return_value
 
         def call
           self.return_value = sender.send(method, *args, &block)

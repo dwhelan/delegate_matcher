@@ -37,17 +37,17 @@ module ActiveSupportDelegation
     end
   end
 
-  # describe Post do
-  #   it { should delegate(:name).to(:author) }
-  #   it { should delegate(:name).to(:@author) }
-  #   it { should delegate(:name_with_nil_check).to(:author).allow_nil }
-  #   it { should delegate(:name).to(:author).with_prefix }
-  #   it { should delegate(:name).to(:author).with_prefix(:writer) }
-  #
-  #   it { should delegate(:name_with_arg).to(:author).with('Ms.') }
-  #   it { should delegate(:name_with_block).to(:author).with_block }
-  #   it { should delegate(:count).to(:@@authors)   }
-  #   it { should delegate(:first).to(:GENRES)   }
-  #   it { should delegate(:name).to(:class).with_prefix   }
-  # end
+  describe Post do
+    it { should delegate(:name).to(:author) }
+    it { should delegate(:name).to(:@author) }
+    it { should delegate(:name_with_nil_check).to(:author).allow_nil }
+    it { should delegate(:name).to(:author).with_prefix }
+    it { should delegate(:name).to(:author).with_prefix(:writer) }
+
+    it { should delegate(:name_with_arg).to(:author).with('Ms.') }
+    it { should delegate(:name_with_block).to(:author).with_block }
+    it { should delegate(:count).to(:@@authors)   }
+    it { should delegate(:first).to(:GENRES)   }
+    it { should delegate(:name).to(:class).with_prefix   }
+  end
 end
