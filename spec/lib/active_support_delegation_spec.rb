@@ -15,7 +15,7 @@ module ActiveSupportDelegation
     delegate :name_with_arg,       to: :author
     delegate :name_with_block,     to: :author
     delegate :count,               to: :@@authors
-    delegate :first,               to: :GENRES
+    delegate :first,               to: :AUTHOR
     delegate :name,                to: :class, prefix: true
   end
 
@@ -47,7 +47,7 @@ module ActiveSupportDelegation
     it { should delegate(:name_with_arg).to(:author).with('Ms.') }
     it { should delegate(:name_with_block).to(:author).with_block }
     it { should delegate(:count).to(:@@authors)   }
-    it { should delegate(:first).to(:GENRES)   }
+    it { should delegate(:first).to(:AUTHOR)   }
     it { should delegate(:name).to(:class).with_prefix   }
   end
 end

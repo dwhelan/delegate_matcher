@@ -6,40 +6,42 @@ module RSpec
   module Matchers
     module DelegateMatcher
 
+      class Author
+        def name
+          'Ann Rand'
+        end
+      end
+
       class Post
-        GENRES ||= ['Fiction', 'Science Fiction']
+        AUTHOR = Author.new
+
+        def name
+          AUTHOR.name
+        end
       end
 
       describe 'DelegateTo matcher with constants' do
         subject { Post.new }
 
-        context 'without nil check' do
-          before do
-            class Post
-              def first
-                GENRES.first
-              end
-            end
-          end
+        it { should delegate(:name).to(:AUTHOR)   }
+        it { should delegate(:name).to('AUTHOR')   }
 
-          it { should delegate(:first).to(:GENRES)   }
-
-          include_examples 'disallow_nil', :first, :GENRES
+        context 'simple delegation' do
+          include_examples 'disallow_nil', :name, :AUTHOR
         end
 
-        context 'with nil check' do
+        context 'delegation with nil check' do
           before do
             class Post
-              def first
-                GENRES.first if GENRES
+              def name
+                AUTHOR.name if AUTHOR
               end
             end
           end
 
-          include_examples 'allow_nil', :first, :GENRES
+          include_examples 'allow_nil', :name, :AUTHOR
         end
       end
     end
   end
 end
-
