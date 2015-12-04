@@ -47,8 +47,19 @@ module RSpec
           it_behaves_like 'a delegator with a different method name', :other_name do
             before do
               class Post
-                def name(*args, &block)
-                  AUTHOR.other_name(*args, &block)
+                def name
+                  AUTHOR.other_name
+                end
+              end
+            end
+          end
+
+          it_behaves_like 'a delegator with a different return value', :other_name do
+            before do
+              class Post
+                def name
+                  AUTHOR.name
+                  'Ann Rand'
                 end
               end
             end
