@@ -7,6 +7,10 @@ module RSpec
           stub_delegation(expected.delegate)
           yield
         end
+
+        def default_prefix
+          fail 'must use an explicit prefix when expecting delegating to an object with a prefix'
+        end
       end
     end
   end

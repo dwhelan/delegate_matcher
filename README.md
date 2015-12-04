@@ -61,9 +61,18 @@ can check this using the `with_prefix` method (based on Active Support `delegate
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(author).with_prefix }          # author_name  => author.name
+  it { should delegate(:name).to(:author).with_prefix }          # author_name  => author().name
+  it { should delegate(:name).to(:author).with_prefix(:writer) } # writer_name  => author().name
+  it { should delegate(:writer).to(:author).as(:name) }          # writer       => author().name
+end
+```
+
+**Note**: if you are delegating to an  object then you must provide an expicit prefix to `with_prefix`:
+
+```ruby
+describe Post do
+  it { should delegate(:name).to(author).with_prefix }          # an error will be raised
   it { should delegate(:name).to(author).with_prefix(:writer) } # writer_name  => author.name
-  it { should delegate(:writer).to(author).as(:name) }          # writer       => author.name
 end
 ```
 
@@ -73,8 +82,8 @@ then you can check this using the `allow_nil` method.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(:author).allow_nil        } # name => author && author.name
-  it { should delegate(:name).to(:author).allow_nil(true)  } # name => author && author.name
+  it { should delegate(:name).to(:author).allow_nil        } # name => author && author().name
+  it { should delegate(:name).to(:author).allow_nil(true)  } # name => author && author().name
   it { should delegate(:name).to(:author).allow_nil(false) } # name => author.name
 end
 ```
@@ -91,7 +100,7 @@ will check that the provided arguments are in turn passed to the delegate.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.').to(:author) }  # name('Ms.')  => author.name('Ms.')
+  it { should delegate(:name).with('Ms.').to(:author) }  # name('Ms.')  => author().name('Ms.')
 end
 ```
 
@@ -101,7 +110,7 @@ method to specify the arguments expected by the delegate.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.')to(author).with('Miss') }  # name('Ms.')  => author.name('Miss')
+  it { should delegate(:name).with('Ms.')to(:author).with('Miss') }  # name('Ms.')  => author().name('Miss')
 end
 ```
 
@@ -110,20 +119,21 @@ You can check that a block passed is in turn passed to the delegate via the `wit
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(author).with_a_block }    # name(&block) => author.name(&block)
-  it { should delegate(:name).to(author).with_block }      # name(&block) => author.name(&block) # alias for with_a_block
+  it { should delegate(:name).to(author).with_a_block }    # name(&block) => author().name(&block)
+  it { should delegate(:name).to(author).with_block }      # name(&block) => author().name(&block) # alias for with_a_block
 
-  it { should delegate(:name).to(author).without_a_block } # name(&block) => author.name
-  it { should delegate(:name).to(author).without_block }   # name(&block) => author.name         # alias for without_a_block
+  it { should delegate(:name).to(author).without_a_block } # name(&block) => author().name
+  it { should delegate(:name).to(author).without_block }   # name(&block) => author().name         # alias for without_a_block
 end
 ```
 
 ### Return Value
 Normally the matcher will check that the value return is the same as the value
 returned from the delegate. You can skip this check by using `without_return`.
+
 ```ruby
 describe Post do
-  it { should delegate(:name).to(author).without_return }
+  it { should delegate(:name).to(:author).without_return }
 end
 ```
 

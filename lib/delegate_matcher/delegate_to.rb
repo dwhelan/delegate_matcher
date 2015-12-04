@@ -21,6 +21,10 @@ module RSpec
           self.delegator = delegator
         end
 
+        def default_prefix
+          expected.delegate.to_s.delete('@')
+        end
+
         def delegate
           expected.delegate
         end
