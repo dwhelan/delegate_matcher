@@ -12,6 +12,8 @@ module RSpec
           end
 
           subject { Post.new }
+          let(:method_name) { :name }
+          let(:receiver) { :AUTHOR }
 
           it_behaves_like 'a simple delegator', :name, :AUTHOR do
             before do
@@ -43,7 +45,7 @@ module RSpec
             end
           end
 
-          it_behaves_like 'a delegator with a prefix', :name, :AUTHOR do
+          it_behaves_like 'a delegator with a prefix' do
             before do
               class Post
                 def author_name(*args, &block)

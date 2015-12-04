@@ -1,6 +1,6 @@
-shared_examples 'a delegator with args and a block' do |method, delegate, *args|
-  it_behaves_like 'a delegator with args',    method, delegate, *args
-  it_behaves_like 'a delegator with a block', method, delegate
+shared_examples 'a delegator with args and a block' do |*args|
+  it_behaves_like 'a delegator with args', *args
+  it_behaves_like 'a delegator with a block'
 
-  it { should delegate(method).to(delegate).with(*args).with_block  }
+  it { should delegate(method_name).to(receiver).with(*args).with_block  }
 end

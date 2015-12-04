@@ -1,8 +1,8 @@
-shared_examples 'a simple delegator' do |method, delegate|
-  it { should delegate(method).to(delegate)      }
-  it { should delegate(method.to_s).to(delegate) }
-  it { should delegate(method).to(delegate.to_s) }
+shared_examples 'a simple delegator' do |method_name, receiver|
+  it { should delegate(method_name).to(receiver)      }
+  it { should delegate(method_name.to_s).to(receiver) }
+  it { should delegate(method_name).to(receiver.to_s) }
 
-  include_examples 'a delegator without a nil check', method, delegate
-  include_examples 'a delegator without a block',     method, delegate
+  include_examples 'a delegator without a nil check', method_name, receiver
+  include_examples 'a delegator without a block',     method_name, receiver
 end
