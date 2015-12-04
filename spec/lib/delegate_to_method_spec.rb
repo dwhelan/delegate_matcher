@@ -55,22 +55,22 @@ module RSpec
             end
           end
 
+          it_behaves_like 'a delegator with a prefix' do
+            before do
+              class Post
+                def author_name
+                  author.name
+                end
+              end
+            end
+          end
+
           it_behaves_like 'a delegator with a different return value', 'Ann Rand' do
             before do
               class Post
                 def name
                   author.name
                   'Ann Rand'
-                end
-              end
-            end
-          end
-
-          it_behaves_like 'a delegator with a prefix' do
-            before do
-              class Post
-                def author_name(*args, &block)
-                  author.name(*args, &block)
                 end
               end
             end
