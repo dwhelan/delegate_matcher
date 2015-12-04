@@ -33,30 +33,20 @@ module RSpec
             end
           end
 
-          it_behaves_like 'a delegator with args', :name, :AUTHOR, :arg1 do
-            before do
-              class Post
-                def name(*args)
-                  AUTHOR.name(*args)
-                end
-              end
-            end
-          end
-
-          it_behaves_like 'a delegator with a block', :name, :AUTHOR do
-            before do
-              class Post
-                def name(&block)
-                  AUTHOR.name(&block)
-                end
-              end
-            end
-          end
-
           it_behaves_like 'a delegator with args and a block', :name, :AUTHOR, :arg1 do
             before do
               class Post
                 def name(*args, &block)
+                  AUTHOR.name(*args, &block)
+                end
+              end
+            end
+          end
+
+          it_behaves_like 'a delegator with a prefix', :name, :AUTHOR do
+            before do
+              class Post
+                def author_name(*args, &block)
                   AUTHOR.name(*args, &block)
                 end
               end

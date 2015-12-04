@@ -10,7 +10,7 @@ module RSpec
         end
 
         def method
-          prefix ? :"#{prefix}_#{@method}" : @method
+          prefix ? :"#{prefix.downcase}_#{@method}" : @method
         end
 
         def ensure_valid_delegate_method(delegate)
