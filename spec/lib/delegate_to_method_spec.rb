@@ -45,6 +45,16 @@ module RSpec
             end
           end
 
+          it_behaves_like 'a delegator with a different method name', :other_name do
+            before do
+              class Post
+                def name(*args, &block)
+                  author.other_name(*args, &block)
+                end
+              end
+            end
+          end
+
           it_behaves_like 'a delegator with a prefix' do
             before do
               class Post

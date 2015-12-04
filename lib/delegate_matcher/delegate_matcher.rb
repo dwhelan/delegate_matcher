@@ -66,5 +66,6 @@ module RSpec
   end
 end
 
+# TODO: Handle delegation to a class method?
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description
