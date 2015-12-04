@@ -3,18 +3,23 @@ require 'spec_helper'
 module RSpec
   module Matchers
     module DelegateMatcher
-      module ToInstanceVariable
-        describe 'delegation to an instance variable' do
+      module ToClassVariable
+        describe 'delegation to a class variable' do
+          class Post
+            # rubocop:disable Style/ClassVars
+            @@author = 'Ann Rand'
+          end
+
           subject { Post.new }
 
           let(:method_name) { :name   }
-          let(:receiver)    { :@author }
+          let(:receiver)    { :@@author }
 
           it_behaves_like 'a simple delegator' do
             before do
               class Post
                 def name
-                  @author.name
+                  @@author.name
                 end
               end
             end
@@ -24,7 +29,7 @@ module RSpec
             before do
               class Post
                 def name
-                  @author.name if @author
+                  @@author.name if @@author
                 end
               end
             end
@@ -34,7 +39,7 @@ module RSpec
             before do
               class Post
                 def name(*args, &block)
-                  @author.name(*args, &block)
+                  @@author.name(*args, &block)
                 end
               end
             end
@@ -44,7 +49,7 @@ module RSpec
             before do
               class Post
                 def name
-                  @author.other_name
+                  @@author.other_name
                 end
               end
             end
@@ -54,7 +59,7 @@ module RSpec
             before do
               class Post
                 def author_name
-                  @author.name
+                  @@author.name
                 end
               end
             end
@@ -64,7 +69,7 @@ module RSpec
             before do
               class Post
                 def name
-                  @author.name
+                  @@author.name
                   'Ann Rand'
                 end
               end
