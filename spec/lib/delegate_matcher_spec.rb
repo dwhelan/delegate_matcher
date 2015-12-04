@@ -229,8 +229,8 @@ describe 'DelegateTo matcher' do
     it { should delegate(:name).to(:author).with_prefix('writer') }
   end
 
-  include_examples 'disallow_nil', :name, :author
-  include_examples 'allow_nil', :name_with_nil_check, :author
+  include_examples 'a delegator without a nil check', :name, :author
+  include_examples 'a delegator with a nil check', :name_with_nil_check, :author
 
   describe 'with arguments' do
     it { should delegate(:name_with_arg).with('Ms.').to(:author)                                     }
