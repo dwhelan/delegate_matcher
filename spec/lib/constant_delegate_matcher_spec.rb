@@ -35,11 +35,31 @@ module RSpec
             }
           end
 
+          it_behaves_like 'a delegator with args', :name, :AUTHOR, :arg1 do
+            before {
+              class Post
+                def name(*args)
+                  AUTHOR.name(*args)
+                end
+              end
+            }
+          end
+
           it_behaves_like 'a delegator with a block', :name, :AUTHOR do
             before {
               class Post
                 def name(&block)
                   AUTHOR.name(&block)
+                end
+              end
+            }
+          end
+
+          it_behaves_like 'a delegator with args and a block', :name, :AUTHOR, :arg1 do
+            before {
+              class Post
+                def name(*args, &block)
+                  AUTHOR.name(*args, &block)
                 end
               end
             }
