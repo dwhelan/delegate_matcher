@@ -9,6 +9,8 @@ module RSpec
               stub_class_variable(sender, name, value, &block)
             when is_an_instance_variable?(name)
               stub_instance_variable(sender, name, value, &block)
+            when is_a_constant?(name)
+              stub_constant(sender, name, value, &block)
             else
               raise 'WTF'
             end
@@ -24,6 +26,13 @@ module RSpec
             name.to_s.start_with?('@')
           end
 
+          def is_a_constant?(name)
+            name.to_s.start_with?('@')
+          end
+
+          def is_a_constant?(name)
+            (name.is_a?(String) || name.is_a?(Symbol)) && name.to_s =~ /^[A-Z]/
+          end
 
           def stub_class_variable(sender, name, value, &block)
             klass = sender.class
@@ -40,6 +49,11 @@ module RSpec
             block.call
           ensure
             sender.instance_variable_set(name, original_value)
+          end
+
+          def stub_constant(sender, name, value, &block)
+            Mocks::ConstantMutator.stub("#{sender.class}::#{name}", value)
+            block.call
           end
         end
       end

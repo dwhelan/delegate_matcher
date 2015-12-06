@@ -2,9 +2,8 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class DelegateToConstant < DelegateTo
-        def do_delegate(test_delegate = delegate_double)
-          stub_const("#{delegator.sender.class}::#{delegate}", test_delegate)
-          yield
+        def do_delegate(test_delegate = delegate_double, &block)
+          Stubber.stub(delegator.sender, delegate, test_delegate, &block)
         end
       end
     end
