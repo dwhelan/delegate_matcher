@@ -5,10 +5,11 @@ module RSpec
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
       class DelegateTo
+        attr_accessor :delegated
         attr_accessor :actual_args
+        attr_accessor :actual_block
         attr_accessor :args
         attr_accessor :expected_block
-        attr_accessor :actual_block
 
         attr_accessor :expected
         attr_accessor :delegator
@@ -40,12 +41,12 @@ module RSpec
 
         def stub_delegation(receiver)
           # binding.pry
-          @delegated =  false
+          self.delegated =  false
           allow(receiver).to(receive(expected.method)) do |*args, &block|
             # binding.pry
-            @actual_args  = args
-            @actual_block = block
-            @delegated    = true
+            self.actual_args  = args
+            self.actual_block = block
+            self.delegated    = true
             expected_return_value
           end
         end
@@ -92,7 +93,7 @@ module RSpec
 
         def return_value_failure_message(_negated)
           case
-          when !@delegated || return_value_ok?
+          when !delegated || return_value_ok?
             ''
           else
             format('a return value of %p was returned instead of the delegate return value', delegator.return_value)
@@ -114,7 +115,7 @@ module RSpec
 
         def delegation_ok?
           ok = allow_nil_ok? && do_delegate { delegator.call }
-          ok && @delegated && arguments_ok? && block_ok? && return_value_ok?
+          ok && delegated && arguments_ok? && block_ok? && return_value_ok?
         end
 
         # TODO: pernaps move delegation earlier

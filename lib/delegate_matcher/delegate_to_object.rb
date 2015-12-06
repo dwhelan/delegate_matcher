@@ -3,7 +3,7 @@ module RSpec
     module DelegateMatcher
       class DelegateToObject < DelegateTo
         def receiver
-          fail %(cannot verify "allow_nil" expectations when delegating to an object) unless expected.nil_check.nil?
+          fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.nil_check.nil?
           expected.delegate
         end
 

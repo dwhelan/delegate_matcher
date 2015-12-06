@@ -6,7 +6,6 @@ module RSpec
         attr_accessor :sender, :prefix, :args, :return_value
 
         def call
-          # binding.pry
           self.return_value = sender.send(method, *args, &block)
         end
 
