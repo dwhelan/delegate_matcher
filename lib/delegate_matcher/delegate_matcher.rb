@@ -44,7 +44,7 @@ module RSpec
       end
 
       def delegator
-        @delegator ||= DelegateMatcher::Delegator.new
+        @delegator ||= DelegateMatcher::Dispatcher.new
       end
 
       def matcher

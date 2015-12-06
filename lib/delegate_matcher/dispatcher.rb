@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     module DelegateMatcher
-      class Delegator
+      class Dispatcher
         attr_writer :method
         attr_accessor :sender, :prefix, :args, :return_value
 

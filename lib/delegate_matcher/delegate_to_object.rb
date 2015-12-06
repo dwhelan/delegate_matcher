@@ -4,7 +4,7 @@ module RSpec
       class DelegateToObject < DelegateTo
         def receiver
           fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.nil_check.nil?
-          expected.delegate
+          delegate
         end
 
         def default_prefix

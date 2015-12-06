@@ -2,7 +2,7 @@ require 'forwardable'
 
 require 'delegate_matcher/version'
 require 'delegate_matcher/expected'
-require 'delegate_matcher/delegator'
+require 'delegate_matcher/dispatcher'
 require 'delegate_matcher/stubber'
 require 'delegate_matcher/delegate_to'
 require 'delegate_matcher/delegate_to_method'
