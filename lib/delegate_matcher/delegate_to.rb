@@ -33,10 +33,15 @@ module RSpec
           double('delegate').tap { |delegate| stub_delegation(delegate) }
         end
 
-        def stub_delegation(delegate)
+        def do_delegate(&block)
+          stub_delegation receiver
+          block.call
+        end
+
+        def stub_delegation(receiver)
           # binding.pry
           @delegated =  false
-          allow(delegate).to(receive(expected.method)) do |*args, &block|
+          allow(receiver).to(receive(expected.method)) do |*args, &block|
             # binding.pry
             @actual_args  = args
             @actual_block = block
@@ -47,10 +52,6 @@ module RSpec
 
         def expected_return_value
           self
-        end
-
-        def ensure_allow_nil_is_not_specified_for(target)
-          fail %(cannot verify "allow_nil" expectations when delegating to #{target}) unless expected.nil_check.nil?
         end
 
         def argument_description(args)
