@@ -15,7 +15,7 @@ module ActiveSupportDelegation
     delegate :name_with_arg,       to: :author
     delegate :name_with_block,     to: :author
     delegate :count,               to: :@@authors
-    delegate :first,               to: :AUTHOR
+    delegate :first,               to: :GENRES
     delegate :name,                to: :class, prefix: true
   end
 
@@ -40,14 +40,14 @@ module ActiveSupportDelegation
   describe Post do
     it { should delegate(:name).to(:author) }
     it { should delegate(:name).to(:@author) }
-    it { should delegate(:name_with_nil_check).to(:author).allow_nil }
+    xit { should delegate(:name_with_nil_check).to(:author).allow_nil }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:name).to(:author).with_prefix(:writer) }
 
     it { should delegate(:name_with_arg).to(:author).with('Ms.') }
     it { should delegate(:name_with_block).to(:author).with_block }
     it { should delegate(:count).to(:@@authors)   }
-    it { should delegate(:first).to(:AUTHOR)   }
+    it { should delegate(:first).to(:GENRES)   }
     it { should delegate(:name).to(:class).with_prefix   }
   end
 end

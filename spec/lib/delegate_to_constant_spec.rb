@@ -5,6 +5,10 @@ module RSpec
     module DelegateMatcher
       module ToConstant
         describe 'delegation to a constant' do
+          class Post
+            AUTHOR = Author.new
+          end
+
           subject { Post.new }
 
           let(:method_name) { :name   }

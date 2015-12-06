@@ -3,7 +3,9 @@ module RSpec
     module DelegateMatcher
       class DelegateToInstanceVariable < DelegateTo
         def do_delegate(test_delegate = delegate_double, &block)
-          Stubber.stub(delegator.sender, delegate, test_delegate, &block)
+          receiver = Stubber.new.stub(delegator.sender, delegate, test_delegate, &block)
+          stub_delegation receiver
+          block.call
         end
       end
     end

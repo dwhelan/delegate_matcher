@@ -5,6 +5,12 @@ module RSpec
     module DelegateMatcher
       module ToInstanceVariable
         describe 'delegation to an instance variable' do
+          class Post
+            def initialize
+              @author = Author.new
+            end
+          end
+
           subject { Post.new }
 
           let(:method_name) { :name   }

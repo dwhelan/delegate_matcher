@@ -5,6 +5,10 @@ module ForwardableDelegation
   class Post
     extend Forwardable
 
+    def initialize
+      @author = Author.new
+    end
+
     attr_accessor :author
 
     def_delegator :author, :name

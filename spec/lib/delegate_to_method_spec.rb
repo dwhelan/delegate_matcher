@@ -7,6 +7,7 @@ module RSpec
         describe 'delegation to a method' do
           class Post
             def author
+              @author ||= Author.new
             end
           end
 

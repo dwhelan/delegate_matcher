@@ -2,10 +2,12 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class DelegateToObject < DelegateTo
-        def do_delegate(_test_delegate = delegate_double)
+        def do_delegate(test_delegate = delegate_double, &block)
           ensure_allow_nil_is_not_specified_for('an object')
-          stub_delegation(expected.delegate)
-          yield
+          # Stubber.new.stub(delegate, expected.method, test_delegate, &block)
+          receiver = expected.delegate
+          stub_delegation receiver
+          block.call
         end
 
         def default_prefix

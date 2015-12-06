@@ -6,6 +6,9 @@ module RSpec
       module ToObject
         describe 'delegation to an object' do
           class Author
+            def name
+              ''
+            end
           end
 
           class Post
@@ -23,6 +26,8 @@ module RSpec
           let(:author)      { Author.new }
           let(:method_name) { :name      }
           let(:receiver)    { author    }
+
+          # fit { should delegate(method_name).to(receiver)      }
 
           it 'should fail if there is not an explicit prefix' do
             expect { should delegate(:name).to(author).with_prefix }.to raise_error do |error|

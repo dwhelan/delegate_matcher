@@ -34,8 +34,10 @@ module RSpec
         end
 
         def stub_delegation(delegate)
-          @delegated = false
+          # binding.pry
+          @delegated =  false
           allow(delegate).to(receive(expected.method)) do |*args, &block|
+            # binding.pry
             @actual_args  = args
             @actual_block = block
             @delegated    = true

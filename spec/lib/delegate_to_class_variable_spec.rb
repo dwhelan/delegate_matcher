@@ -7,7 +7,7 @@ module RSpec
         describe 'delegation to a class variable' do
           class Post
             # rubocop:disable Style/ClassVars
-            @@author = 'Ann Rand'
+            @@author = Author.new
           end
 
           subject { Post.new }
