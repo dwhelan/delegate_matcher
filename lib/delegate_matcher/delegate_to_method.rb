@@ -3,8 +3,8 @@ module RSpec
     module DelegateMatcher
       class DelegateToMethod < DelegateTo
         def receiver
-          delegator.ensure_valid_delegate_method(delegate)
-          delegator.sender.send delegate
+          dispatcher.ensure_valid_delegate_method(delegate)
+          dispatcher.sender.send delegate
         end
       end
     end

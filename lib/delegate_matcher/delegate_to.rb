@@ -12,14 +12,14 @@ module RSpec
         attr_accessor :expected_block
 
         attr_accessor :expected
-        attr_accessor :delegator
+        attr_accessor :dispatcher
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        def initialize(expected, delegator)
-          self.expected  = expected
-          self.delegator = delegator
+        def initialize(expected, dispatcher)
+          self.expected   = expected
+          self.dispatcher = dispatcher
         end
 
         def default_prefix
@@ -96,7 +96,7 @@ module RSpec
           when !delegated || return_value_ok?
             ''
           else
-            format('a return value of %p was returned instead of the delegate return value', delegator.return_value)
+            format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
           end
         end
 
@@ -114,7 +114,7 @@ module RSpec
         end
 
         def delegation_ok?
-          ok = allow_nil_ok? && do_delegate { delegator.call }
+          ok = allow_nil_ok? && do_delegate { dispatcher.call }
           ok && delegated && arguments_ok? && block_ok? && return_value_ok?
         end
 
@@ -125,8 +125,8 @@ module RSpec
 
           begin
             actual_nil_check = true
-            do_delegate(nil) { delegator.call }
-            @return_value_when_delegate_nil = delegator.return_value
+            do_delegate(nil) { dispatcher.call }
+            @return_value_when_delegate_nil = dispatcher.return_value
           rescue NoMethodError
             actual_nil_check = false
           end
@@ -143,14 +143,14 @@ module RSpec
           when expected.block.nil?
             true
           when expected.block
-            actual_block == delegator.block
+            actual_block == dispatcher.block
           else
             actual_block.nil?
           end
         end
 
         def return_value_ok?
-          expected.skip_return_check || delegator.return_value == expected_return_value
+          expected.skip_return_check || dispatcher.return_value == expected_return_value
         end
       end
     end

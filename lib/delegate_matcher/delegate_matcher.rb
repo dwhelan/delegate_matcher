@@ -7,14 +7,14 @@ module RSpec
         fail 'need to provide a "to"' unless expected.delegate
 
         expected.method ||= method
-        delegator.sender   = d
-        delegator.method   = method
+        dispatcher.sender   = d
+        dispatcher.method   = method
 
         matcher.delegation_ok?
       end
 
       description do
-        "delegate #{delegator.description} to #{delegate_description}#{expected.nil_description}#{expected.block_description}"
+        "delegate #{dispatcher.description} to #{delegate_description}#{expected.nil_description}#{expected.block_description}"
       end
 
       def failure_message
@@ -28,8 +28,8 @@ module RSpec
       chain(:to)              { |to|               expected.delegate  = to }
       chain(:as)              { |as|               expected.method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     delegator.prefix   = prefix || matcher.default_prefix }
-      chain(:with)            { |*args|            expected.args      = args; delegator.args ||= args }
+      chain(:with_prefix)     { |prefix = nil|     dispatcher.prefix   = prefix || matcher.default_prefix }
+      chain(:with)            { |*args|            expected.args      = args; dispatcher.args ||= args }
       chain(:with_a_block)    {                    expected.block     = true  }
       chain(:without_a_block) {                    expected.block     = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -43,20 +43,20 @@ module RSpec
         @expected ||= DelegateMatcher::Expected.new
       end
 
-      def delegator
-        @delegator ||= DelegateMatcher::Dispatcher.new
+      def dispatcher
+        @dispatcher ||= DelegateMatcher::Dispatcher.new
       end
 
       def matcher
-        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.delegate, expected, delegator)
+        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.delegate, expected, dispatcher)
       end
 
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !expected.args.eql?(delegator.args)
+        when !expected.args.eql?(dispatcher.args)
           "#{expected.delegate}.#{expected.method}#{expected.argument_description}"
-        when expected.method.eql?(delegator.method)
+        when expected.method.eql?(dispatcher.method)
           "#{expected.delegate}"
         else
           "#{expected.delegate}.#{expected.method}"

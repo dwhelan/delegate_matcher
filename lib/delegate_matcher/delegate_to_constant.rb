@@ -3,7 +3,7 @@ module RSpec
     module DelegateMatcher
       class DelegateToConstant < DelegateTo
         def receiver
-          delegator.sender.class.const_get(delegate)
+          dispatcher.sender.class.const_get(delegate)
         end
       end
     end
