@@ -4,7 +4,7 @@ module RSpec
   module Matchers
     define(:delegate) do |method_name|
       match do |d|
-        fail 'need to provide a "to"' unless expected.delegate
+        fail 'need to provide a "to"' unless expected.to
 
         expected.method_name ||= method_name
         dispatcher.sender   = d
@@ -25,7 +25,7 @@ module RSpec
         matcher.failure_message(true) || super
       end
 
-      chain(:to)              { |to|               expected.delegate  = to }
+      chain(:to)              { |to|               expected.to  = to }
       chain(:as)              { |as|               expected.method_name    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix    = prefix }
@@ -48,18 +48,18 @@ module RSpec
       end
 
       def matcher
-        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.delegate, expected, dispatcher)
+        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.to, expected, dispatcher)
       end
 
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
         when !expected.args.eql?(dispatcher.args)
-          "#{expected.delegate}.#{expected.method_name}#{expected.argument_description}"
+          "#{expected.to}.#{expected.method_name}#{expected.argument_description}"
         when expected.method_name.eql?(dispatcher.method_name)
-          "#{expected.delegate}"
+          "#{expected.to}"
         else
-          "#{expected.delegate}.#{expected.method_name}"
+          "#{expected.to}.#{expected.method_name}"
         end
       end
     end

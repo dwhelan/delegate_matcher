@@ -4,7 +4,7 @@ module RSpec
       class Expected
         attr_accessor :method_name
 
-        attr_accessor :delegate
+        attr_accessor :to
         attr_accessor :args
 
         attr_accessor :block
@@ -22,8 +22,8 @@ module RSpec
             ''
           when @prefix
             "#{@prefix}_"
-          when delegate.is_a?(String) || delegate.is_a?(Symbol)
-            delegate.to_s.delete('@').downcase + '_'
+          when to.is_a?(String) || to.is_a?(Symbol)
+            to.to_s.delete('@').downcase + '_'
           else
             ''
           end

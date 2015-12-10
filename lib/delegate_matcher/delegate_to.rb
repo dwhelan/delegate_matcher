@@ -24,7 +24,7 @@ module RSpec
         end
 
         def foo
-          @foo ||= Delegate.new(dispatcher.sender, expected.delegate, expected)
+          @foo ||= Delegate.new(dispatcher.sender, expected.to, expected)
         end
 
         def receiver
@@ -88,9 +88,9 @@ module RSpec
           when !@return_value_when_delegate_nil.nil?
             'did not return nil'
           when negated
-            "#{expected.delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
+            "#{expected.to} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
           else
-            "#{expected.delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
+            "#{expected.to} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
           end
         end
 
@@ -102,7 +102,7 @@ module RSpec
         # TODO: pernaps move delegation earlier
         def allow_nil_ok?
           return true if expected.nil_check.nil?
-          return true unless expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
+          return true unless expected.to.is_a?(String) || expected.to.is_a?(Symbol)
 
           begin
             actual_nil_check = true
