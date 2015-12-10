@@ -11,6 +11,24 @@ module RSpec
         attr_accessor :nil_check
         attr_accessor :skip_return_check
 
+        attr_reader   :with_prefix, :prefix
+
+        def prefix=(prefix)
+          @has_prefix = true
+          @prefix      = prefix
+        end
+
+        def prefix
+          return '' unless @has_prefix
+          return "#{@prefix}_" if @prefix
+
+          if delegate.is_a?(String) || delegate.is_a?(Symbol)
+            delegate.to_s.delete('@').downcase + '_'
+          else
+            ''
+          end
+        end
+
         def argument_description
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end

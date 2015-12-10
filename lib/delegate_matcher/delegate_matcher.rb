@@ -28,7 +28,7 @@ module RSpec
       chain(:to)              { |to|               expected.delegate  = to }
       chain(:as)              { |as|               expected.method    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     dispatcher.prefix   = prefix || matcher.default_prefix }
+      chain(:with_prefix)     { |prefix = nil|     expected.prefix    = prefix }
       chain(:with)            { |*args|            expected.args      = args; dispatcher.args ||= args }
       chain(:with_a_block)    {                    expected.block     = true  }
       chain(:without_a_block) {                    expected.block     = false }
@@ -44,7 +44,7 @@ module RSpec
       end
 
       def dispatcher
-        @dispatcher ||= DelegateMatcher::Dispatcher.new
+        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected)
       end
 
       def matcher

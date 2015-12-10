@@ -5,12 +5,17 @@ module RSpec
         attr_writer :method
         attr_accessor :sender, :prefix, :args, :return_value
 
+        def initialize(options)
+          @options = options
+        end
+
         def call
+          # binding.pry
           self.return_value = sender.send(method, *args, &block)
         end
 
         def method
-          prefix.nil? || prefix.empty? ?  @method :"#{prefix.downcase}_#{@method}"
+          "#{@options.prefix}#{@method}"
         end
 
         def block

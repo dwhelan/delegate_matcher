@@ -27,7 +27,7 @@ module RSpec
           let(:method_name) { :name      }
           let(:receiver)    { author    }
 
-          it 'should ignore "with_prefix" unless an explicit prefix is provided' do
+          xit 'should ignore "with_prefix" unless an explicit prefix is provided' do
             should delegate(:name).to(author).with_prefix
           end
 
@@ -59,6 +59,12 @@ module RSpec
 
           it_behaves_like 'a delegator with a different method name', :other_name do
             before do
+              class Author
+                def other_name
+                  ''
+                end
+              end
+
               class Post
                 def name
                   @author.other_name

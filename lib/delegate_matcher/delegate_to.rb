@@ -12,6 +12,7 @@ module RSpec
         attr_accessor :expected
         attr_accessor :dispatcher
         attr_accessor :actual
+        attr_writer :foo
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
@@ -19,15 +20,15 @@ module RSpec
         def initialize(expected, dispatcher)
           self.expected   = expected
           self.dispatcher = dispatcher
-          self.actual   = Actual.new
+          self.actual     = Actual.new
         end
 
-        def default_prefix
-          expected.delegate.to_s.delete('@')
+        def foo
+          @foo ||= Delegate.new(dispatcher.sender, expected.delegate, expected)
         end
 
         def receiver
-          Delegate.new(dispatcher.sender, expected.delegate, expected).delegate
+          foo.delegate
         end
 
         def do_delegate(&block)
