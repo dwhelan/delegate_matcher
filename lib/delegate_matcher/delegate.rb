@@ -15,7 +15,9 @@ module RSpec
               sender.instance_variable_get(name)
             when name =~ /^[A-Z]/
               sender.class.const_get(name)
-            else
+            else # a method
+              fail "#{sender.inspect} does not respond to #{name}" unless sender.respond_to?(name, true)
+              fail "#{sender.inspect}'s' #{name} method expects parameters" unless [0, -1].include?(sender.method(name).arity)
               sender.send(name)
             end
           end

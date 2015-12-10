@@ -26,6 +26,10 @@ module RSpec
           expected.delegate.to_s.delete('@')
         end
 
+        def receiver
+          Delegate.for(dispatcher.sender, expected.delegate)
+        end
+
         def do_delegate(&block)
           actual.stub_receive(receiver, expected.method)
           block.call

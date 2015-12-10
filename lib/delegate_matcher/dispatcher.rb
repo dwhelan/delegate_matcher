@@ -13,11 +13,6 @@ module RSpec
           prefix ? :"#{prefix.downcase}_#{@method}" : @method
         end
 
-        def ensure_valid_delegate_method(delegate)
-          fail "#{sender.inspect} does not respond to #{delegate}" unless sender.respond_to?(delegate, true)
-          fail "#{sender.inspect}'s' #{delegate} method expects parameters" unless [0, -1].include?(sender.method(delegate).arity)
-        end
-
         def block
           @block ||= proc {}
         end

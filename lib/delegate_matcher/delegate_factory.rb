@@ -5,8 +5,8 @@ module RSpec
         class << self
           def matcher_for(delegate, *args)
             klass = case
-                    when delegate_is_a_class_variable?(delegate)
-                      DelegateToClassVariable
+                    # when delegate_is_a_class_variable?(delegate)
+                    #   DelegateToClassVariable
                     when delegate_is_an_instance_variable?(delegate)
                       DelegateToInstanceVariable
                     when delegate_is_a_constant?(delegate)
@@ -21,10 +21,10 @@ module RSpec
 
           private
 
-          def delegate_is_a_class_variable?(delegate)
-            delegate.to_s.start_with?('@@')
-          end
-
+          # def delegate_is_a_class_variable?(delegate)
+          #   delegate.to_s.start_with?('@@')
+          # end
+          #
           def delegate_is_an_instance_variable?(delegate)
             delegate.to_s[0] == '@'
           end
