@@ -3,12 +3,12 @@ require 'rspec/matchers'
 module RSpec
   module Matchers
     define(:delegate) do |method_name|
-      match do |d|
+      match do |subject|
         fail 'need to provide a "to"' unless expected.to
 
-        expected.method_name ||= method_name
-        dispatcher.sender   = d
+        dispatcher.subject   = subject
         dispatcher.method_name   = method_name
+        expected.method_name ||= method_name
 
         matcher.delegation_ok?
       end
@@ -66,6 +66,7 @@ module RSpec
   end
 end
 
+# TODO: Specs for failure messages
 # TODO: Handle delegation to a class method?
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description

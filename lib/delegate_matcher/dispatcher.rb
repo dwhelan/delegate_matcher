@@ -2,15 +2,16 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Dispatcher
-        attr_writer :method_name
-        attr_accessor :sender, :prefix, :args, :return_value
+        attr_accessor :subject, :args
+        attr_writer :method_name, :block
+        attr_reader :return_value
 
         def initialize(options)
           @options = options
         end
 
         def call
-          self.return_value = sender.send(method_name, *args, &block)
+          self.return_value = subject.send(method_name, *args, &block)
         end
 
         def method_name
@@ -28,6 +29,10 @@ module RSpec
         def argument_description
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
+
+        private
+
+        attr_writer :return_value
       end
     end
   end

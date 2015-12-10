@@ -24,7 +24,7 @@ module RSpec
         end
 
         def foo
-          @foo ||= Delegate.new(dispatcher.sender, expected.to, expected)
+          @foo ||= Delegate.new(dispatcher.subject, expected.to, expected)
         end
 
         def receiver
@@ -34,10 +34,6 @@ module RSpec
         def do_delegate(&block)
           actual.stub_receive(receiver, expected.method_name)
           block.call
-        end
-
-        def argument_description(args)
-          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 
         def failure_message(negated)
@@ -112,7 +108,7 @@ module RSpec
             actual_nil_check = false
           end
 
-          expected.allow_nil == actual_nil_check && @return_value_when_delegate_nil.nil?
+          expected.nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
         end
 
         def arguments_ok?
