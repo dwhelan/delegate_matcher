@@ -21,23 +21,6 @@ module RSpec
           subject       { eval matcher }
           before        { subject.matches? post }
 
-          context 'delegate(:name).to(:author)' do
-            its(:description)                  { should eq 'delegate name to author' }
-            its(:failure_message_when_negated) { should match(/expected .* not to delegate name to author/) }
-          end
-
-          xcontext 'delegate(:writer).to(:author).as(:name)' do
-            its(:description) { should eq 'delegate writer to author.name' }
-          end
-
-          xcontext 'delegate(:name).to(:@author)' do
-            its(:description) { should eq 'delegate name to @author' }
-          end
-
-          xcontext 'delegate(:name).to(:author).with_prefix' do
-            its(:description) { should eq 'delegate author_name to author.name' }
-          end
-
           xcontext 'delegate(:name).to(:author).with_prefix("writer")' do
             its(:description) { should eq 'delegate writer_name to author.name' }
           end
