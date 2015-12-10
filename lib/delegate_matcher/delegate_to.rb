@@ -32,7 +32,7 @@ module RSpec
         end
 
         def do_delegate(&block)
-          actual.stub_receive(receiver, expected.method)
+          actual.stub_receive(receiver, expected.method_name)
           block.call
         end
 

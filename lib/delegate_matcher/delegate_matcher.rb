@@ -2,13 +2,13 @@ require 'rspec/matchers'
 
 module RSpec
   module Matchers
-    define(:delegate) do |method|
+    define(:delegate) do |method_name|
       match do |d|
         fail 'need to provide a "to"' unless expected.delegate
 
-        expected.method ||= method
+        expected.method_name ||= method_name
         dispatcher.sender   = d
-        dispatcher.method   = method
+        dispatcher.method_name   = method_name
 
         matcher.delegation_ok?
       end
@@ -26,7 +26,7 @@ module RSpec
       end
 
       chain(:to)              { |to|               expected.delegate  = to }
-      chain(:as)              { |as|               expected.method    = as }
+      chain(:as)              { |as|               expected.method_name    = as }
       chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix    = prefix }
       chain(:with)            { |*args|            expected.args      = args; dispatcher.args ||= args }
@@ -55,11 +55,11 @@ module RSpec
       def delegate_description
         case
         when !expected.args.eql?(dispatcher.args)
-          "#{expected.delegate}.#{expected.method}#{expected.argument_description}"
-        when expected.method.eql?(dispatcher.method)
+          "#{expected.delegate}.#{expected.method_name}#{expected.argument_description}"
+        when expected.method_name.eql?(dispatcher.method_name)
           "#{expected.delegate}"
         else
-          "#{expected.delegate}.#{expected.method}"
+          "#{expected.delegate}.#{expected.method_name}"
         end
       end
     end
