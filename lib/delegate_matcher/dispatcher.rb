@@ -5,13 +5,12 @@ module RSpec
         attr_accessor :subject
         attr_reader :return_value, :expected
 
-        def initialize(subject, expected)
-          self.subject  = subject
+        def initialize(expected)
           self.expected = expected
         end
 
         def call
-          self.return_value = subject.send(method_name, *expected.as_args, &block)
+          self.return_value = subject.send(method_name, *expected.args, &block)
         end
 
         def method_name
@@ -23,16 +22,12 @@ module RSpec
         end
 
         def description
-          "#{method_name}#{argument_description}"
-        end
-
-        def argument_description
-          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+          "#{method_name}#{expected.argument_description}"
         end
 
         private
 
-        attr_writer :subject, :expected, :return_value
+        attr_writer :expected, :return_value
       end
     end
   end

@@ -36,22 +36,30 @@ module RSpec
       def delegation_ok?(method_name, subject)
         fail 'need to provide a "to"' unless expected.to
 
-        dispatcher = DelegateMatcher::Dispatcher.new(subject, expected)
+        dispatcher.subject   = subject
         expected.method_name = method_name
 
-        DelegateMatcher::Delegation.new(expected, dispatcher).ok?
+        delegation.ok?
+      end
+
+      def dispatcher
+        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected)
       end
 
       def expected
         @expected ||= DelegateMatcher::Expected.new
       end
 
+      def delegation
+        @delegation ||= DelegateMatcher::Delegation.new(expected, dispatcher)
+      end
+
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !expected.args.eql?(expected.to_args)
+        when !expected.args.eql?(expected.as_args)
           "#{expected.to}.#{expected.as}#{expected.argument_description}"
-        when expected.to.eql?(dispatcher.method_name)
+        when expected.as.to_s.eql?(dispatcher.method_name)
           "#{expected.to}"
         else
           "#{expected.to}.#{expected.as}"
