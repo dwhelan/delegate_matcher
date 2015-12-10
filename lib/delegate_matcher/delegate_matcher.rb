@@ -48,7 +48,7 @@ module RSpec
       end
 
       def matcher
-        @matcher ||= DelegateMatcher::DelegateFactory.matcher_for(expected.to, expected, dispatcher)
+        @matcher ||= DelegateMatcher::Delegation.new(expected, dispatcher)
       end
 
       # rubocop:disable Metrics/AbcSize

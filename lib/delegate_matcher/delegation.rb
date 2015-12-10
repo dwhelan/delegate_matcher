@@ -4,18 +4,10 @@ module RSpec
   module Matchers
     module DelegateMatcher
       # rubocop:disable Metrics/ClassLength
-      class DelegateTo
-        attr_accessor :delegated
-        attr_accessor :args
-         attr_accessor :expected_block
-
+      class Delegation
         attr_accessor :expected
         attr_accessor :dispatcher
         attr_accessor :actual
-        attr_writer :foo
-
-        include RSpec::Mocks::ExampleMethods
-        RSpec::Mocks::Syntax.enable_expect(self)
 
         def initialize(expected, dispatcher)
           self.expected   = expected
@@ -23,12 +15,12 @@ module RSpec
           self.actual     = Actual.new
         end
 
-        def foo
-          @foo ||= Delegate.new(dispatcher.subject, expected.to, expected)
+        def delegate
+          @delegate ||= Delegate.new(dispatcher.subject, expected.to, expected)
         end
 
         def receiver
-          foo.delegate
+          delegate.delegate
         end
 
         def do_delegate(&block)
@@ -36,12 +28,52 @@ module RSpec
           block.call
         end
 
+        def delegation_ok?
+          ok = allow_nil_ok? && do_delegate { dispatcher.call }
+          ok && actual.received? && arguments_ok? && block_ok? && return_value_ok?
+        end
+
+        # TODO: perhaps move delegation earlier
+        def allow_nil_ok?
+          return true if expected.allow_nil.nil?
+          return true unless expected.to.is_a?(String) || expected.to.is_a?(Symbol)
+
+          begin
+            actual_nil_check = true
+            do_delegate { dispatcher.call }
+            @return_value_when_delegate_nil = dispatcher.return_value
+          rescue NoMethodError
+            actual_nil_check = false
+          end
+
+          expected.nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
+        end
+
+        def arguments_ok?
+          expected.args.nil? || actual.args.eql?(expected.args)
+        end
+
+        def block_ok?
+          case
+          when expected.block.nil?
+            true
+          when expected.block
+            actual.block == dispatcher.block
+          else
+            actual.block.nil?
+          end
+        end
+
+        def return_value_ok?
+          expected.skip_return_check || dispatcher.return_value == actual.return_value
+        end
+
         def failure_message(negated)
           message = [
-            argument_failure_message(negated),
-            block_failure_message(negated),
-            return_value_failure_message(negated),
-            allow_nil_failure_message(negated)
+              argument_failure_message(negated),
+              block_failure_message(negated),
+              return_value_failure_message(negated),
+              allow_nil_failure_message(negated)
           ].reject(&:empty?).join(' and ')
           message.empty? ? nil : message
         end
@@ -88,46 +120,6 @@ module RSpec
           else
             "#{expected.to} was #{expected.allow_nil ? 'not ' : ''}allowed to be nil"
           end
-        end
-
-        def delegation_ok?
-          ok = allow_nil_ok? && do_delegate { dispatcher.call }
-          ok && actual.received? && arguments_ok? && block_ok? && return_value_ok?
-        end
-
-        # TODO: pernaps move delegation earlier
-        def allow_nil_ok?
-          return true if expected.allow_nil.nil?
-          return true unless expected.to.is_a?(String) || expected.to.is_a?(Symbol)
-
-          begin
-            actual_nil_check = true
-            do_delegate(nil) { dispatcher.call }
-            @return_value_when_delegate_nil = dispatcher.return_value
-          rescue NoMethodError
-            actual_nil_check = false
-          end
-
-          expected.nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
-        end
-
-        def arguments_ok?
-          expected.args.nil? || actual.args.eql?(expected.args)
-        end
-
-        def block_ok?
-          case
-          when expected.block.nil?
-            true
-          when expected.block
-            actual.block == dispatcher.block
-          else
-            actual.block.nil?
-          end
-        end
-
-        def return_value_ok?
-          expected.skip_return_check || dispatcher.return_value == actual.return_value
         end
       end
     end
