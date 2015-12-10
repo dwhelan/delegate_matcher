@@ -6,13 +6,12 @@ module RSpec
       # rubocop:disable Metrics/ClassLength
       class DelegateTo
         attr_accessor :delegated
-        attr_accessor :actual_args
-        attr_accessor :actual_block
         attr_accessor :args
-        attr_accessor :expected_block
+         attr_accessor :expected_block
 
         attr_accessor :expected
         attr_accessor :dispatcher
+        attr_accessor :actual
 
         include RSpec::Mocks::ExampleMethods
         RSpec::Mocks::Syntax.enable_expect(self)
@@ -20,6 +19,7 @@ module RSpec
         def initialize(expected, dispatcher)
           self.expected   = expected
           self.dispatcher = dispatcher
+          self.actual   = ReceiverStub.new
         end
 
         def default_prefix
@@ -30,29 +30,9 @@ module RSpec
           expected.delegate
         end
 
-        def delegate_double
-          double('delegate').tap { |delegate| stub_delegation(delegate) }
-        end
-
         def do_delegate(&block)
-          stub_delegation receiver
+          actual.stub_receive(receiver, expected.method)
           block.call
-        end
-
-        def stub_delegation(receiver)
-          # binding.pry
-          self.delegated =  false
-          allow(receiver).to(receive(expected.method)) do |*args, &block|
-            # binding.pry
-            self.actual_args  = args
-            self.actual_block = block
-            self.delegated    = true
-            expected_return_value
-          end
-        end
-
-        def expected_return_value
-          self
         end
 
         def argument_description(args)
@@ -74,7 +54,7 @@ module RSpec
           when expected.args.nil? || negated ^ arguments_ok?
             ''
           else
-            "was called with #{argument_description(actual_args)}"
+            "was called with #{argument_description(actual.args)}"
           end
         end
 
@@ -85,7 +65,7 @@ module RSpec
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            actual_block.nil? ? 'a block was not passed' : "a different block #{actual_block} was passed"
+            actual.block.nil? ? 'a block was not passed' : "a different block #{actual.block} was passed"
           else
             'a block was passed'
           end
@@ -93,7 +73,7 @@ module RSpec
 
         def return_value_failure_message(_negated)
           case
-          when !delegated || return_value_ok?
+          when !actual.received? || return_value_ok?
             ''
           else
             format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
@@ -115,7 +95,7 @@ module RSpec
 
         def delegation_ok?
           ok = allow_nil_ok? && do_delegate { dispatcher.call }
-          ok && delegated && arguments_ok? && block_ok? && return_value_ok?
+          ok && actual.received? && arguments_ok? && block_ok? && return_value_ok?
         end
 
         # TODO: pernaps move delegation earlier
@@ -135,7 +115,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.args.nil? || actual_args.eql?(expected.args)
+          expected.args.nil? || actual.args.eql?(expected.args)
         end
 
         def block_ok?
@@ -143,19 +123,20 @@ module RSpec
           when expected.block.nil?
             true
           when expected.block
-            actual_block == dispatcher.block
+            actual.block == dispatcher.block
           else
-            actual_block.nil?
+            actual.block.nil?
           end
         end
 
         def return_value_ok?
-          expected.skip_return_check || dispatcher.return_value == expected_return_value
+          expected.skip_return_check || dispatcher.return_value == actual.return_value
         end
       end
     end
   end
 end
 
+# TODO: use default prefix with constants - lower case method prefix
 # TODO: How to handle delegation is delegate_double is called with something else
 # TODO: Add 'as' logic to description
