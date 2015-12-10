@@ -3,7 +3,7 @@ module RSpec
     module DelegateMatcher
       class DelegateToClassVariable < DelegateTo
         def receiver
-          dispatcher.sender.class.class_variable_get(delegate)
+          Delegate.for(dispatcher.sender, expected.delegate)
         end
       end
     end

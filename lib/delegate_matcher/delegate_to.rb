@@ -26,10 +26,6 @@ module RSpec
           expected.delegate.to_s.delete('@')
         end
 
-        def delegate
-          expected.delegate
-        end
-
         def do_delegate(&block)
           actual.stub_receive(receiver, expected.method)
           block.call
@@ -87,9 +83,9 @@ module RSpec
           when !@return_value_when_delegate_nil.nil?
             'did not return nil'
           when negated
-            "#{delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
+            "#{expected.delegate} was #{expected.nil_check ? '' : 'not '}allowed to be nil"
           else
-            "#{delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
+            "#{expected.delegate} was #{expected.nil_check ? 'not ' : ''}allowed to be nil"
           end
         end
 
@@ -101,7 +97,7 @@ module RSpec
         # TODO: pernaps move delegation earlier
         def allow_nil_ok?
           return true if expected.nil_check.nil?
-          return true unless delegate.is_a?(String) || delegate.is_a?(Symbol)
+          return true unless expected.delegate.is_a?(String) || expected.delegate.is_a?(Symbol)
 
           begin
             actual_nil_check = true
