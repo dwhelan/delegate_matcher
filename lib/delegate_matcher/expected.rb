@@ -4,7 +4,8 @@ module RSpec
       class Expected
         attr_accessor :to
         attr_accessor :args
-        attr_accessor :method_name
+        attr_accessor :received_args
+        attr_accessor :method_name, :as
         attr_accessor :block
         attr_accessor :allow_nil
         attr_accessor :skip_return_check
@@ -12,6 +13,10 @@ module RSpec
         def prefix=(prefix)
           @has_prefix = true
           @prefix     = prefix
+        end
+
+        def as
+          @as || method_name
         end
 
         def prefix

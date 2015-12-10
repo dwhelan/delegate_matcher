@@ -6,11 +6,10 @@ module RSpec
       match do |subject|
         fail 'need to provide a "to"' unless expected.to
 
-        dispatcher.subject   = subject
-        dispatcher.method_name   = method_name
-        expected.method_name ||= method_name
+        dispatcher.subject     = subject
+        dispatcher.method_name = expected.method_name = method_name
 
-        matcher.delegation_ok?
+        delegation.ok?
       end
 
       description do
@@ -18,20 +17,20 @@ module RSpec
       end
 
       def failure_message
-        matcher.failure_message(false) || super
+        delegation.failure_message(false) || super
       end
 
       def failure_message_when_negated
-        matcher.failure_message(true) || super
+        delegation.failure_message(true) || super
       end
 
-      chain(:to)              { |to|               expected.to  = to }
-      chain(:as)              { |as|               expected.method_name    = as }
-      chain(:allow_nil)       { |allow_nil = true| expected.allow_nil = allow_nil }
-      chain(:with_prefix)     { |prefix = nil|     expected.prefix    = prefix }
-      chain(:with)            { |*args|            expected.args      = args; dispatcher.args ||= args }
-      chain(:with_a_block)    {                    expected.block     = true  }
-      chain(:without_a_block) {                    expected.block     = false }
+      chain(:to)              { |to|               expected.to          = to }
+      chain(:as)              { |as|               expected.as          = as }
+      chain(:allow_nil)       { |allow_nil = true| expected.allow_nil   = allow_nil }
+      chain(:with_prefix)     { |prefix = nil|     expected.prefix      = prefix }
+      chain(:with)            { |*args|            expected.args        = args; dispatcher.args ||= args }
+      chain(:with_a_block)    {                    expected.block       = true  }
+      chain(:without_a_block) {                    expected.block       = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
 
       alias_method :with_block,    :with_a_block
@@ -44,22 +43,22 @@ module RSpec
       end
 
       def dispatcher
-        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected)
+        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected.prefix)
       end
 
-      def matcher
-        @matcher ||= DelegateMatcher::Delegation.new(expected, dispatcher)
+      def delegation
+        @delegation ||= DelegateMatcher::Delegation.new(expected, dispatcher)
       end
 
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
         when !expected.args.eql?(dispatcher.args)
-          "#{expected.to}.#{expected.method_name}#{expected.argument_description}"
-        when expected.method_name.eql?(dispatcher.method_name)
+          "#{expected.to}.#{expected.as}#{expected.argument_description}"
+        when expected.to.eql?(dispatcher.method_name)
           "#{expected.to}"
         else
-          "#{expected.to}.#{expected.method_name}"
+          "#{expected.to}.#{expected.as}"
         end
       end
     end

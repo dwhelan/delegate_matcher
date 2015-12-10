@@ -19,17 +19,14 @@ module RSpec
           @delegate ||= Delegate.new(dispatcher.subject, expected.to, expected)
         end
 
-        def receiver
-          delegate.delegate
-        end
-
-        def do_delegate(&block)
-          actual.stub_receive(receiver, expected.method_name)
-          block.call
-        end
-
         def delegation_ok?
-          ok = allow_nil_ok? && do_delegate { dispatcher.call }
+          actual.stub_receive(delegate.receiver, expected.as)
+          dispatcher.call
+          actual.received?
+        end
+
+        def ok?
+          ok = allow_nil_ok? && delegation_ok?
           ok && actual.received? && arguments_ok? && block_ok? && return_value_ok?
         end
 
@@ -40,7 +37,7 @@ module RSpec
 
           begin
             actual_nil_check = true
-            do_delegate { dispatcher.call }
+            delegation_ok?
             @return_value_when_delegate_nil = dispatcher.return_value
           rescue NoMethodError
             actual_nil_check = false

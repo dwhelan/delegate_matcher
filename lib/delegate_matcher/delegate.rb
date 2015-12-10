@@ -3,13 +3,13 @@ module RSpec
     module DelegateMatcher
       class Delegate
 
-        attr_accessor :delegate, :prefix
+        attr_accessor :receiver, :prefix
 
         def initialize(subject, to, expected)
           if to.is_a?(String) || to.is_a?(Symbol)
             name = to.to_s
 
-            self.delegate = case
+            self.receiver = case
             when name.start_with?('@@')
               subject.class.class_variable_get(name)
             when name.start_with?('@')
@@ -25,7 +25,7 @@ module RSpec
             self.prefix = name.delete('@')
           else
             fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.allow_nil.nil?
-            self.delegate = to
+            self.receiver = to
             self.prefix   = ''
           end
         end

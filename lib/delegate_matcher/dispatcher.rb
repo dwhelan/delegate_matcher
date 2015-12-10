@@ -6,8 +6,8 @@ module RSpec
         attr_writer :method_name, :block
         attr_reader :return_value
 
-        def initialize(options)
-          @options = options
+        def initialize(prefix)
+          @prefix  = prefix
         end
 
         def call
@@ -15,7 +15,7 @@ module RSpec
         end
 
         def method_name
-          "#{@options.prefix}#{@method_name}"
+          "#{@prefix}#{@method_name}"
         end
 
         def block
