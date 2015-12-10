@@ -3,7 +3,7 @@ module RSpec
     module DelegateMatcher
       class Expected
         attr_accessor :to
-        attr_accessor :args
+        attr_accessor :args, :as_args
         attr_accessor :received_args
         attr_accessor :method_name, :as
         attr_accessor :block
@@ -29,6 +29,17 @@ module RSpec
             to.to_s.delete('@').downcase + '_'
           else
             ''
+          end
+        end
+
+        def description
+          case
+          when !args.eql?(to_args)
+            "#{to}.#{as}#{argument_description}"
+          when to.eql?(dispatcher.method_name)
+            "#{to}"
+          else
+            "#{to}.#{as}"
           end
         end
 

@@ -4,12 +4,7 @@ module RSpec
   module Matchers
     define(:delegate) do |method_name|
       match do |subject|
-        fail 'need to provide a "to"' unless expected.to
-
-        dispatcher.subject     = subject
-        dispatcher.method_name = expected.method_name = method_name
-
-        delegation.ok?
+        delegation_ok?(method_name, subject)
       end
 
       description do
@@ -28,7 +23,7 @@ module RSpec
       chain(:as)              { |as|               expected.as          = as }
       chain(:allow_nil)       { |allow_nil = true| expected.allow_nil   = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix      = prefix }
-      chain(:with)            { |*args|            expected.args        = args; dispatcher.args ||= args }
+      chain(:with)            { |*args|            expected.args      ||= expected.as_args = args }
       chain(:with_a_block)    {                    expected.block       = true  }
       chain(:without_a_block) {                    expected.block       = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -38,22 +33,23 @@ module RSpec
 
       private
 
+      def delegation_ok?(method_name, subject)
+        fail 'need to provide a "to"' unless expected.to
+
+        dispatcher = DelegateMatcher::Dispatcher.new(subject, expected)
+        expected.method_name = method_name
+
+        DelegateMatcher::Delegation.new(expected, dispatcher).ok?
+      end
+
       def expected
         @expected ||= DelegateMatcher::Expected.new
-      end
-
-      def dispatcher
-        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected.prefix)
-      end
-
-      def delegation
-        @delegation ||= DelegateMatcher::Delegation.new(expected, dispatcher)
       end
 
       # rubocop:disable Metrics/AbcSize
       def delegate_description
         case
-        when !expected.args.eql?(dispatcher.args)
+        when !expected.args.eql?(expected.to_args)
           "#{expected.to}.#{expected.as}#{expected.argument_description}"
         when expected.to.eql?(dispatcher.method_name)
           "#{expected.to}"

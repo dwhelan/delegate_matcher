@@ -2,20 +2,20 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Dispatcher
-        attr_accessor :subject, :args
-        attr_writer :method_name, :block
-        attr_reader :return_value
+        attr_accessor :subject
+        attr_reader :return_value, :expected
 
-        def initialize(prefix)
-          @prefix  = prefix
+        def initialize(subject, expected)
+          self.subject  = subject
+          self.expected = expected
         end
 
         def call
-          self.return_value = subject.send(method_name, *args, &block)
+          self.return_value = subject.send(method_name, *expected.as_args, &block)
         end
 
         def method_name
-          "#{@prefix}#{@method_name}"
+          "#{expected.prefix}#{expected.method_name}"
         end
 
         def block
@@ -32,7 +32,7 @@ module RSpec
 
         private
 
-        attr_writer :return_value
+        attr_writer :subject, :expected, :return_value
       end
     end
   end
