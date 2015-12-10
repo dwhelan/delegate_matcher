@@ -2,13 +2,11 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :method_name
-
         attr_accessor :to
         attr_accessor :args
-
+        attr_accessor :method_name
         attr_accessor :block
-        attr_accessor :nil_check
+        attr_accessor :allow_nil
         attr_accessor :skip_return_check
 
         def prefix=(prefix)
@@ -35,9 +33,9 @@ module RSpec
 
         def nil_description
           case
-          when nil_check.nil?
+          when allow_nil.nil?
             ''
-          when nil_check
+          when allow_nil
             ' with nil allowed'
           else
             ' with nil not allowed'

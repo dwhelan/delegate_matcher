@@ -24,7 +24,7 @@ module RSpec
 
             self.prefix = name.delete('@')
           else
-            fail 'cannot verify "allow_nil" expectations when delegating to an object' unless options.nil_check.nil?
+            fail 'cannot verify "allow_nil" expectations when delegating to an object' unless options.allow_nil.nil?
             self.delegate = to
             self.prefix   = ''
           end

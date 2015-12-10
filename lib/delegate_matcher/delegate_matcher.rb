@@ -27,7 +27,7 @@ module RSpec
 
       chain(:to)              { |to|               expected.to  = to }
       chain(:as)              { |as|               expected.method_name    = as }
-      chain(:allow_nil)       { |allow_nil = true| expected.nil_check = allow_nil }
+      chain(:allow_nil)       { |allow_nil = true| expected.allow_nil = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix    = prefix }
       chain(:with)            { |*args|            expected.args      = args; dispatcher.args ||= args }
       chain(:with_a_block)    {                    expected.block     = true  }
