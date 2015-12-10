@@ -10,7 +10,7 @@ module RSpec
         end
 
         def method
-          prefix ? :"#{prefix.downcase}_#{@method}" : @method
+          prefix.nil? || prefix.empty? ?  @method :"#{prefix.downcase}_#{@method}"
         end
 
         def block

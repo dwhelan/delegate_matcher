@@ -27,7 +27,7 @@ module RSpec
         end
 
         def receiver
-          Delegate.for(dispatcher.sender, expected.delegate, expected)
+          Delegate.new(dispatcher.sender, expected.delegate, expected).delegate
         end
 
         def do_delegate(&block)

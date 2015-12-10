@@ -27,12 +27,8 @@ module RSpec
           let(:method_name) { :name      }
           let(:receiver)    { author    }
 
-          # fit { should delegate(method_name).to(receiver)      }
-
-          it 'should fail if there is not an explicit prefix' do
-            expect { should delegate(:name).to(author).with_prefix }.to raise_error do |error|
-              expect(error.message).to match(/must use an explicit prefix when expecting delegating to an object with a prefix/)
-            end
+          it 'should ignore "with_prefix" unless an explicit prefix is provided' do
+            should delegate(:name).to(author).with_prefix
           end
 
           it 'should fail it a nil check is specified' do
