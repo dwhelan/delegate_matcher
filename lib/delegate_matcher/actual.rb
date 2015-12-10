@@ -1,17 +1,11 @@
 module RSpec
   module Matchers
     module DelegateMatcher
-      class ReceiverStub
-
-        include RSpec::Mocks::ExampleMethods
+      class Actual
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        attr_accessor :receiver
-        attr_accessor :method_name
-        attr_accessor :args
-        attr_accessor :block
-        attr_accessor :return_value
-        attr_accessor :received
+        attr_reader :received, :args, :block
+        alias_method :received?, :received
 
         def stub_receive(receiver, method_name)
           self.received = false
@@ -23,8 +17,6 @@ module RSpec
           end
         end
 
-        alias_method :received?, :received
-
         def argument_description
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
@@ -32,6 +24,10 @@ module RSpec
         def return_value
           self
         end
+
+        private
+
+        attr_writer :received, :args, :block
       end
     end
   end

@@ -19,7 +19,7 @@ module RSpec
         def initialize(expected, dispatcher)
           self.expected   = expected
           self.dispatcher = dispatcher
-          self.actual   = ReceiverStub.new
+          self.actual   = Actual.new
         end
 
         def default_prefix
