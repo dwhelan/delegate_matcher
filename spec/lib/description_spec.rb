@@ -21,10 +21,6 @@ module RSpec
           subject       { eval matcher }
           before        { subject.matches? post }
 
-          xcontext 'delegate(:name).to(:author).with_prefix("writer")' do
-            its(:description) { should eq 'delegate writer_name to author.name' }
-          end
-
           xcontext 'delegate(:writer).to(:author).as("name")' do
             its(:description) { should eq 'delegate writer to author.name' }
           end

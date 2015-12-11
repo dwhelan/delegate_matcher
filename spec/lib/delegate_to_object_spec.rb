@@ -27,11 +27,7 @@ module RSpec
           let(:method_name) { :name      }
           let(:receiver)    { author    }
 
-          xit 'should ignore "with_prefix" unless an explicit prefix is provided' do
-            should delegate(:name).to(author).with_prefix
-          end
-
-          it 'should fail it a nil check is specified' do
+          it 'should fail if a nil check is specified' do
             expect { should delegate(:name).to(author).allow_nil }.to raise_error do |error|
               expect(error.message).to match(/cannot verify "allow_nil" expectations when delegating to an object/)
             end
@@ -73,7 +69,7 @@ module RSpec
             end
           end
 
-          it_behaves_like 'a delegator with a prefix', 'author' do
+          describe 'prefix' do
             before do
               class Post
                 def author_name
@@ -81,6 +77,30 @@ module RSpec
                 end
               end
             end
+
+            it { should delegate(:name).to(author).with_prefix('author') }
+            it { should delegate(:name).to(author).with_prefix(:author)  }
+
+            describe "description with prefix'" do
+              let(:matcher) { delegate(:name).to(author).with_prefix('author') }
+              before { matcher.matches? subject}
+
+              it { expect(matcher.description).to eq "delegate author_name to #{author}.name" }
+              it { expect(matcher.failure_message).to match(/expected .* to delegate author_name to #{author}.name/) }
+              it { expect(matcher.failure_message_when_negated).to match(/expected .* not to delegate author_name to #{author}.name/) }
+            end
+          end
+
+          describe 'default prefix' do
+            before do
+              class Post
+                def name
+                  @author.name
+                end
+              end
+            end
+
+            it { should delegate(:name).to(author).with_prefix }
           end
 
           it_behaves_like 'a delegator with a different return value', 'Ann Rand' do
