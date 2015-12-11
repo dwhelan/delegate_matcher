@@ -21,15 +21,6 @@ module RSpec
           subject       { eval matcher }
           before        { subject.matches? post }
 
-          xcontext 'delegate(:writer).to(:author).as("name")' do
-            its(:description) { should eq 'delegate writer to author.name' }
-          end
-
-          xcontext 'delegate(:name_with_bad_return).to(:author)' do
-            its(:description)     { should eq 'delegate name_with_bad_return to author' }
-            its(:failure_message) { should match(/a return value of "Ann Rand" was returned instead of the delegate return value/) }
-          end
-
           xcontext 'with allow_nil true' do
             context 'delegate(:name).to(:author).allow_nil' do
               its(:description)     { should eq 'delegate name to author with nil allowed' }

@@ -69,7 +69,7 @@ module RSpec
               it { should delegate(method_name).to(receiver).with_prefix  }
             end
 
-            it_behaves_like 'a delegator with a different return value', :other_name do
+            it_behaves_like 'a delegator with a different return value', 'Ann Rand' do
               before do
                 class Post
                   def name

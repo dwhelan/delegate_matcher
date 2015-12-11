@@ -47,6 +47,10 @@ module RSpec
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 
+        def options_description
+          "#{nil_description}#{block_description}#{return_value_description}"
+        end
+
         def nil_description
           case
           when allow_nil.nil?
@@ -67,6 +71,10 @@ module RSpec
           else
             ' without a block'
           end
+        end
+
+        def return_value_description
+          skip_return_check ? ' without using delegate return value' : ''
         end
       end
     end

@@ -13,5 +13,4 @@ shared_examples 'a delegator with a prefix' do |prefix|
       it { expect(matcher.failure_message_when_negated).to match(/expected .* not to delegate #{prefix}_#{method_name} to #{receiver}.#{method_name}/) }
     end
   end
-
 end
