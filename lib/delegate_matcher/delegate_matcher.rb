@@ -8,7 +8,7 @@ module RSpec
       end
 
       description do
-        "delegate #{dispatcher.description} to #{expected.delegate_description}#{expected.options_description}"
+        "delegate #{expected.delegator_description} to #{expected.delegate_description}#{expected.options_description}"
       end
 
       def failure_message

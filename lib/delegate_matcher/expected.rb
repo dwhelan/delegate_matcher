@@ -40,6 +40,10 @@ module RSpec
           "#{prefix}#{method_name}"
         end
 
+        def delegator_description
+          "#{delegator_method_name}#{argument_description}"
+        end
+
         def delegate_description
           case
           when !args.eql?(as_args)

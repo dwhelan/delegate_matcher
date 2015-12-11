@@ -3,7 +3,7 @@ module RSpec
     module DelegateMatcher
       class Dispatcher
         attr_accessor :subject
-        attr_reader :return_value, :expected
+        attr_reader :return_value
 
         def initialize(expected)
           self.expected = expected
@@ -17,13 +17,10 @@ module RSpec
           @block ||= proc {}
         end
 
-        def description
-          "#{expected.delegator_method_name}#{expected.argument_description}"
-        end
-
         private
 
-        attr_writer :expected, :return_value
+        attr_accessor :expected
+        attr_writer :return_value
       end
     end
   end
