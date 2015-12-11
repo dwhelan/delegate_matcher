@@ -8,7 +8,7 @@ module RSpec
       end
 
       description do
-        "delegate #{dispatcher.description} to #{delegate_description}#{expected.options_description}"
+        "delegate #{dispatcher.description} to #{expected.delegate_description}#{expected.options_description}"
       end
 
       def failure_message
@@ -52,18 +52,6 @@ module RSpec
 
       def delegation
         @delegation ||= DelegateMatcher::Delegation.new(expected, dispatcher)
-      end
-
-      # rubocop:disable Metrics/AbcSize
-      def delegate_description
-        case
-        when !expected.args.eql?(expected.as_args)
-          "#{expected.to}.#{expected.as}#{expected.as_argument_description}"
-        when expected.as.to_s.eql?(dispatcher.method_name)
-          "#{expected.to}"
-        else
-          "#{expected.to}.#{expected.as}"
-        end
       end
     end
   end

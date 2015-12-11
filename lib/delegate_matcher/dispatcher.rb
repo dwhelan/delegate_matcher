@@ -10,11 +10,7 @@ module RSpec
         end
 
         def call
-          self.return_value = subject.send(method_name, *expected.args, &block)
-        end
-
-        def method_name
-          "#{expected.prefix}#{expected.method_name}"
+          self.return_value = subject.send(expected.delegator_method_name, *expected.args, &block)
         end
 
         def block
@@ -22,7 +18,7 @@ module RSpec
         end
 
         def description
-          "#{method_name}#{expected.argument_description}"
+          "#{expected.delegator_method_name}#{expected.argument_description}"
         end
 
         private
