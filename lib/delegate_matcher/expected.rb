@@ -19,6 +19,10 @@ module RSpec
           @as || method_name
         end
 
+        def as_args
+          @as_args || args
+        end
+
         def prefix
           case
           when !@has_prefix
@@ -43,8 +47,12 @@ module RSpec
           end
         end
 
-        def argument_description
-          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+        def argument_description(arguments=args)
+          arguments ? "(#{arguments.map { |a| format('%p', a) }.join(', ')})" : ''
+        end
+
+        def as_argument_description
+          argument_description(as_args)
         end
 
         def options_description

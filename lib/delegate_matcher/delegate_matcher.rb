@@ -23,7 +23,7 @@ module RSpec
       chain(:as)              { |as|               expected.as          = as }
       chain(:allow_nil)       { |allow_nil = true| expected.allow_nil   = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix      = prefix }
-      chain(:with)            { |*args|            expected.args      ||= expected.as_args = args }
+      chain(:with)            { |*args|            expected.args      ||= args; expected.as_args = args }
       chain(:with_a_block)    {                    expected.block       = true  }
       chain(:without_a_block) {                    expected.block       = false }
       chain(:without_return)  {                    expected.skip_return_check  = true }
@@ -58,7 +58,7 @@ module RSpec
       def delegate_description
         case
         when !expected.args.eql?(expected.as_args)
-          "#{expected.to}.#{expected.as}#{expected.argument_description}"
+          "#{expected.to}.#{expected.as}#{expected.as_argument_description}"
         when expected.as.to_s.eql?(dispatcher.method_name)
           "#{expected.to}"
         else
