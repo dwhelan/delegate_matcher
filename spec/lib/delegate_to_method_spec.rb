@@ -13,8 +13,7 @@ module RSpec
 
           subject { Post.new }
 
-          let(:method_name) { :name   }
-          let(:receiver)    { :author }
+          let(:receiver) { :author }
 
           it_behaves_like 'a simple delegator' do
             before do
@@ -65,7 +64,7 @@ module RSpec
                 end
               end
             end
-            it { should delegate(method_name).to(receiver).with_prefix  }
+            it { should delegate(:name).to(:author).with_prefix  }
           end
 
           it_behaves_like 'a delegator with a different return value', 'Ann Rand' do

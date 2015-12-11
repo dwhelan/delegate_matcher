@@ -23,9 +23,8 @@ module RSpec
 
           subject { Post.new(author) }
 
-          let(:author)      { Author.new }
-          let(:method_name) { :name      }
-          let(:receiver)    { author    }
+          let(:author)   { Author.new }
+          let(:receiver) { author     }
 
           it 'should fail if a nil check is specified' do
             expect { should delegate(:name).to(author).allow_nil }.to raise_error do |error|

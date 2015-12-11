@@ -1,22 +1,22 @@
 shared_examples 'a delegator with args' do |*args|
-  it { should delegate(method_name).with(*args).to(receiver)  }
+  it { should delegate(:name).with(*args).to(receiver)  }
 
   describe 'description' do
     before { matcher.matches? subject}
 
     context 'with no args' do
-      let(:matcher) { delegate(method_name).with().to(receiver) }
-      it { expect(matcher.description).to eq %(delegate #{method_name}() to #{receiver}) }
+      let(:matcher) { delegate(:name).with().to(receiver) }
+      it { expect(matcher.description).to eq %(delegate #{:name}() to #{receiver}) }
     end
 
     context 'with args passed through' do
-      let(:matcher) { delegate(method_name).with('Ms.', 'Phd').to(receiver) }
-      it { expect(matcher.description).to eq %(delegate #{method_name}("Ms.", "Phd") to #{receiver}) }
+      let(:matcher) { delegate(:name).with('Ms.', 'Phd').to(receiver) }
+      it { expect(matcher.description).to eq %(delegate #{:name}("Ms.", "Phd") to #{receiver}) }
     end
 
     context 'with args changed' do
-      let(:matcher) { delegate(method_name).with('Ms.').to(receiver).with('Mrs.') }
-      it { expect(matcher.description).to eq %(delegate #{method_name}("Ms.") to #{receiver}.#{method_name}("Mrs.")) }
+      let(:matcher) { delegate(:name).with('Ms.').to(receiver).with('Mrs.') }
+      it { expect(matcher.description).to eq %(delegate #{:name}("Ms.") to #{receiver}.#{:name}("Mrs.")) }
     end
 
       # context 'delegate(:name_with_different_arg_and_block).with("Ms.").to(:author)' do
