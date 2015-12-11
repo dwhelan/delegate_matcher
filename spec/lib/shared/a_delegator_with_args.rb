@@ -12,7 +12,7 @@ shared_examples 'a delegator with args' do |*args|
     context 'with args passed through' do
       let(:matcher) { delegate(:name).with('Ms.').to(receiver) }
       it { expect(matcher.description).to eq %(delegate #{:name}("Ms.") to #{receiver}) }
-      fit { expect(matcher.failure_message_when_negated).to match /was called with \("Ms."\)/ }
+      it { expect(matcher.failure_message_when_negated).to match /was called with \("Ms."\)/ }
     end
 
     context 'with args changed' do
