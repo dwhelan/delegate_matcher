@@ -16,18 +16,18 @@ module RSpec
         end
 
         def delegate
-          @delegate ||= Delegate.new(dispatcher.subject, expected.to, expected)
+          @delegate ||= Delegate.new(dispatcher.subject, expected)
         end
 
         def delegation_ok?
           actual.stub_receive(delegate.receiver, expected.as)
           dispatcher.call
-          actual.received?
+          actual.received
         end
 
         def ok?
           ok = allow_nil_ok? && delegation_ok?
-          ok && actual.received? && arguments_ok? && block_ok? && return_value_ok?
+          ok && arguments_ok? && block_ok? && return_value_ok?
         end
 
         # TODO: perhaps move delegation earlier
@@ -99,7 +99,7 @@ module RSpec
 
         def return_value_failure_message(_negated)
           case
-          when !actual.received? || return_value_ok?
+          when !actual.received || return_value_ok?
             ''
           else
             format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
