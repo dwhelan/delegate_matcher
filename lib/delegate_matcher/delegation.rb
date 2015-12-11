@@ -62,7 +62,7 @@ module RSpec
         end
 
         def return_value_ok?
-          expected.skip_return_check || dispatcher.return_value == actual.return_value
+          !expected.check_return || dispatcher.return_value == actual.return_value
         end
 
         def failure_message(negated)

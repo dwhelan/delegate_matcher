@@ -26,7 +26,7 @@ module RSpec
       chain(:with)            { |*args|            expected.args      ||= args; expected.as_args = args }
       chain(:with_a_block)    {                    expected.block       = true  }
       chain(:without_a_block) {                    expected.block       = false }
-      chain(:without_return)  {                    expected.skip_return_check  = true }
+      chain(:without_return)  {                    expected.check_return  = false }
 
       alias_method :with_block,    :with_a_block
       alias_method :without_block, :without_a_block

@@ -2,25 +2,12 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :to
-        attr_accessor :args, :as_args
-        attr_accessor :received_args
-        attr_accessor :method_name, :as
-        attr_accessor :block
-        attr_accessor :allow_nil
-        attr_accessor :skip_return_check
+        attr_accessor :to, :method_name, :args, :block
+        attr_accessor :as , :as_args
+        attr_accessor :allow_nil, :check_return
 
-        def prefix=(prefix)
-          @has_prefix = true
-          @prefix     = prefix
-        end
-
-        def as
-          @as || method_name
-        end
-
-        def as_args
-          @as_args || args
+        def initialize
+          self.check_return = true
         end
 
         def prefix
@@ -34,6 +21,19 @@ module RSpec
           else
             ''
           end
+        end
+
+        def prefix=(prefix)
+          @has_prefix = true
+          @prefix     = prefix
+        end
+
+        def as
+          @as || method_name
+        end
+
+        def as_args
+          @as_args || args
         end
 
         def delegator_method_name
@@ -55,12 +55,12 @@ module RSpec
           end
         end
 
-        def argument_description(arguments=args)
-          arguments ? "(#{arguments.map { |a| format('%p', a) }.join(', ')})" : ''
-        end
-
         def as_argument_description
           argument_description(as_args)
+        end
+
+        def argument_description(arguments=args)
+          arguments ? "(#{arguments.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 
         def options_description
@@ -90,7 +90,7 @@ module RSpec
         end
 
         def return_value_description
-          skip_return_check ? ' without using delegate return value' : ''
+          check_return ? '' : ' without using delegate return value'
         end
       end
     end
