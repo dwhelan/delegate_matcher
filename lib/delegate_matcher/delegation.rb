@@ -47,7 +47,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.args.nil? || actual.args.eql?(expected.args)
+          expected.as_args.nil? || actual.args.eql?(expected.as_args)
         end
 
         def block_ok?
@@ -77,10 +77,10 @@ module RSpec
 
         def argument_failure_message(negated)
           case
-          when expected.args.nil? || negated ^ arguments_ok?
+          when expected.as_args.nil? || negated ^ arguments_ok?
             ''
           else
-            "was called with #{argument_description(actual.args)}"
+            "was called with #{actual.argument_description}"
           end
         end
 
