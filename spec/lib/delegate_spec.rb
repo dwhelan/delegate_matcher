@@ -3,18 +3,29 @@ require 'spec_helper'
 module RSpec
   module Matchers
     module DelegateMatcher
+
+      class Post
+        def name
+          author.name
+        end
+
+        def author
+          @author ||= Author.new
+        end
+      end
+
+      describe 'errors' do
+        let(:post)    { Post.new }
+
+        it 'should require a "to"' do
+          expect{ should delegate(:name) }.to raise_error do |error|
+            expect(error.message).to match /need to provide a "to"/
+          end
+        end
+      end
+
       module Description
         describe 'description' do
-
-          class Post
-            def name
-              author.name
-            end
-
-            def author
-              @author ||= Author.new
-            end
-          end
 
           let(:matcher) { self.class.parent_groups[1].description }
           let(:post)    { Post.new }

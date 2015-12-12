@@ -4,7 +4,6 @@ module RSpec
       class Delegate
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        attr_accessor :receiver
         attr_reader :received, :args, :block
 
         def initialize(expected)
@@ -54,9 +53,8 @@ module RSpec
 
         private
 
-        attr_writer :received, :args, :block
-
         attr_accessor :expected
+        attr_writer :received, :args, :block
 
         def subject
           expected.subject
