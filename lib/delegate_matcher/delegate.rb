@@ -2,11 +2,21 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Delegate
+        RSpec::Mocks::Syntax.enable_expect(self)
 
         attr_accessor :receiver
+        attr_reader :received, :args, :block
 
         def initialize(expected)
           self.expected = expected
+          self.received = false
+
+          allow(receiver).to receive(expected.as) do |*args, &block|
+            self.args     = args
+            self.block    = block
+            self.received = true
+            return_value
+          end
         end
 
         def receiver
@@ -31,7 +41,20 @@ module RSpec
           is_a_reference? ? name.delete('@') : ''
         end
 
+        def stub_receive
+        end
+
+        def argument_description
+          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+        end
+
+        def return_value
+          self
+        end
+
         private
+
+        attr_writer :received, :args, :block
 
         attr_accessor :expected
 

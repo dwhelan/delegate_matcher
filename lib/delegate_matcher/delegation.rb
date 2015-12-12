@@ -7,22 +7,17 @@ module RSpec
       class Delegation
         attr_accessor :expected
         attr_accessor :dispatcher
-        attr_accessor :actual
+        attr_accessor :delegate
 
         def initialize(expected)
           self.expected   = expected
           self.dispatcher = DelegateMatcher::Dispatcher.new(expected)
-          self.actual     = Actual.new
-        end
-
-        def delegate
-          @delegate ||= Delegate.new(expected)
+          self.delegate   = Delegate.new(expected)
         end
 
         def delegation_ok?
-          actual.stub_receive(delegate.receiver, expected.as)
           dispatcher.call
-          actual.received
+          delegate.received
         end
 
         def ok?
@@ -47,7 +42,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.as_args.nil? || actual.args.eql?(expected.as_args)
+          expected.as_args.nil? || delegate.args.eql?(expected.as_args)
         end
 
         def block_ok?
@@ -55,14 +50,14 @@ module RSpec
           when expected.block.nil?
             true
           when expected.block
-            actual.block == dispatcher.block
+            delegate.block == dispatcher.block
           else
-            actual.block.nil?
+            delegate.block.nil?
           end
         end
 
         def return_value_ok?
-          !expected.check_return || dispatcher.return_value == actual.return_value
+          !expected.check_return || dispatcher.return_value == delegate.return_value
         end
 
         def failure_message(negated)
@@ -80,7 +75,7 @@ module RSpec
           when expected.as_args.nil? || negated ^ arguments_ok?
             ''
           else
-            "was called with #{actual.argument_description}"
+            "was called with #{delegate.argument_description}"
           end
         end
 
@@ -91,7 +86,7 @@ module RSpec
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            actual.block.nil? ? 'a block was not passed' : "a different block #{actual.block} was passed"
+            delegate.block.nil? ? 'a block was not passed' : "a different block #{delegate.block} was passed"
           else
             'a block was passed'
           end
@@ -99,7 +94,7 @@ module RSpec
 
         def return_value_failure_message(_negated)
           case
-          when !actual.received || return_value_ok?
+          when !delegate.received || return_value_ok?
             ''
           else
             format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
