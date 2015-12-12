@@ -21,12 +21,19 @@ module RSpec
           when is_an_instance_variable?
             subject.instance_variable_set(name, value)
           when is_a_constant?
-            subject.class.const_set(name, value)
+            silence_warnings { subject.class.const_set(name, value) }
           when is_a_method?
             allow(subject).to receive(name) { value }
           else # is an object
             fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.allow_nil.nil?
           end
+        end
+
+        def silence_warnings(&block)
+          warn_level = $VERBOSE
+          $VERBOSE = nil
+          block.call
+          $VERBOSE = warn_level
         end
       end
     end

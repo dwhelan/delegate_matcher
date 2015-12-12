@@ -40,7 +40,7 @@ module ActiveSupportDelegation
   describe Post do
     it { should delegate(:name).to(:author) }
     it { should delegate(:name).to(:@author) }
-    xit { should delegate(:name_with_nil_check).to(:author).allow_nil }
+    it { should delegate(:name_with_nil_check).to(:author).allow_nil }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:name).to(:author).with_prefix(:writer) }
 
