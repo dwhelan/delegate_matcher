@@ -17,6 +17,10 @@ module ActiveSupportDelegation
     delegate :count,               to: :@@authors
     delegate :first,               to: :GENRES
     delegate :name,                to: :class, prefix: true
+
+    def initialize
+      @author = Author.new
+    end
   end
 
   class Author
