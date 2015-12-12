@@ -44,6 +44,12 @@ module RSpec
           "#{prefix}#{method_name}"
         end
 
+        def description
+          "delegate #{delegator_description} to #{delegate_description}#{options_description}"
+        end
+
+        private
+
         def delegator_description
           "#{delegator_method_name}#{argument_description}"
         end
