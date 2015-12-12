@@ -10,12 +10,7 @@ module RSpec
           self.expected = expected
           self.received = false
 
-          allow(receiver).to receive(expected.as) do |*args, &block|
-            self.args     = args
-            self.block    = block
-            self.received = true
-            return_value
-          end
+          stub_receiver
         end
 
         def receiver
@@ -40,9 +35,6 @@ module RSpec
           is_a_reference? ? name.delete('@') : ''
         end
 
-        def stub_receive
-        end
-
         def argument_description
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
@@ -55,6 +47,15 @@ module RSpec
 
         attr_accessor :expected
         attr_writer :received, :args, :block
+
+        def stub_receiver
+          allow(receiver).to receive(expected.as) do |*args, &block|
+            self.args     = args
+            self.block    = block
+            self.received = true
+            return_value
+          end
+        end
 
         def subject
           expected.subject
