@@ -9,9 +9,9 @@ module RSpec
         attr_accessor :dispatcher
         attr_accessor :actual
 
-        def initialize(expected, dispatcher)
-          self.expected   = expected
+        def initialize(dispatcher, expected)
           self.dispatcher = dispatcher
+          self.expected   = expected
           self.actual     = Actual.new
         end
 

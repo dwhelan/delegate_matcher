@@ -2,9 +2,8 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :to, :method_name, :args, :block
-        attr_accessor :as , :as_args
-        attr_accessor :allow_nil, :check_return
+        attr_accessor :to, :method_name, :block, :as, :allow_nil, :check_return
+        attr_reader   :args
 
         def initialize
           self.check_return = true
@@ -28,12 +27,17 @@ module RSpec
           @prefix     = prefix
         end
 
-        def as
-          @as || method_name
+        def args=(args)
+          @args_set ? @as_args = args : @args = args
+          @args_set = true
         end
 
         def as_args
           @as_args || args
+        end
+
+        def as
+          @as || method_name
         end
 
         def delegator_method_name
