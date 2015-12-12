@@ -9,8 +9,6 @@ module RSpec
         def initialize(expected)
           self.expected = expected
           self.received = false
-
-          stub_receiver
         end
 
         def receiver
@@ -47,15 +45,6 @@ module RSpec
 
         attr_accessor :expected
         attr_writer :received, :args, :block
-
-        def stub_receiver
-          allow(receiver).to receive(expected.as) do |*args, &block|
-            self.args     = args
-            self.block    = block
-            self.received = true
-            return_value
-          end
-        end
 
         def subject
           expected.subject

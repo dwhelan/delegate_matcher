@@ -12,7 +12,7 @@ module RSpec
         def initialize(expected)
           self.expected   = expected
           self.dispatcher = DelegateMatcher::Dispatcher.new(expected)
-          self.delegate   = Delegate.new(expected)
+          self.delegate   = StubDelegate.new(expected)
         end
 
         def delegation_ok?
@@ -21,24 +21,20 @@ module RSpec
         end
 
         def ok?
-          ok = allow_nil_ok? && delegation_ok?
-          ok && arguments_ok? && block_ok? && return_value_ok?
+          allow_nil_ok? && delegation_ok? && arguments_ok? && block_ok? && return_value_ok?
         end
 
-        # TODO: perhaps move delegation earlier
         def allow_nil_ok?
           return true if expected.allow_nil.nil?
-          return true unless expected.to.is_a?(String) || expected.to.is_a?(Symbol)
 
           begin
-            actual_nil_check = true
-            delegation_ok?
-            @return_value_when_delegate_nil = dispatcher.return_value
+            NilDelegate.new(expected) { dispatcher.call }
+            allow_nil = true
           rescue NoMethodError
-            actual_nil_check = false
+            allow_nil = false
           end
 
-          expected.nil_check == actual_nil_check && @return_value_when_delegate_nil.nil?
+          allow_nil == expected.allow_nil
         end
 
         def arguments_ok?
