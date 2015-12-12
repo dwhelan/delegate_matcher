@@ -24,13 +24,8 @@ module RSpec
                           fail "#{subject.inspect}'s' #{name} method expects parameters" unless [0, -1].include?(subject.method(name).arity)
                           subject.send(name)
                         else # is an object
-                          fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.allow_nil.nil?
                           to
                         end
-        end
-
-        def prefix
-          is_a_reference? ? name.delete('@') : ''
         end
 
         def argument_description

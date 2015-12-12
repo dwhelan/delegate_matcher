@@ -5,19 +5,9 @@ module RSpec
     module DelegateMatcher
       module ToObject
         describe 'delegation to an object' do
-          class Author
-            def name
-              ''
-            end
-          end
-
           class Post
             def initialize(author)
               @author = author
-            end
-
-            def name
-              @author.name
             end
           end
 
@@ -54,12 +44,6 @@ module RSpec
 
           it_behaves_like 'a delegator with a different method name', :other_name do
             before do
-              class Author
-                def other_name
-                  ''
-                end
-              end
-
               class Post
                 def name
                   @author.other_name

@@ -101,8 +101,6 @@ module RSpec
           case
           when expected.allow_nil.nil? || negated ^ allow_nil_ok?
             ''
-          when !@return_value_when_delegate_nil.nil?
-            'did not return nil'
           when negated
             "#{expected.to} was #{expected.allow_nil ? '' : 'not '}allowed to be nil"
           else

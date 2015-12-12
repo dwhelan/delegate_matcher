@@ -25,7 +25,7 @@ module RSpec
           when is_a_method?
             allow(subject).to receive(name) { value }
           else # is an object
-            fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.allow_nil.nil?
+            fail 'cannot verify "allow_nil" expectations when delegating to an object' if value.nil?
           end
         end
 

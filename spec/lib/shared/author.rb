@@ -3,7 +3,6 @@ module RSpec
     module DelegateMatcher
       class Author
         def name
-          'Ann Rand'
         end
       end
     end
