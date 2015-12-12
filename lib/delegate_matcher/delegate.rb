@@ -21,7 +21,7 @@ module RSpec
                           fail "#{subject.inspect} does not respond to #{name}" unless subject.respond_to?(name, true)
                           fail "#{subject.inspect}'s' #{name} method expects parameters" unless [0, -1].include?(subject.method(name).arity)
                           subject.send(name)
-                        else
+                        else # is an object
                           fail 'cannot verify "allow_nil" expectations when delegating to an object' unless expected.allow_nil.nil?
                           to
                         end
@@ -34,10 +34,6 @@ module RSpec
         private
 
         attr_accessor :expected
-
-        def is_a_reference?
-          to.is_a?(String) || to.is_a?(Symbol)
-        end
 
         def subject
           expected.subject
@@ -52,11 +48,11 @@ module RSpec
         end
 
         def is_a_class_variable?
-          name.start_with?('@@')
+          is_a_reference? && name.start_with?('@@')
         end
 
         def is_an_instance_variable?
-          name.start_with?('@')
+          is_a_reference? && name.start_with?('@')
         end
 
         def is_a_constant?
@@ -65,6 +61,10 @@ module RSpec
 
         def is_a_method?
           is_a_reference?
+        end
+
+        def is_a_reference?
+          to.is_a?(String) || to.is_a?(Symbol)
         end
       end
     end

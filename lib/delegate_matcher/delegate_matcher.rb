@@ -33,6 +33,14 @@ module RSpec
 
       private
 
+      def delegation
+        @delegation ||= DelegateMatcher::Delegation.new(expected)
+      end
+
+      def expected
+        @expected ||= DelegateMatcher::Expected.new
+      end
+
       def delegation_ok?(method_name, subject)
         fail 'need to provide a "to"' unless expected.to
 
@@ -41,19 +49,9 @@ module RSpec
 
         delegation.ok?
       end
-
-      def delegation
-        @delegation ||= DelegateMatcher::Delegation.new(expected)
-      end
-
-      def expected
-        @expected ||= DelegateMatcher::Expected.new
-      end
     end
   end
 end
 
-# TODO: Specs for failure messages
 # TODO: Handle delegation to a class method?
-# TODO: How to handle delegation is delegate_double is called with something else
-# TODO: Add 'as' logic to description
+# TODO: How to handle delegation if delegate_double is called with something else

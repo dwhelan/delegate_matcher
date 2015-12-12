@@ -9,6 +9,11 @@ module RSpec
           self.check_return = true
         end
 
+        def prefix=(prefix)
+          @has_prefix = true
+          @prefix     = prefix
+        end
+
         def prefix
           case
           when !@has_prefix
@@ -20,11 +25,6 @@ module RSpec
           else
             ''
           end
-        end
-
-        def prefix=(prefix)
-          @has_prefix = true
-          @prefix     = prefix
         end
 
         def args=(args)
