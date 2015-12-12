@@ -5,8 +5,7 @@ module RSpec
 
         attr_accessor :receiver
 
-        def initialize(subject, expected)
-          self.subject  = subject
+        def initialize(expected)
           self.expected = expected
         end
 
@@ -34,11 +33,15 @@ module RSpec
 
         private
 
+        attr_accessor :expected
+
         def is_a_reference?
           to.is_a?(String) || to.is_a?(Symbol)
         end
 
-        attr_accessor :subject, :expected
+        def subject
+          expected.subject
+        end
 
         def to
           expected.to

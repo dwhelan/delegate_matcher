@@ -36,18 +36,14 @@ module RSpec
       def delegation_ok?(method_name, subject)
         fail 'need to provide a "to"' unless expected.to
 
-        dispatcher.subject   = subject
         expected.method_name = method_name
+        expected.subject     = subject
 
         delegation.ok?
       end
 
       def delegation
-        @delegation ||= DelegateMatcher::Delegation.new(dispatcher, expected)
-      end
-
-      def dispatcher
-        @dispatcher ||= DelegateMatcher::Dispatcher.new(expected)
+        @delegation ||= DelegateMatcher::Delegation.new(expected)
       end
 
       def expected

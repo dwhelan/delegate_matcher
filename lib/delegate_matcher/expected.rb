@@ -2,7 +2,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :to, :method_name, :block, :as, :allow_nil, :check_return
+        attr_accessor :subject, :to, :method_name, :block, :as, :allow_nil, :check_return
         attr_reader   :args
 
         def initialize

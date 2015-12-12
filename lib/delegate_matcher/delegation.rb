@@ -9,14 +9,14 @@ module RSpec
         attr_accessor :dispatcher
         attr_accessor :actual
 
-        def initialize(dispatcher, expected)
-          self.dispatcher = dispatcher
+        def initialize(expected)
           self.expected   = expected
+          self.dispatcher = DelegateMatcher::Dispatcher.new(expected)
           self.actual     = Actual.new
         end
 
         def delegate
-          @delegate ||= Delegate.new(dispatcher.subject, expected)
+          @delegate ||= Delegate.new(expected)
         end
 
         def delegation_ok?

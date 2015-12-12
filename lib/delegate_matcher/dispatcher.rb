@@ -2,7 +2,6 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Dispatcher
-        attr_accessor :subject
         attr_reader :return_value
 
         def initialize(expected)
@@ -10,7 +9,7 @@ module RSpec
         end
 
         def call
-          self.return_value = subject.send(expected.delegator_method_name, *expected.args, &block)
+          self.return_value = expected.subject.send(expected.delegator_method_name, *expected.args, &block)
         end
 
         def block
