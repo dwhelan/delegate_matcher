@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    delegate_matcher (0.1)
+    delegate_matcher (0.2)
 
 GEM
   remote: https://rubygems.org/

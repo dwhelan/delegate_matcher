@@ -61,9 +61,9 @@ can check this using the `with_prefix` method (based on Active Support `delegate
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(:author).with_prefix }          # author_name  => author().name
-  it { should delegate(:name).to(:author).with_prefix(:writer) } # writer_name  => author().name
-  it { should delegate(:writer).to(:author).as(:name) }          # writer       => author().name
+  it { should delegate(:name).to(:author).with_prefix }          # author_name  => author.name
+  it { should delegate(:name).to(:author).with_prefix(:writer) } # writer_name  => author.name
+  it { should delegate(:writer).to(:author).as(:name) }          # writer       => author.name
 end
 ```
 
@@ -82,8 +82,8 @@ then you can check this using the `allow_nil` method.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(:author).allow_nil        } # name => author && author().name
-  it { should delegate(:name).to(:author).allow_nil(true)  } # name => author && author().name
+  it { should delegate(:name).to(:author).allow_nil        } # name => author && author.name
+  it { should delegate(:name).to(:author).allow_nil(true)  } # name => author && author.name
   it { should delegate(:name).to(:author).allow_nil(false) } # name => author.name
 end
 ```
@@ -100,7 +100,7 @@ will check that the provided arguments are in turn passed to the delegate.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.').to(:author) }  # name('Ms.')  => author().name('Ms.')
+  it { should delegate(:name).with('Ms.').to(:author) }  # name('Ms.')  => author.name('Ms.')
 end
 ```
 
@@ -110,7 +110,7 @@ method to specify the arguments expected by the delegate.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.')to(:author).with('Miss') }  # name('Ms.')  => author().name('Miss')
+  it { should delegate(:name).with('Ms.')to(:author).with('Miss') }  # name('Ms.')  => author.name('Miss')
 end
 ```
 
@@ -143,54 +143,48 @@ By default, block delegation is only checked if `with_a_block` or `without_a_blo
 You can test delegation based on the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem.
 
 ```ruby
-class Post
-  attr_accessor :author
+  class Post
+    attr_accessor :author
 
-  class_variable_set(:@@authors, ['Ann Rand', 'Catherine Asaro'])
-  GENRES ||= ['Fiction', 'Science Fiction']
+    @@authors = ['Ann Rand', 'Catherine Asaro']
+    GENRES    = ['Fiction',  'Science Fiction']
 
-  delegate :name,                to: :author
-  delegate :name,                to: :author, prefix: true
-  delegate :name,                to: :author, prefix: :writer
-  delegate :name_with_nil_check, to: :author, allow_nil: true
-  delegate :name_with_arg,       to: :author
-  delegate :name_with_block,     to: :author
-  delegate :count,               to: :@@authors
-  delegate :first,               to: :GENRES
-  delegate :name,                to: :class, prefix: true
-end
+    delegate :name,  to: :author, allow_nil: true
+    delegate :name,  to: :author, prefix: true
+    delegate :name,  to: :author, prefix: :writer
+    delegate :name,  to: :class,  prefix: true
+    delegate :count, to: :@@authors
+    delegate :first, to: :GENRES
 
-class Author
-  def name
-    'Catherine Asaro'
+    def initialize
+      @author = Author.new
+    end
   end
 
-  def name_with_nil_check
-    name
+  class Author
+    def name
+      'Catherine Asaro'
+    end
   end
 
-  def name_with_arg(arg)
-    "#{arg} #{name}"
+  describe Post do
+    let(:author) { subject.author }
+
+    it { expect(subject.name).to eq 'Catherine Asaro' }
+
+    it { should delegate(:name).to(author) }
+    it { should delegate(:name).to(:@author) }
+    it { should delegate(:name).to(:author) }
+    it { should delegate(:name).to(:author).allow_nil }
+    it { should delegate(:name).to(:author).with_prefix }
+    it { should delegate(:name).to(:author).with_prefix(:writer) }
+    it { should delegate(:name).to(:author).with_block }
+    it { should delegate(:name).to(:author).with('Ms.') }
+
+    it { should delegate(:name).to(:class).with_prefix   }
+    it { should delegate(:count).to(:@@authors)   }
+    it { should delegate(:first).to(:GENRES)   }
   end
-
-  def name_with_block(&block)
-    "#{block.call} #{name}"
-  end
-end
-
-describe Post do
-  it { should delegate(:name).to(:author) }
-  it { should delegate(:name).to(:@author) }
-  it { should delegate(:name_with_nil_check).to(:author).allow_nil }
-  it { should delegate(:name).to(:author).with_prefix }
-  it { should delegate(:name).to(:author).with_prefix(:writer) }
-
-  it { should delegate(:name_with_arg).to(:author).with('Ms.') }
-  it { should delegate(:name_with_block).to(:author).with_block }
-  it { should delegate(:count).to(:@@authors)   }
-  it { should delegate(:first).to(:GENRES)   }
-  it { should delegate(:name).to(:class).with_prefix   }
-end
 ```
 However, don't use the following features as they are not supported by the delegate method:
 * delegation to objects
@@ -200,38 +194,39 @@ However, don't use the following features as they are not supported by the deleg
 You can test delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module.
 
 ```ruby
-class Post
-  extend Forwardable
+  class Post
+    extend Forwardable
 
-  attr_accessor :author
+    attr_accessor :author
 
-  def_delegator :author, :name
-  def_delegator :author, :name, :writer
-  def_delegator :author, :name_with_arg
-  def_delegator :author, :name_with_block
-end
+    def initialize
+      @author = Author.new
+    end
 
-class Author
-  def name
-    'Catherine Asaro'
+    def_delegator :author, :name
+    def_delegator :author, :name, :author_name
+    def_delegator :author, :name, :writer
   end
 
-  def name_with_arg(arg)
-    "#{arg} #{name}"
+  class Author
+    def name
+      'Catherine Asaro'
+    end
   end
 
-  def name_with_block(&block)
-    "#{block.call} #{name}"
-  end
-end
+  describe Post do
+    let(:author) { subject.author }
 
-describe Post do
-  it { should delegate(:name).to(:author) }
-  it { should delegate(:name).to(:@author) }
-  it { should delegate(:writer).to(:author).as(:name) }
-  it { should delegate(:name_with_arg).to(:author).with('Ms.') }
-  it { should delegate(:name_with_block).to(:author).with_block }
-end
+    it { expect(subject.name).to eq 'Catherine Asaro' }
+
+    it { should delegate(:name).to(author) }
+    it { should delegate(:name).to(:@author) }
+    it { should delegate(:name).to(:author) }
+    it { should delegate(:name).to(:author).with('Ms.') }
+    it { should delegate(:name).to(:author).with_block }
+    it { should delegate(:name).to(:author).with_prefix }
+    it { should delegate(:writer).to(:author).as(:name) }
+  end
 ```
 However, don't use the following features as they are not supported by the Forwardable module:
 * `allow_nil`
