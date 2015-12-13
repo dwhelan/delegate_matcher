@@ -29,6 +29,8 @@ module ActiveSupportDelegation
   describe Post do
     let(:author) { subject.author }
 
+    it { expect(subject.name).to eq 'Catherine Asaro' }
+
     it { should delegate(:name).to(author) }
     it { should delegate(:name).to(:@author) }
     it { should delegate(:name).to(:author) }
