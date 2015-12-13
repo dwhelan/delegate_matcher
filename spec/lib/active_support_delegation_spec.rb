@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'active_support/core_ext/module/delegation'
 
 module ActiveSupportDelegation
+  # rubocop:disable Style/ClassVars
   class Post
     attr_accessor :author
 

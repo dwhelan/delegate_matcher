@@ -8,7 +8,7 @@ shared_examples 'a simple delegator' do
 
   describe 'description' do
     let(:matcher) { delegate(:name).to(receiver) }
-    before { matcher.matches? subject}
+    before { matcher.matches? subject }
 
     it { expect(matcher.description).to eq "delegate name to #{receiver}" }
     it { expect(matcher.failure_message).to match(/expected .* to delegate name to #{receiver}/) }

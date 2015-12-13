@@ -3,7 +3,6 @@ require 'rspec/matchers'
 module RSpec
   module Matchers
     module DelegateMatcher
-      # rubocop:disable Metrics/ClassLength
       class Delegation
         attr_accessor :expected
         attr_accessor :dispatcher
@@ -58,10 +57,10 @@ module RSpec
 
         def failure_message(negated)
           message = [
-              argument_failure_message(negated),
-              block_failure_message(negated),
-              return_value_failure_message(negated),
-              allow_nil_failure_message(negated)
+            argument_failure_message(negated),
+            block_failure_message(negated),
+            return_value_failure_message(negated),
+            allow_nil_failure_message(negated)
           ].reject(&:empty?).join(' and ')
           message.empty? ? nil : message
         end

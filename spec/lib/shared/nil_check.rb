@@ -4,7 +4,7 @@ shared_examples 'a delegator with a nil check' do
   it { should_not delegate(:name).to(receiver).allow_nil(false) }
 
   describe 'description' do
-    before { matcher.matches? subject}
+    before { matcher.matches? subject }
 
     context 'with allow nil at default' do
       let(:matcher) { delegate(:name).to(receiver).allow_nil }
@@ -32,7 +32,7 @@ shared_examples 'a delegator without a nil check' do
   it { should_not delegate(:name).to(receiver).allow_nil  }
 
   describe 'description' do
-    before { matcher.matches? subject}
+    before { matcher.matches? subject }
 
     context 'with allow nil at default' do
       let(:matcher) { delegate(:name).to(receiver).allow_nil }

@@ -69,7 +69,7 @@ module RSpec
           argument_description(as_args)
         end
 
-        def argument_description(arguments=args)
+        def argument_description(arguments = args)
           arguments ? "(#{arguments.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 

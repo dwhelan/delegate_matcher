@@ -11,15 +11,16 @@ module RSpec
           self.received = false
         end
 
+        # rubocop:disable Metrics/AbcSize
         def receiver
           @receiver ||= case
-                        when is_a_class_variable?
+                        when a_class_variable?
                           subject.class.class_variable_get(name)
-                        when is_an_instance_variable?
+                        when an_instance_variable?
                           subject.instance_variable_get(name)
-                        when is_a_constant?
+                        when a_constant?
                           subject.class.const_get(name)
-                        when is_a_method?
+                        when a_method?
                           fail "#{subject.inspect} does not respond to #{name}" unless subject.respond_to?(name, true)
                           fail "#{subject.inspect}'s' #{name} method expects parameters" unless [0, -1].include?(subject.method(name).arity)
                           subject.send(name)
@@ -53,23 +54,23 @@ module RSpec
           to.to_s
         end
 
-        def is_a_class_variable?
-          is_a_reference? && name.start_with?('@@')
+        def a_class_variable?
+          a_reference? && name.start_with?('@@')
         end
 
-        def is_an_instance_variable?
-          is_a_reference? && name.start_with?('@')
+        def an_instance_variable?
+          a_reference? && name.start_with?('@')
         end
 
-        def is_a_constant?
-          is_a_reference? && name =~ /^[A-Z]/
+        def a_constant?
+          a_reference? && name =~ /^[A-Z]/
         end
 
-        def is_a_method?
-          is_a_reference?
+        def a_method?
+          a_reference?
         end
 
-        def is_a_reference?
+        def a_reference?
           to.is_a?(String) || to.is_a?(Symbol)
         end
       end
