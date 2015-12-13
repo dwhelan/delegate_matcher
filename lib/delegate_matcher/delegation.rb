@@ -114,4 +114,3 @@ end
 
 # TODO: use default prefix with constants - lower case method prefix
 # TODO: How to handle delegation is delegate_double is called with something else
-# TODO: Add 'as' logic to description
