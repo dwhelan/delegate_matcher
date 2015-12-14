@@ -37,7 +37,17 @@ module RSpec
               end
             end
 
-            it_behaves_like 'a delegator with args and a block', :arg1 do
+            it_behaves_like 'a delegator with args and a block' do
+              before do
+                class Post
+                  def name(*args, &block)
+                    @author.name(*args, &block)
+                  end
+                end
+              end
+            end
+
+            it_behaves_like 'a delegator with its own block' do
               before do
                 class Post
                   def name(*args, &block)

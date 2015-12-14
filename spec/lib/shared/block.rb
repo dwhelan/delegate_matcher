@@ -22,6 +22,11 @@ shared_examples 'a delegator with a block' do
   end
 end
 
+shared_examples 'a delegator with its own block' do
+  it { should delegate(:name).to(receiver).with_block   }
+  it { should delegate(:name).to(receiver).with_a_block }
+end
+
 shared_examples 'a delegator without a block' do
   it { should delegate(:name).to(receiver).without_block  }
   it { should delegate(:name).to(receiver).without_a_block  }
