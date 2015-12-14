@@ -67,7 +67,7 @@ describe Post do
 end
 ```
 
-**Note**: if you are delegating to an  object then you must provide an expicit prefix to `with_prefix`:
+**Note**: if you are delegating to an object (i.e. `to` is not a string or symbol) then a prefix of `''` will be used :
 
 ```ruby
 describe Post do

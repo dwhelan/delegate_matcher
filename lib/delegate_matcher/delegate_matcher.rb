@@ -54,4 +54,3 @@ module RSpec
 end
 
 # TODO: Handle delegation to a class method?
-# TODO: How to handle delegation if delegate_double is called with something else
