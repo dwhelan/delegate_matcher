@@ -2,7 +2,9 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Expected
-        attr_accessor :subject, :to, :method_name, :block, :as, :allow_nil, :check_return
+        include Block
+
+        attr_accessor :subject, :to, :method_name, :as, :allow_nil, :check_return
         attr_reader   :args
 
         def initialize
@@ -92,10 +94,12 @@ module RSpec
           case
           when block.nil?
             ''
-          when block
+          when block == true
             ' with a block'
-          else
+          when block == false
             ' without a block'
+          else
+            " with block '#{block_source}'"
           end
         end
 

@@ -116,16 +116,27 @@ end
 
 ### Blocks
 You can check that a block passed is in turn passed to the delegate via the `with_block` method.
+By default, block delegation is only checked if `with_a_block` or `without_a_block` is specified.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).to(author).with_a_block }    # name(&block) => author().name(&block)
-  it { should delegate(:name).to(author).with_block }      # name(&block) => author().name(&block) # alias for with_a_block
+  it { should delegate(:name).to(author).with_a_block }    # name(&block) => author.name(&block)
+  it { should delegate(:name).to(author).with_block }      # name(&block) => author.name(&block) # alias for with_a_block
 
-  it { should delegate(:name).to(author).without_a_block } # name(&block) => author().name
-  it { should delegate(:name).to(author).without_block }   # name(&block) => author().name         # alias for without_a_block
+  it { should delegate(:name).to(author).without_a_block } # name(&block) => author.name
+  it { should delegate(:name).to(author).without_block }   # name(&block) => author.name         # alias for without_a_block
 end
 ```
+You can also pass an explicit block in which case the block passed will be compared against
+the block received by the delegate. The comparison is based on having equivalent source for the blocks.
+
+```ruby
+describe Post do
+  it { should delegate(:tainted?).to(authors).as(:all?).with_block { |a| a.tainted? } } # tainted? => authors.all? { |a| a.tainted? }
+end
+```
+
+See [proc_extensions](https://github.com/dwhelan/proc_extensions/) for more details on how the source for procs is compared.
 
 ### Return Value
 Normally the matcher will check that the value return is the same as the value
@@ -136,8 +147,6 @@ describe Post do
   it { should delegate(:name).to(:author).without_return }
 end
 ```
-
-By default, block delegation is only checked if `with_a_block` or `without_a_block` is specified.
 
 ### Active Support
 You can test delegation based on the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem.

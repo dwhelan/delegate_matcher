@@ -53,4 +53,4 @@ module RSpec
   end
 end
 
-# TODO: Handle delegation to a class method?
+# TODO: Handle nested delegation strings "a.b.c"

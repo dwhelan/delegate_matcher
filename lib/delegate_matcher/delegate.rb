@@ -2,9 +2,11 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Delegate
+        include Block
+
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        attr_reader :received, :args, :block
+        attr_reader :received, :args
 
         def initialize(expected)
           self.expected = expected
