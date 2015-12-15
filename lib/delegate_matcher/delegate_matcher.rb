@@ -54,3 +54,4 @@ module RSpec
 end
 
 # TODO: Handle nested delegation strings "a.b.c"
+# TODO: Test SingleForwardable

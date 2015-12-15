@@ -13,11 +13,13 @@ module ForwardableDelegation
     def_delegator :author, :name
     def_delegator :author, :name, :author_name
     def_delegator :author, :name, :writer
+
+    def_delegator :'author.name', :length, :name_length
   end
 
   class Author
     def name
-      'Catherine Asaro'
+      @name ||= 'Catherine Asaro'
     end
   end
 
@@ -33,5 +35,6 @@ module ForwardableDelegation
     it { should delegate(:name).to(:author).with_block }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:writer).to(:author).as(:name) }
+    it { should delegate(:name_length).to(:'author.name').as(:length) }
   end
 end
