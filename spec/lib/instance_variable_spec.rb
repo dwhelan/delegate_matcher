@@ -8,6 +8,11 @@ module RSpec
           class Post
             def initialize
               @author = Author.new
+              @authors ||= [@author]
+            end
+
+            def inspect
+              'post'
             end
           end
 
@@ -50,8 +55,8 @@ module RSpec
             it_behaves_like 'a delegator with its own block' do
               before do
                 class Post
-                  def name(*args, &block)
-                    @author.name(*args, &block)
+                  def tainted?
+                    @authors.all? { |a| a.tainted? }
                   end
                 end
               end

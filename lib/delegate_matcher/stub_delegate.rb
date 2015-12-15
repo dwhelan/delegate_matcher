@@ -13,10 +13,12 @@ module RSpec
         private
 
         def stub_receiver
+          # binding.pry
           allow(receiver).to receive(expected.as) do |*args, &block|
             self.args     = args
             self.block    = block
             self.received = true
+            # binding.pry
             return_value
           end
         end

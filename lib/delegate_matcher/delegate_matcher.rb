@@ -24,7 +24,7 @@ module RSpec
       chain(:allow_nil)       { |allow_nil = true| expected.allow_nil    = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix       = prefix }
       chain(:with)            { |*args|            expected.args         = args }
-      chain(:with_a_block)    {                    expected.block        = true  }
+      chain(:with_a_block)    { |&block|           expected.block        = block || true  }
       chain(:without_a_block) {                    expected.block        = false }
       chain(:without_return)  {                    expected.check_return = false }
 

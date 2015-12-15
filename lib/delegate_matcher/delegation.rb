@@ -41,13 +41,16 @@ module RSpec
         end
 
         def block_ok?
+          # binding.pry
           case
           when expected.block.nil?
             true
-          when expected.block
+          when expected.block == false
+            delegate.block.nil?
+          when expected.block == true
             delegate.block == dispatcher.block
           else
-            delegate.block.nil?
+            delegate.block == expected.block
           end
         end
 
@@ -56,6 +59,9 @@ module RSpec
         end
 
         def failure_message(negated)
+          # TODO: Should include the line below
+          # return nil if negated == delegate.received
+
           message = [
             argument_failure_message(negated),
             block_failure_message(negated),
@@ -75,12 +81,14 @@ module RSpec
         end
 
         def block_failure_message(negated)
+          # binding.pry
           case
           when expected.block.nil? || (negated ^ block_ok?)
             ''
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
+            # binding.pry
             delegate.block.nil? ? 'a block was not passed' : "a different block #{delegate.block} was passed"
           else
             'a block was passed'
