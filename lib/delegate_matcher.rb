@@ -1,6 +1,7 @@
 require 'forwardable'
 
 require 'delegate_matcher/version'
+require 'delegate_matcher/block'
 require 'delegate_matcher/expected'
 require 'delegate_matcher/dispatcher'
 require 'delegate_matcher/delegate'

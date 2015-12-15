@@ -14,15 +14,15 @@ module RSpec
 
         def block
           @block ||= case expected.block
-                   when nil? then
-                     proc {}
-                   when false then
-                     proc {}
-                   when true then
-                     proc {}
-                   else
-                     expected.block
-                   end
+                     when nil? then
+                       proc {}
+                     when false then
+                       proc {}
+                     when true then
+                       proc {}
+                     else
+                       expected.block
+                     end
         end
 
         private

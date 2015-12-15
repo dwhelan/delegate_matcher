@@ -55,6 +55,7 @@ module RSpec
             it_behaves_like 'a delegator with its own block' do
               before do
                 class Post
+                  # rubocop:disable Style/SymbolProc
                   def tainted?
                     @authors.all? { |a| a.tainted? }
                   end

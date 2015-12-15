@@ -1,4 +1,5 @@
 require 'rspec/matchers'
+require 'proc_extensions'
 
 module RSpec
   module Matchers
@@ -40,8 +41,8 @@ module RSpec
           expected.as_args.nil? || delegate.args.eql?(expected.as_args)
         end
 
+        # rubocop:disable Metrics/AbcSize
         def block_ok?
-          # binding.pry
           case
           when expected.block.nil?
             true
@@ -50,7 +51,7 @@ module RSpec
           when expected.block == true
             delegate.block == dispatcher.block
           else
-            delegate.block == expected.block
+            delegate.block_source == expected.block_source
           end
         end
 
@@ -81,15 +82,13 @@ module RSpec
         end
 
         def block_failure_message(negated)
-          # binding.pry
           case
           when expected.block.nil? || (negated ^ block_ok?)
             ''
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            # binding.pry
-            delegate.block.nil? ? 'a block was not passed' : "a different block #{delegate.block} was passed"
+            delegate.block.nil? ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate.block)}' was passed"
           else
             'a block was passed'
           end
