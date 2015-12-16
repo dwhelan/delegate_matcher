@@ -15,6 +15,7 @@ module ActiveSupportDelegation
     delegate :name,  to: :class,  prefix: true
     delegate :count, to: :@@authors
     delegate :first, to: :GENRES
+    delegate :length, to: :'author.name', prefix: :name
 
     def initialize
       @author = Author.new
@@ -23,7 +24,7 @@ module ActiveSupportDelegation
 
   class Author
     def name
-      'Catherine Asaro'
+      @name ||= 'Catherine Asaro'
     end
   end
 
@@ -44,5 +45,8 @@ module ActiveSupportDelegation
     it { should delegate(:name).to(:class).with_prefix   }
     it { should delegate(:count).to(:@@authors)   }
     it { should delegate(:first).to(:GENRES)   }
+
+    it { should delegate(:name_length).to(:'author.name').as(:length) }
+    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
   end
 end

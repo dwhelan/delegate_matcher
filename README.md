@@ -54,7 +54,6 @@ end
 ```
 
 ### Delegate Method Name
-
 If the name of the method being invoked on the delegate is different from the method being called you
 can check this using the `with_prefix` method (based on Active Support `delegate` method) or the
 `as` method.
@@ -67,12 +66,21 @@ describe Post do
 end
 ```
 
-**Note**: if you are delegating to an object (i.e. `to` is not a string or symbol) then a prefix of `''` will be used :
+**Note**: if you are delegating to an object (i.e. `to` is not a string or symbol) then a prefix of `''` will be used:
 
 ```ruby
 describe Post do
   it { should delegate(:name).to(author).with_prefix }          # an error will be raised
   it { should delegate(:name).to(author).with_prefix(:writer) } # writer_name  => author.name
+end
+```
+
+You can test delegation to a chain of objects by using a `to` that can be `eval`'d.
+
+```ruby
+describe Post do
+  it { should delegate(:name_length).to(:'author.name').as(:length) }   # name_length => author.name.length
+  it { should delegate(:length).to(:'author.name').with_prefix(:name) } # name_length => author.name.length
 end
 ```
 
