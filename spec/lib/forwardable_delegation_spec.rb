@@ -35,6 +35,8 @@ module ForwardableDelegation
     it { should delegate(:name).to(:author).with_block }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:writer).to(:author).as(:name) }
+
     it { should delegate(:name_length).to(:'author.name').as(:length) }
+    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
   end
 end

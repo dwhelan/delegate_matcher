@@ -15,19 +15,18 @@ module RSpec
 
         # rubocop:disable Metrics/AbcSize
         def receiver
+          klass = subject.class
           @receiver ||= case
                         when a_class_variable?
-                          subject.class.class_variable_get(name)
+                          klass.class_variable_get(name)
                         when an_instance_variable?
                           subject.instance_variable_get(name)
                         when a_constant?
-                          subject.class.const_get(name)
+                          klass.const_get(name)
                         when a_method?
-                          subject.respond_to?(name, true) ? subject.send(name) : subject.instance_eval(name)
-                          # binding.pry
-                          # fail "#{subject.inspect} does not respond to #{name}" unless subject.respond_to?(name, true)
-                          # fail "#{subject.inspect}'s' #{name} method expects parameters" unless [0, -1].include?(subject.method(name).arity)
-                          # subject.send(name)
+                          subject.send(name)
+                        when a_reference?
+                          subject.instance_eval(name)
                         else # is an object
                           to
                         end
@@ -71,7 +70,7 @@ module RSpec
         end
 
         def a_method?
-          a_reference?
+          a_reference? && subject.respond_to?(name, true)
         end
 
         def a_reference?

@@ -54,7 +54,6 @@ end
 ```
 
 ### Delegate Method Name
-
 If the name of the method being invoked on the delegate is different from the method being called you
 can check this using the `with_prefix` method (based on Active Support `delegate` method) or the
 `as` method.
@@ -67,12 +66,21 @@ describe Post do
 end
 ```
 
-**Note**: if you are delegating to an object (i.e. `to` is not a string or symbol) then a prefix of `''` will be used :
+**Note**: if you are delegating to an object (i.e. `to` is not a string or symbol) then a prefix of `''` will be used:
 
 ```ruby
 describe Post do
   it { should delegate(:name).to(author).with_prefix }          # an error will be raised
   it { should delegate(:name).to(author).with_prefix(:writer) } # writer_name  => author.name
+end
+```
+
+You can test delegation to a chain of objects by using a `to` that can be `eval`'d.
+
+```ruby
+describe Post do
+  it { should delegate(:name_length).to(:'author.name').as(:length) }   # name_length => author.name.length
+  it { should delegate(:length).to(:'author.name').with_prefix(:name) } # name_length => author.name.length
 end
 ```
 
@@ -172,7 +180,7 @@ You can test delegation based on the [delegate](http://api.rubyonrails.org/class
 
   class Author
     def name
-      'Catherine Asaro'
+      @name ||= 'Catherine Asaro'
     end
   end
 
@@ -193,6 +201,9 @@ You can test delegation based on the [delegate](http://api.rubyonrails.org/class
     it { should delegate(:name).to(:class).with_prefix   }
     it { should delegate(:count).to(:@@authors)   }
     it { should delegate(:first).to(:GENRES)   }
+
+    it { should delegate(:name_length).to(:'author.name').as(:length) }
+    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
   end
 ```
 However, don't use the following features as they are not supported by the delegate method:
@@ -219,7 +230,7 @@ You can test delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.
 
   class Author
     def name
-      'Catherine Asaro'
+      @name ||= 'Catherine Asaro'
     end
   end
 
@@ -235,6 +246,9 @@ You can test delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.
     it { should delegate(:name).to(:author).with_block }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:writer).to(:author).as(:name) }
+
+    it { should delegate(:name_length).to(:'author.name').as(:length) }
+    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
   end
 ```
 However, don't use the following features as they are not supported by the Forwardable module:
@@ -242,7 +256,7 @@ However, don't use the following features as they are not supported by the Forwa
 * delegation to class variables
 * delegation to constants
 * delegation to objects
-* different arguments passed to delegate
+* different arguments passed to the delegate
 
 ## Contributing
 1. Fork it ( https://github.com/dwhelan/delegate_matcher/fork )
