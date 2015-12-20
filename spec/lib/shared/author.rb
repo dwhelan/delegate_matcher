@@ -8,6 +8,10 @@ module RSpec
         def to_s
           'author'
         end
+
+        def inspect
+          'author'
+        end
       end
     end
   end
