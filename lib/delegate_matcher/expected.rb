@@ -104,7 +104,14 @@ module RSpec
         end
 
         def return_value_description
-          check_return ? '' : ' without using delegate return value'
+          case
+          when return_value
+            " and return '#{return_value}'"
+          when !check_return
+            ' without using delegate return value'
+          else
+            ''
+          end
         end
       end
     end

@@ -4,6 +4,10 @@ module RSpec
       class Author
         def name
         end
+
+        def to_s
+          'author'
+        end
       end
     end
   end
