@@ -8,6 +8,10 @@ module RSpec
           class Post
             include PostMethods
 
+            def initialize
+              @authors = [author]
+            end
+
             def author
               @author ||= Author.new
             end
@@ -43,6 +47,17 @@ module RSpec
               class Post
                 def name(*args, &block)
                   author.name(*args, &block)
+                end
+              end
+            end
+          end
+
+          it_behaves_like 'a delegator with its own block' do
+            before do
+              class Post
+                # rubocop:disable Style/SymbolProc
+                def tainted?
+                  @authors.all? { |a| a.tainted? }
                 end
               end
             end

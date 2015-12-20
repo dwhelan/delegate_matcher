@@ -5,6 +5,7 @@ module RSpec
         def to_s
           'post'
         end
+
         def inspect
           'post'
         end

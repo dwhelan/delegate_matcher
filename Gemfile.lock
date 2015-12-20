@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    delegate_matcher (0.3)
+    delegate_matcher (0.4)
       proc_extensions (~> 0.1)
 
 GEM

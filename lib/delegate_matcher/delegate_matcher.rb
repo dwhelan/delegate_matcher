@@ -59,4 +59,3 @@ end
 # TODO: support block with an explicit return
 # TODO: use default prefix with constants - lower case method prefix
 # TODO: How to handle delegation is delegate_double is called with something else
-
