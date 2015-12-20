@@ -24,7 +24,7 @@ module RSpec
             silence_warnings { subject.class.const_set(name, value) }
           when a_method?
             allow(subject).to receive(name) { value }
-          else # is an object
+          else # an object
             fail 'cannot verify "allow_nil" expectations when delegating to an object' if value.nil?
           end
         end
@@ -33,6 +33,7 @@ module RSpec
           warn_level = $VERBOSE
           $VERBOSE = nil
           block.call
+        ensure
           $VERBOSE = warn_level
         end
       end

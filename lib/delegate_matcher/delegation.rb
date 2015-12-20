@@ -56,7 +56,7 @@ module RSpec
         end
 
         def return_value_ok?
-          !expected.check_return || dispatcher.return_value == delegate.return_value
+          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate.return_value)
         end
 
         def failure_message(negated)
@@ -117,6 +117,3 @@ module RSpec
     end
   end
 end
-
-# TODO: use default prefix with constants - lower case method prefix
-# TODO: How to handle delegation is delegate_double is called with something else

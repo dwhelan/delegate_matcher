@@ -4,7 +4,7 @@ module RSpec
       class Expected
         include Block
 
-        attr_accessor :subject, :to, :method_name, :as, :allow_nil, :check_return
+        attr_accessor :subject, :to, :method_name, :as, :allow_nil, :check_return, :return_value
         attr_reader   :args
 
         def initialize

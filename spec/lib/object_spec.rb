@@ -96,6 +96,17 @@ module RSpec
               end
             end
           end
+
+          it_behaves_like 'a delegator with a specified return value', 'Ann Rand' do
+            before do
+              class Post
+                def name
+                  @author.name
+                  'Ann Rand'
+                end
+              end
+            end
+          end
         end
       end
     end

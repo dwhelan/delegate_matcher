@@ -27,6 +27,7 @@ module RSpec
       chain(:with_a_block)    { |&block|           expected.block        = block || true  }
       chain(:without_a_block) {                    expected.block        = false }
       chain(:without_return)  {                    expected.check_return = false }
+      chain(:and_return)      { |value|            expected.return_value = value }
 
       alias_method :with_block,    :with_a_block
       alias_method :without_block, :without_a_block
@@ -54,4 +55,8 @@ module RSpec
 end
 
 # TODO: Handle nested delegation strings "a.b.c"
-# TODO: Test SingleForwardable
+# TODO: support 'and_return' with an explicit return
+# TODO: support block with an explicit return
+# TODO: use default prefix with constants - lower case method prefix
+# TODO: How to handle delegation is delegate_double is called with something else
+
