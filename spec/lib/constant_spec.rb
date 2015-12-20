@@ -6,6 +6,8 @@ module RSpec
       module ToConstant
         describe 'delegation to a constant' do
           class Post
+            include PostMethods
+
             AUTHOR = Author.new
           end
 

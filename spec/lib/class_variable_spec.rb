@@ -6,6 +6,8 @@ module RSpec
       module ToClassVariable
         describe 'delegation to a class variable' do
           class Post
+            include PostMethods
+
             # rubocop:disable Style/ClassVars
             @@author = Author.new
           end

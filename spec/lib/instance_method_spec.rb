@@ -6,6 +6,8 @@ module RSpec
       module ToMethod
         describe 'delegation to a method' do
           class Post
+            include PostMethods
+
             def author
               @author ||= Author.new
             end

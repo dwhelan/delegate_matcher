@@ -6,13 +6,11 @@ module RSpec
       module ToInstanceVariable
         describe 'delegation to an instance variable' do
           class Post
+            include PostMethods
+
             def initialize
               @author = Author.new
               @authors ||= [@author]
-            end
-
-            def inspect
-              'post'
             end
           end
 
