@@ -4,16 +4,16 @@ module RSpec
       class StubDelegate < Delegate
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        def initialize(expected)
+        attr_reader :return_value
+
+        def initialize(expected, to)
           super
           stub_receiver
         end
 
-        def return_value
-          self
-        end
-
         private
+
+        attr_writer :return_value
 
         def stub_receiver
           allow(receiver).to receive(expected.as) do |*args, &block|

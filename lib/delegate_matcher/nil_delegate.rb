@@ -2,7 +2,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class NilDelegate < Delegate
-        def initialize(expected, &block)
+        def initialize(expected, to, &block)
           super
           original_receiver = receiver
           self.receiver = nil

@@ -19,7 +19,7 @@ module RSpec
         delegation.failure_message(true) || super
       end
 
-      chain(:to)              { |to|               expected.to           = to }
+      chain(:to)              { |*to|              expected.to           = *to }
       chain(:as)              { |as|               expected.as           = as }
       chain(:allow_nil)       { |allow_nil = true| expected.allow_nil    = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix       = prefix }

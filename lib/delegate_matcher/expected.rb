@@ -22,8 +22,8 @@ module RSpec
             ''
           when @prefix
             "#{@prefix}_"
-          when to.is_a?(String) || to.is_a?(Symbol)
-            to.to_s.delete('@').downcase + '_'
+          when to[0].is_a?(String) || to[0].is_a?(Symbol)
+            to[0].to_s.delete('@').downcase + '_'
           else
             ''
           end
@@ -59,12 +59,16 @@ module RSpec
         def delegate_description
           case
           when !args.eql?(as_args)
-            "#{to}.#{as}#{as_argument_description}"
+            "#{to_description}.#{as}#{as_argument_description}"
           when as.to_s.eql?(delegator_method_name)
-            "#{to}"
+            "#{to_description}"
           else
-            "#{to}.#{as}"
+            "#{to_description}.#{as}"
           end
+        end
+
+        def to_description
+          to.join(',')
         end
 
         def as_argument_description

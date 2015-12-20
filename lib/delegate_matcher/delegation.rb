@@ -12,12 +12,12 @@ module RSpec
         def initialize(expected)
           self.expected   = expected
           self.dispatcher = DelegateMatcher::Dispatcher.new(expected)
-          self.delegate   = StubDelegate.new(expected)
+          self.delegate   = expected.to.map{|to| StubDelegate.new(expected, to) }
         end
 
         def delegation_ok?
           dispatcher.call
-          delegate.received
+          delegate.all?(&:received)
         end
 
         def ok?
@@ -28,7 +28,7 @@ module RSpec
           return true if expected.allow_nil.nil?
 
           begin
-            NilDelegate.new(expected) { dispatcher.call }
+            expected.to.each { |to| NilDelegate.new(expected, to) { dispatcher.call } }
             allow_nil = true
           rescue NoMethodError
             allow_nil = false
@@ -38,7 +38,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.as_args.nil? || delegate.args.eql?(expected.as_args)
+          expected.as_args.nil? || delegate.all?{ |d| d.args.eql?(expected.as_args) }
         end
 
         # rubocop:disable Metrics/AbcSize
@@ -47,16 +47,17 @@ module RSpec
           when expected.block.nil?
             true
           when expected.block == false
-            delegate.block.nil?
+            delegate.all? { |d| d.block.nil? }
           when expected.block == true
-            delegate.block == dispatcher.block
+            delegate.all? { |d| d.block == dispatcher.block }
           else
-            delegate.block_source == expected.block_source
+            delegate.all? { |d| d.block_source == expected.block_source }
           end
         end
 
         def return_value_ok?
-          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate.return_value)
+          # TODO: handling multiple return values with multiple to's
+          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate[0].return_value)
         end
 
         def failure_message(negated)
@@ -77,7 +78,7 @@ module RSpec
           when expected.as_args.nil? || negated ^ arguments_ok?
             ''
           else
-            "was called with #{delegate.argument_description}"
+            "was called with #{delegate[0].argument_description}"
           end
         end
 
@@ -88,15 +89,16 @@ module RSpec
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            delegate.block.nil? ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate.block)}' was passed"
+            delegate.all?{ |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate[0].block)}' was passed"
           else
             'a block was passed'
           end
         end
 
         def return_value_failure_message(_negated)
+          # TODO: This should be using negated?
           case
-          when !delegate.received || return_value_ok?
+          when !delegate.any?(&:received) || return_value_ok?
             ''
           when expected.return_value
             "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""

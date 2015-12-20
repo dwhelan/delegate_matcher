@@ -20,6 +20,10 @@ module ActiveSupportDelegation
     def initialize
       @author = Author.new
     end
+
+    def inspect
+      'post'
+    end
   end
 
   class Author

@@ -6,10 +6,11 @@ module RSpec
 
         RSpec::Mocks::Syntax.enable_expect(self)
 
-        attr_reader :received, :args
+        attr_reader :to, :received, :args
 
-        def initialize(expected)
+        def initialize(expected, to)
           self.expected = expected
+          self.to       = to
           self.received = false
         end
 
@@ -39,14 +40,10 @@ module RSpec
         private
 
         attr_accessor :expected
-        attr_writer :received, :args, :block
+        attr_writer :to, :received, :args, :block
 
         def subject
           expected.subject
-        end
-
-        def to
-          expected.to
         end
 
         def name

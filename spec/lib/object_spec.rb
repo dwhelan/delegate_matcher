@@ -4,7 +4,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       module ToObject
-        describe 'delegation to an object' do
+        describe 'delegation to an object', :focus do
           class Post
             include PostMethods
 
