@@ -36,10 +36,6 @@ module RSpec
           args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
         end
 
-        def return_value
-          self
-        end
-
         private
 
         attr_accessor :expected

@@ -5,9 +5,12 @@ module RSpec
         RSpec::Mocks::Syntax.enable_expect(self)
 
         def initialize(expected)
-          self.expected = expected
-          self.received = false
+          super
           stub_receiver
+        end
+
+        def return_value
+          self
         end
 
         private
