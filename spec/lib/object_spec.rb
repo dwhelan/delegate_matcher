@@ -6,6 +6,8 @@ module RSpec
       module ToObject
         describe 'delegation to an object' do
           class Post
+            include PostMethods
+
             def initialize(author)
               @author = author
             end

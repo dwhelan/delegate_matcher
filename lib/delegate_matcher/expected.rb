@@ -99,14 +99,14 @@ module RSpec
           when block == false
             ' without a block'
           else
-            " with block '#{block_source}'"
+            " with block \"#{block_source}\""
           end
         end
 
         def return_value_description
           case
           when return_value
-            " and return '#{return_value}'"
+            " and return \"#{return_value}\""
           when !check_return
             ' without using delegate return value'
           else

@@ -32,13 +32,13 @@ shared_examples 'a delegator with its own block' do
 
     context 'with a block' do
       let(:matcher) { delegate(:tainted?).to(:@authors).as(:all?).with_block { |a| a.tainted? } }
-      it { expect(matcher.description).to eq "delegate tainted? to @authors.all? with block 'proc { |a| a.tainted? }'" }
+      it { expect(matcher.description).to eq "delegate tainted? to @authors.all? with block \"proc { |a| a.tainted? }\"" }
       it { expect(matcher.failure_message_when_negated).to match(/a block was passed/) }
     end
 
     context 'with a different block' do
       let(:matcher) { delegate(:tainted?).to(:@authors).as(:all?).with_block { |a| a.to_s } }
-      it { expect(matcher.failure_message).to match(/a different block 'proc { |a| a.tainted? }' was passed/) }
+      it { expect(matcher.failure_message).to match(/a different block "proc { |a| a.tainted? }" was passed/) }
     end
 
     context 'without a block' do

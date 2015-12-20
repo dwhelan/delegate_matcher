@@ -98,6 +98,8 @@ module RSpec
           case
           when !delegate.received || return_value_ok?
             ''
+          when expected.return_value
+            "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
           else
             format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
           end
