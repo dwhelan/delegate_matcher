@@ -50,6 +50,10 @@ module RSpec
           "delegate #{delegator_description} to #{delegate_description}#{options_description}"
         end
 
+        def to_description
+          to.join(',')
+        end
+
         private
 
         def delegator_description
@@ -65,10 +69,6 @@ module RSpec
           else
             "#{to_description}.#{as}"
           end
-        end
-
-        def to_description
-          to.join(',')
         end
 
         def as_argument_description

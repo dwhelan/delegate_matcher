@@ -112,9 +112,9 @@ module RSpec
           when expected.allow_nil.nil? || negated ^ allow_nil_ok?
             ''
           when negated
-            "#{expected.to} was #{expected.allow_nil ? '' : 'not '}allowed to be nil"
+            "#{expected.to_description} was #{expected.allow_nil ? '' : 'not '}allowed to be nil"
           else
-            "#{expected.to} was #{expected.allow_nil ? 'not ' : ''}allowed to be nil"
+            "#{expected.to_description} was #{expected.allow_nil ? 'not ' : ''}allowed to be nil"
           end
         end
       end
