@@ -54,8 +54,6 @@ module RSpec
   end
 end
 
-# TODO: Handle nested delegation strings "a.b.c"
-# TODO: support 'and_return' with an explicit return
-# TODO: support block with an explicit return
-# TODO: use default prefix with constants - lower case method prefix
-# TODO: How to handle delegation is delegate_double is called with something else
+# TODO: Check with_block by default
+# TODO: Check for duplication with argument_description
+# TODO: Enable all common specs (compare instance_variable with object specs)
