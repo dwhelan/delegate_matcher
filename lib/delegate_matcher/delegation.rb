@@ -12,7 +12,7 @@ module RSpec
         def initialize(expected)
           self.expected   = expected
           self.dispatcher = DelegateMatcher::Dispatcher.new(expected)
-          self.delegate   = expected.to.map{|to| StubDelegate.new(expected, to) }
+          self.delegate   = expected.to.map { |to| StubDelegate.new(expected, to) }
         end
 
         def delegation_ok?
@@ -38,7 +38,7 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.as_args.nil? || delegate.all?{ |d| d.args.eql?(expected.as_args) }
+          expected.as_args.nil? || delegate.all? { |d| d.args.eql?(expected.as_args) }
         end
 
         # rubocop:disable Metrics/AbcSize
@@ -92,7 +92,7 @@ module RSpec
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            delegate.all?{ |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate[0].block)}' was passed"
+            delegate.all? { |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate[0].block)}' was passed"
           else
             'a block was passed'
           end

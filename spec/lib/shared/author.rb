@@ -10,7 +10,7 @@ module RSpec
           'Other Name'
         end
 
-        def name(*args, &block)
+        def name(*args, &_)
           "#{args.join}#{@name}"
         end
 

@@ -62,14 +62,14 @@ module RSpec
 
         def delegate_description
           %("#{to_description}") +
-              case
-              when !args.eql?(as_args)
-                ".#{as}#{as_argument_description}"
-              when as.to_s.eql?(delegator_method_name)
-                ''
-              else
-                ".#{as}"
-              end
+            case
+            when !args.eql?(as_args)
+              ".#{as}#{as_argument_description}"
+            when as.to_s.eql?(delegator_method_name)
+              ''
+            else
+              ".#{as}"
+            end
         end
 
         def as_argument_description
