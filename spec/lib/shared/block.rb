@@ -10,13 +10,13 @@ shared_examples 'a delegator with a block' do
 
     context 'with a block' do
       let(:matcher) { delegate(:name).to(receiver).with_a_block }
-      it { expect(matcher.description).to eq "delegate name to #{receiver} with a block" }
+      it { expect(matcher.description).to eq %(delegate name to "#{receiver}" with a block) }
       it { expect(matcher.failure_message_when_negated).to match(/a block was passed/) }
     end
 
     context 'without a block' do
       let(:matcher) { delegate(:name).to(receiver).without_a_block }
-      it { expect(matcher.description).to eq "delegate name to #{receiver} without a block" }
+      it { expect(matcher.description).to eq %(delegate name to "#{receiver}" without a block) }
       it { expect(matcher.failure_message).to match(/a block was passed/) }
     end
   end
@@ -32,7 +32,7 @@ shared_examples 'a delegator with its own block' do
 
     context 'with a block' do
       let(:matcher) { delegate(:tainted?).to(:@authors).as(:all?).with_block { |a| a.tainted? } }
-      it { expect(matcher.description).to eq "delegate tainted? to @authors.all? with block \"proc { |a| a.tainted? }\"" }
+      it { expect(matcher.description).to eq %(delegate tainted? to "@authors".all? with block "proc { |a| a.tainted? }") }
       it { expect(matcher.failure_message_when_negated).to match(/a block was passed/) }
     end
 

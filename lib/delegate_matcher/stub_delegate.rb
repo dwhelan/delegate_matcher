@@ -8,6 +8,7 @@ module RSpec
 
         def initialize(expected, to)
           super
+          self.return_value = receiver.send(expected.as, *expected.args)
           stub_receiver
         end
 

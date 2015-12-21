@@ -70,9 +70,9 @@ module RSpec
               let(:matcher) { delegate(:name).to(author).with_prefix('author') }
               before { matcher.matches? subject }
 
-              it { expect(matcher.description).to eq "delegate author_name to #{author}.name" }
-              it { expect(matcher.failure_message).to match(/expected .* to delegate author_name to #{author}.name/) }
-              it { expect(matcher.failure_message_when_negated).to match(/expected .* not to delegate author_name to #{author}.name/) }
+              it { expect(matcher.description).to eq %(delegate author_name to "#{author}".name) }
+              it { expect(matcher.failure_message).to match(/expected .* to delegate author_name to "#{author}".name/) }
+              it { expect(matcher.failure_message_when_negated).to match(/expected .* not to delegate author_name to "#{author}".name/) }
             end
           end
 

@@ -4,7 +4,7 @@ module RSpec
   module Matchers
     module DelegateMatcher
       module ToInstanceVariable
-        describe 'delegation to an instance variable', :focus do
+        describe 'delegation to an instance variable' do
           class Post
             include PostMethods
 

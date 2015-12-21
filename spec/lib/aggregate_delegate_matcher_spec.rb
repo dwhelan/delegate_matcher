@@ -6,8 +6,10 @@ module RSpec
           class Post
             include PostMethods
 
-            def authors
-              @authors ||= [Author.new('Catherine Asaro'), Author.new('Isaac Asimov')]
+            attr_reader :authors
+
+            def initialize
+              @authors = [Author.new('Catherine Asaro'), Author.new('Isaac Asimov')]
             end
 
             def name
@@ -16,8 +18,6 @@ module RSpec
           end
 
           subject { Post.new }
-
-          let(:receiver) { subject.autho }
 
           it '' do
             expect(subject).to delegate(:name).to(*subject.authors)

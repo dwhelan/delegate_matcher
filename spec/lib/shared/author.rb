@@ -2,22 +2,20 @@ module RSpec
   module Matchers
     module DelegateMatcher
       class Author
-        attr_accessor :name
-
         def initialize(name = 'Catherine Asaro')
-          self.name = name
+          @name = name
         end
 
         def other_name
           'Other Name'
         end
 
-        def to_s
-          'author'
+        def name(*args, &block)
+          "#{args.join}#{@name}"
         end
 
-        def inspect
-          'author'
+        def to_s
+          "Author: #{@name}"
         end
       end
     end

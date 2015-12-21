@@ -56,8 +56,11 @@ module RSpec
         end
 
         def return_value_ok?
-          # TODO: handling multiple return values with multiple to's
-          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate[0].return_value)
+          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate_return_value)
+        end
+
+        def delegate_return_value
+          delegate.length == 1 ? delegate[0].return_value : delegate.map(&:return_value)
         end
 
         def failure_message(negated)
@@ -103,7 +106,7 @@ module RSpec
           when expected.return_value
             "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
           else
-            format('a return value of %p was returned instead of the delegate return value', dispatcher.return_value)
+            "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{delegate_return_value}\""
           end
         end
 
@@ -112,9 +115,9 @@ module RSpec
           when expected.allow_nil.nil? || negated ^ allow_nil_ok?
             ''
           when negated
-            "#{expected.to_description} was #{expected.allow_nil ? '' : 'not '}allowed to be nil"
+            %("#{expected.to_description}" was #{expected.allow_nil ? '' : 'not '}allowed to be nil)
           else
-            "#{expected.to_description} was #{expected.allow_nil ? 'not ' : ''}allowed to be nil"
+            %("#{expected.to_description}" was #{expected.allow_nil ? 'not ' : ''}allowed to be nil)
           end
         end
       end

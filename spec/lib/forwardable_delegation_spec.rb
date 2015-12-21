@@ -15,11 +15,19 @@ module ForwardableDelegation
     def_delegator :author, :name, :writer
 
     def_delegator :'author.name', :length, :name_length
+
+    def inspect
+      'post'
+    end
   end
 
   class Author
-    def name
-      @name ||= 'Catherine Asaro'
+    def initialize
+      @name = 'Catherine Asaro'
+    end
+
+    def name(*)
+      @name
     end
   end
 

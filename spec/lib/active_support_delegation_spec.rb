@@ -27,8 +27,12 @@ module ActiveSupportDelegation
   end
 
   class Author
-    def name
-      @name ||= 'Catherine Asaro'
+    def initialize
+      @name = 'Catherine Asaro'
+    end
+
+    def name(*)
+      @name
     end
   end
 
