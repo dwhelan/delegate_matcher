@@ -56,7 +56,11 @@ module RSpec
         end
 
         def return_value_ok?
-          !expected.check_return || dispatcher.return_value == (expected.return_value || delegate_return_value)
+          case
+          when !expected.check_return then true
+          when expected.return_value.nil? then  dispatcher.return_value == delegate_return_value
+          else dispatcher.return_value == expected.return_value
+          end
         end
 
         def delegate_return_value
@@ -103,10 +107,10 @@ module RSpec
           case
           when !delegate.any?(&:received) || return_value_ok?
             ''
-          when expected.return_value
-            "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
+          when !expected.return_value.nil?
+            "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
           else
-            "a return value of \"#{dispatcher.return_value}\" was returned instead of \"#{delegate_return_value}\""
+            "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{delegate_return_value}\""
           end
         end
 

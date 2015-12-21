@@ -14,7 +14,7 @@ shared_examples 'a delegator with a different return value' do |actual_return_va
     let(:matcher) { delegate(:name).to(receiver) }
     before { matcher.matches? subject }
 
-    it { expect(matcher.failure_message).to match(/a return value of "#{actual_return_value}" was returned instead of/) }
+    it { expect(matcher.failure_message).to match(/a value of "#{actual_return_value}" was returned instead of/) }
   end
 end
 
@@ -34,6 +34,6 @@ shared_examples 'a delegator with a specified return value' do |return_value|
     let(:matcher) { delegate(:name).to(receiver).and_return 'Isaac Asimov' }
     before { matcher.matches? subject }
 
-    it { expect(matcher.failure_message).to match(/a return value of "#{return_value}" was returned instead of "Isaac Asimov"/) }
+    it { expect(matcher.failure_message).to match(/a value of "#{return_value}" was returned instead of "Isaac Asimov"/) }
   end
 end
