@@ -15,7 +15,7 @@ Coveralls.wear! if Coveralls.will_run?
 
 require 'delegate_matcher'
 
-Dir[File.dirname(__FILE__) + '/lib/shared/*.rb'].each { |f| require f }
+Dir[File.dirname(__FILE__) + '/shared/*.rb'].each { |f| require f }
 
 RSpec.configure do |config|
   config.color = true
