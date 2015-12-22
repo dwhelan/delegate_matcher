@@ -41,6 +41,7 @@ This matcher allows you to validate delegation to:
 * class variables
 * constants
 * arbitrary objects
+* multiple targets
 
 ```ruby
 describe Post do
@@ -154,6 +155,12 @@ returned from the delegate. You can skip this check by using `without_return`.
 describe Post do
   it { should delegate(:name).to(:author).without_return }
 end
+```
+
+### Multiple Targets
+You can test delegation to more than one target by specifing more than one target via `to`.
+```ruby
+<%= File.open('./spec/multiple_targets_spec.rb', 'rb') { |f| f.read } %>
 ```
 
 ### Active Support
