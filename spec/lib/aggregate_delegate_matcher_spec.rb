@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 module RSpec
   module Matchers
     module DelegateMatcher
@@ -19,7 +21,7 @@ module RSpec
 
           subject { Post.new }
 
-          it '' do
+          it 'should delegate to multiple targets' do
             expect(subject).to delegate(:name).to(*subject.authors)
           end
         end

@@ -160,67 +160,7 @@ end
 You can test delegation based on the [delegate](http://api.rubyonrails.org/classes/Module.html#method-i-delegate) method in the Active Support gem.
 
 ```ruby
-require 'spec_helper'
-require 'active_support/core_ext/module/delegation'
-
-module ActiveSupportDelegation
-  # rubocop:disable Style/ClassVars
-  class Post
-    attr_accessor :author
-
-    @@authors = ['Ann Rand', 'Catherine Asaro']
-    GENRES    = ['Fiction',  'Science Fiction']
-
-    delegate :name,  to: :author, allow_nil: true
-    delegate :name,  to: :author, prefix: true
-    delegate :name,  to: :author, prefix: :writer
-    delegate :name,  to: :class,  prefix: true
-    delegate :count, to: :@@authors
-    delegate :first, to: :GENRES
-    delegate :length, to: :'author.name', prefix: :name
-
-    def initialize
-      @author = Author.new
-    end
-
-    def inspect
-      'post'
-    end
-  end
-
-  class Author
-    def initialize
-      @name = 'Catherine Asaro'
-    end
-
-    def name(*)
-      @name
-    end
-  end
-
-  describe Post do
-    let(:author) { subject.author }
-
-    it { expect(subject.name).to eq 'Catherine Asaro' }
-
-    it { should delegate(:name).to(author) }
-    it { should delegate(:name).to(:@author) }
-    it { should delegate(:name).to(:author) }
-    it { should delegate(:name).to(:author).allow_nil }
-    it { should delegate(:name).to(:author).with_prefix }
-    it { should delegate(:name).to(:author).with_prefix(:writer) }
-    it { should delegate(:name).to(:author).with_block }
-    it { should delegate(:name).to(:author).with('Ms.') }
-
-    it { should delegate(:name).to(:class).with_prefix   }
-    it { should delegate(:count).to(:@@authors)   }
-    it { should delegate(:first).to(:GENRES)   }
-
-    it { should delegate(:name_length).to(:'author.name').as(:length) }
-    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
-  end
-end
-
+<%= File.open('./spec/lib/examples/active_support_delegation_spec.rb', 'rb') { |f| f.read } %>
 ```
 However, don't use the following features as they are not supported by the delegate method:
 * delegation to objects
@@ -230,57 +170,7 @@ However, don't use the following features as they are not supported by the deleg
 You can test delegation based on the [Forwardable](http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html) module.
 
 ```ruby
-require 'spec_helper'
-
-module ForwardableDelegation
-  class Post
-    extend Forwardable
-
-    attr_accessor :author
-
-    def initialize
-      @author = Author.new
-    end
-
-    def_delegator :author, :name
-    def_delegator :author, :name, :author_name
-    def_delegator :author, :name, :writer
-
-    def_delegator :'author.name', :length, :name_length
-
-    def inspect
-      'post'
-    end
-  end
-
-  class Author
-    def initialize
-      @name = 'Catherine Asaro'
-    end
-
-    def name(*)
-      @name
-    end
-  end
-
-  describe Post do
-    let(:author) { subject.author }
-
-    it { expect(subject.name).to eq 'Catherine Asaro' }
-
-    it { should delegate(:name).to(author) }
-    it { should delegate(:name).to(:@author) }
-    it { should delegate(:name).to(:author) }
-    it { should delegate(:name).to(:author).with('Ms.') }
-    it { should delegate(:name).to(:author).with_block }
-    it { should delegate(:name).to(:author).with_prefix }
-    it { should delegate(:writer).to(:author).as(:name) }
-
-    it { should delegate(:name_length).to(:'author.name').as(:length) }
-    it { should delegate(:length).to(:'author.name').with_prefix(:name) }
-  end
-end
-
+<%= File.open('./spec/lib/examples/forwardable_delegation_spec.rb', 'rb') { |f| f.read } %>
 
   class Post
     extend Forwardable

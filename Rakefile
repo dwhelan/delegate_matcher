@@ -7,4 +7,9 @@ RuboCop::RakeTask.new do |task|
   task.options << '--display-cop-names'
 end
 
-task default: [:spec, :rubocop, :build]
+desc 'Updates README with code examples'
+task :readme do
+  `erb README.md.erb > README.md`
+end
+
+task default: [:spec, :rubocop, :readme, :build]
