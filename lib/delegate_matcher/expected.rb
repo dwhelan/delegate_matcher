@@ -64,7 +64,7 @@ module RSpec
           %("#{to_description}") +
             case
             when !args.eql?(as_args)
-              ".#{as}#{as_argument_description}"
+              ".#{as}#{argument_description(as_args)}"
             when as.to_s.eql?(delegator_method_name)
               ''
             else
@@ -72,18 +72,11 @@ module RSpec
             end
         end
 
-        def as_argument_description
-          argument_description(as_args)
-        end
-
         def argument_description(arguments = args)
-          case
-          when arguments.nil?
-            ''
-          when arguments.length == 1 && arguments[0].is_a?(RSpec::Mocks::ArgumentMatchers::SingletonMatcher)
-            "(#{arguments[0].description})"
+          if arguments
+            "(#{arguments.map { |a| a.respond_to?(:description) ? a.description : a.inspect }.join(', ')})"
           else
-            "(#{arguments.map { |a| format('%p', a) }.join(', ')})"
+            ''
           end
         end
 

@@ -34,7 +34,7 @@ module RSpec
         end
 
         def argument_description
-          args ? "(#{args.map { |a| format('%p', a) }.join(', ')})" : ''
+          args ? "(#{args.map(&:inspect).join(', ')})" : ''
         end
 
         private

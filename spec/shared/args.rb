@@ -2,7 +2,7 @@ shared_examples 'a delegator with args' do
   it { should delegate(:name).with('Ms.').to(receiver)  }
   it { should delegate(:name).with('Ms.').to(receiver).with(anything) }
   it { should delegate(:name).with('Ms.').to(receiver).with(any_args) }
-  it { should delegate(:name).with().to(receiver).with(no_args) }
+  it { should delegate(:name).with.to(receiver).with(no_args) }
 
   describe 'description and failure messages' do
     before { matcher.matches? subject }
