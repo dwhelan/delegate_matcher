@@ -9,7 +9,10 @@ module RSpec
         end
 
         def call
-          self.return_value = expected.subject.send(expected.delegator_method_name, *expected.args, &block)
+          args = expected.args
+          args = [] if args && args[0].is_a?(Mocks::ArgumentMatchers::NoArgsMatcher)
+
+          self.return_value = expected.subject.send(expected.delegator_method_name, *args, &block)
         end
 
         def block

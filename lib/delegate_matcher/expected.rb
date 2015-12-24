@@ -9,6 +9,7 @@ module RSpec
 
         def initialize
           self.check_return = true
+          # @args = [Mocks::ArgumentMatchers::NoArgsMatcher::INSTANCE]
         end
 
         def prefix=(prefix)

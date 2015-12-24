@@ -113,7 +113,7 @@ describe Post do
 end
 ```
 
-Also, in some cases the delegator might make minor changes to the arguments. While this is arguably no
+Also, in some cases, the delegator change the arguments. While this is arguably no
 longer true delegation you can still check that arguments are correctly passed by using a second `with`
 method to specify the arguments expected by the delegate.
 
@@ -122,11 +122,20 @@ describe Post do
   it { should delegate(:name).with('Ms.').to(:author).with('Miss') }  # name('Ms.')  => author.name('Miss')
 end
 ```
+You can use the `with(no_args).` rather than `with.` or `with().` to test delegation with no arguments passed
+to the delegator.
+
+```ruby
+describe Post do
+  it { should delegate(:name).with(no_args).to(:author) }  # name()  => author.name()
+end
+```
+
 For the second `with` you can use any RSpec argument matcher.
 
 ```ruby
 describe Post do
-  it { should delegate(:name).with('Ms.').to(:author).with(anything) }  # name('Ms.')  => author.name('Miss')
+  it { should delegate(:name).with('Ms.').to(:author).with(anything) }  # name('Ms.')  => author.name(*)
 end
 ```
 
