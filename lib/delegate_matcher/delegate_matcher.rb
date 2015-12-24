@@ -57,3 +57,4 @@ end
 # TODO: Check with_block by default
 # TODO: Check for duplication with argument_description
 # TODO: Enable all common specs (compare instance_variable with object specs)
+# TODO: Allow no_args and support arg matchers

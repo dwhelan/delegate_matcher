@@ -38,7 +38,8 @@ module RSpec
         end
 
         def arguments_ok?
-          expected.as_args.nil? || delegate.all? { |d| d.args.eql?(expected.as_args) }
+          args_matcher = Mocks::ArgumentListMatcher.new(*expected.as_args)
+          delegate.all? { |delegate| args_matcher.args_match?(*delegate.args) }
         end
 
         # rubocop:disable Metrics/AbcSize

@@ -77,7 +77,14 @@ module RSpec
         end
 
         def argument_description(arguments = args)
-          arguments ? "(#{arguments.map { |a| format('%p', a) }.join(', ')})" : ''
+          case
+          when arguments.nil?
+            ''
+          when arguments.length == 1 && arguments[0].is_a?(RSpec::Mocks::ArgumentMatchers::SingletonMatcher)
+            "(#{arguments[0].description})"
+          else
+            "(#{arguments.map { |a| format('%p', a) }.join(', ')})"
+          end
         end
 
         def options_description
