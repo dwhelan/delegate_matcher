@@ -1,4 +1,4 @@
-shared_examples 'a simple delegator' do
+shared_examples 'a basic delegator' do
   it { should delegate(:name).to(receiver)      }
   it { should delegate(:name.to_s).to(receiver) }
 

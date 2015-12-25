@@ -54,5 +54,5 @@ module RSpec
   end
 end
 
-# TODO: Support no_args with first 'with'
 # TODO: Enable all common specs (compare instance_variable with object specs)
+# TODO: Restrict calling multiple specs for figuring out the the delegator only

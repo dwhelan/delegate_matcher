@@ -3,85 +3,34 @@ require 'spec_helper'
 module RSpec
   module Matchers
     module DelegateMatcher
-      module ToConstant
-        describe 'delegation to a constant' do
+      describe 'class delegation' do
+        # Note that defining Post as an anonymous class caused the constant AUTHOR to not be available,
+        # so we create an explicit Post class and remove it after all specs are run
+        before(:all) do
           class Post
             include PostMethods
 
             AUTHOR = Author.new
-          end
 
-          subject { Post.new }
-
-          let(:receiver) { :AUTHOR }
-
-          [:AUTHOR, 'AUTHOR'].each do |constant|
-            let(:receiver) { constant }
-
-            it_behaves_like 'a simple delegator' do
-              before do
-                class Post
-                  def name
-                    AUTHOR.name
-                  end
-                end
-              end
-              include_examples 'a delegator without a nil check'
+            def name
+              AUTHOR.name
             end
 
-            it_behaves_like 'a delegator with a nil check' do
-              before do
-                class Post
-                  def name
-                    AUTHOR.name if AUTHOR
-                  end
-                end
-              end
-            end
-
-            it_behaves_like 'a delegator with args and a block' do
-              before do
-                class Post
-                  def name(*args, &block)
-                    AUTHOR.name(*args, &block)
-                  end
-                end
-              end
-            end
-
-            it_behaves_like 'a delegator with a different method name', :other_name do
-              before do
-                class Post
-                  def name
-                    AUTHOR.other_name
-                  end
-                end
-              end
-            end
-
-            it_behaves_like 'a delegator with a prefix', 'author' do
-              before do
-                class Post
-                  def author_name
-                    AUTHOR.name
-                  end
-                end
-              end
-              it { should delegate(:name).to(:AUTHOR).with_prefix  }
-            end
-
-            it_behaves_like 'a delegator with a different return value', 'Ann Rand' do
-              before do
-                class Post
-                  def name
-                    AUTHOR.name
-                    'Ann Rand'
-                  end
-                end
-              end
+            def name_allow_nil
+              AUTHOR.name if AUTHOR
             end
           end
         end
+
+        subject { Post.new }
+
+        let(:receiver) { :AUTHOR }
+
+        it_behaves_like 'a basic delegator'
+        it_behaves_like 'a delegator without a nil check'
+        it_behaves_like 'a delegator with a nil check2'
+
+        after(:all) { DelegateMatcher.module_eval { remove_const :Post } }
       end
     end
   end
