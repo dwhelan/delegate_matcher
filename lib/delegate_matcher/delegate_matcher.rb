@@ -46,6 +46,3 @@ module RSpec
     end
   end
 end
-
-# TODO: Enable all common specs (compare instance_variable with object specs)
-# TODO: Restrict calling multiple specs for figuring out the the delegator only

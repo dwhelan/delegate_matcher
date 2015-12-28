@@ -69,9 +69,6 @@ module RSpec
         end
 
         def failure_message(negated)
-          # TODO: Should include the line below
-          # return nil if negated == delegate.received
-
           message = [
             argument_failure_message(negated),
             block_failure_message(negated),
@@ -93,21 +90,22 @@ module RSpec
         def block_failure_message(negated)
           proc_source = ProcSource.new(delegate[0].block)
           case
-          when expected.block.nil? || (negated ^ block_ok?)
+          when expected.block.nil? || negated ^ block_ok?
             ''
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
             delegate.all? { |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{proc_source}' was passed"
           else
-            %(a block  #{proc_source} was passed)
+            %(a block #{proc_source} was passed)
           end
         end
 
-        def return_value_failure_message(_negated)
-          # TODO: This should be using negated?
+        def return_value_failure_message(negated)
           case
-          when !delegate.any?(&:received) || return_value_ok?
+          when !delegate.any?(&:received) || negated ^ return_value_ok?
+            ''
+          when negated
             ''
           when !expected.return_value.nil?
             "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
