@@ -4,7 +4,9 @@ module RSpec
   module Matchers
     define(:delegate) do |method_name|
       match do |subject|
-        delegation_ok?(method_name, subject)
+        fail 'need to provide a "to"' unless expected.to
+        expected.subject = subject
+        delegation.ok?
       end
 
       description do
@@ -19,7 +21,7 @@ module RSpec
         delegation.failure_message(true) || super
       end
 
-      chain(:to)              { |*to|              expected.to           = *to }
+      chain(:to)              { |*to|              expected.to           = *to; expected.method_name = method_name }
       chain(:as)              { |as|               expected.as           = as }
       chain(:allow_nil)       { |allow_nil = true| expected.allow_nil    = allow_nil }
       chain(:with_prefix)     { |prefix = nil|     expected.prefix       = prefix }
@@ -40,15 +42,6 @@ module RSpec
 
       def expected
         @expected ||= DelegateMatcher::Expected.new
-      end
-
-      def delegation_ok?(method_name, subject)
-        fail 'need to provide a "to"' unless expected.to
-
-        expected.method_name = method_name
-        expected.subject     = subject
-
-        delegation.ok?
       end
     end
   end

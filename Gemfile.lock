@@ -2,7 +2,7 @@ PATH
   remote: .
   specs:
     delegate_matcher (0.4)
-      proc_extensions (~> 0.1)
+      proc_extensions (~> 0.2)
 
 GEM
   remote: https://rubygems.org/
@@ -66,7 +66,7 @@ GEM
     parser (2.2.3.0)
       ast (>= 1.1, < 3.0)
     powerpack (0.1.1)
-    proc_extensions (0.1.2)
+    proc_extensions (0.2)
       sourcify (~> 0.5)
     pry (0.10.3)
       coderay (~> 1.1.0)

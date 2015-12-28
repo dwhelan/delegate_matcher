@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^spec/})
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'proc_extensions', '~>  0.1'
+  gem.add_runtime_dependency 'proc_extensions', '~>  0.2'
 
   gem.add_development_dependency 'activesupport',   '~>  4.2'
   gem.add_development_dependency 'bundler',         '~>  1.7'

@@ -30,7 +30,7 @@ module RSpec
 
         it_behaves_like 'a basic delegator'
         it_behaves_like 'a delegator without a nil check'
-        it_behaves_like 'a delegator with a nil check2'
+        it_behaves_like 'a delegator with a nil check'
       end
     end
   end

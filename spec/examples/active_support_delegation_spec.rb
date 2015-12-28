@@ -49,6 +49,7 @@ module ActiveSupportDelegation
     it { should delegate(:name).to(:author).with_prefix(:writer) }
     it { should delegate(:name).to(:author).with_block }
     it { should delegate(:name).to(:author).with('Ms.') }
+    it { should delegate(:name).to(:author).with('Ms.').with_block }
 
     it { should delegate(:name).to(:class).with_prefix   }
     it { should delegate(:count).to(:@@authors)   }

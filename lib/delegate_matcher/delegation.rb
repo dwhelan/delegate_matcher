@@ -91,15 +91,16 @@ module RSpec
         end
 
         def block_failure_message(negated)
+          proc_source = ProcSource.new(delegate[0].block)
           case
           when expected.block.nil? || (negated ^ block_ok?)
             ''
           when negated
             "a block was #{expected.block ? '' : 'not '}passed"
           when expected.block
-            delegate.all? { |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{ProcSource.new(delegate[0].block)}' was passed"
+            delegate.all? { |d| d.block.nil? } ? 'a block was not passed' : "a different block '#{proc_source}' was passed"
           else
-            'a block was passed'
+            %(a block  #{proc_source} was passed)
           end
         end
 
