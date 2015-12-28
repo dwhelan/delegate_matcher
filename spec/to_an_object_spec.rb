@@ -26,7 +26,20 @@ module RSpec
 
         it_behaves_like 'a basic delegator'
 
-        # TODO: Add checks for errors for allow nil
+        it do
+          expect { should delegate(:name).to(author).allow_nil }.to \
+            raise_error RuntimeError, 'cannot verify "allow_nil" expectations when delegating to an object'
+        end
+
+        it do
+          expect { should delegate(:name).to(author).allow_nil(true) }.to \
+            raise_error RuntimeError, 'cannot verify "allow_nil" expectations when delegating to an object'
+        end
+
+        it do
+          expect { should delegate(:name).to(author).allow_nil(false) }.to \
+            raise_error RuntimeError, 'cannot verify "allow_nil" expectations when delegating to an object'
+        end
       end
     end
   end
