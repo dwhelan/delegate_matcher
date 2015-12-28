@@ -4,8 +4,6 @@ shared_examples 'a basic delegator' do
 
   it { should_not delegate(:to_s).to(receiver) }
 
-  include_examples 'a delegator without a block'
-
   describe 'description' do
     let(:matcher) { delegate(:name).to(receiver) }
     before { matcher.matches? subject }

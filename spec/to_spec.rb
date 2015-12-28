@@ -4,7 +4,25 @@ module RSpec
   module Matchers
     module DelegateMatcher
       describe 'to' do
-        include_context 'Post delegation'
+        let(:klass) do
+          Class.new do
+            include PostMethods
+
+            def initialize
+              @author = Author.new
+            end
+
+            def name
+              @author.name
+            end
+
+            def name_allow_nil
+              @author.name if @author
+            end
+          end
+        end
+
+        subject { klass.new }
 
         it 'should require a "to"' do
           expect { should delegate(:name) }.to raise_error do |error|
