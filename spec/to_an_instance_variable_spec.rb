@@ -3,7 +3,6 @@ require 'spec_helper'
 module RSpec
   module Matchers
     module DelegateMatcher
-
       describe 'delegation to an instance variable' do
         let(:klass) do
           Class.new do

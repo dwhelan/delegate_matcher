@@ -4,6 +4,7 @@ require 'proc_extensions'
 module RSpec
   module Matchers
     module DelegateMatcher
+      # rubocop:disable Metrics/ClassLength
       class Delegation
         attr_accessor :expected
         attr_accessor :dispatcher

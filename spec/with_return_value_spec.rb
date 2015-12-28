@@ -6,7 +6,7 @@ module RSpec
       describe 'return value matching' do
         include_context 'Post delegation'
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With a different return value
           def name
             @author.name

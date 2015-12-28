@@ -32,7 +32,7 @@ module RSpec
             klass = klass.parent
           end
 
-          return '# Could not find "def \w*name..." method definition'
+          '# Could not find "def \w*name..." method definition'
         end
 
         let(:matcher) { delegate(:name).to(:@author) }

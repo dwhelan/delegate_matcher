@@ -3,6 +3,7 @@ require 'active_support/core_ext/module'
 
 module RSpec
   module Matchers
+    # rubocop:disable Metrics/ModuleLength
     module DelegateMatcher
       shared_examples 'a delegator with empty args' do
         let(:matcher) { delegate(:name).with.to(:@author) }
@@ -35,7 +36,7 @@ module RSpec
       end
 
       shared_examples 'a delegator with same args' do |*args|
-        let(:args_description) { args.map{|a| a.inspect}.join(', ') }
+        let(:args_description) { args.map(&:inspect).join(', ') }
         let(:matcher) { delegate(:name).with(*args).to(:@author) }
 
         it { should matcher }
@@ -49,20 +50,20 @@ module RSpec
         let(:matcher) { delegate(:name).with(*args).to(:@author).with(any_args) }
 
         it { should matcher }
-        it { expect(matcher.description).to eq %(delegate name(#{args.map{|a| a.inspect}.join(', ')}) to "@author".name(*(any args))) }
+        it { expect(matcher.description).to eq %(delegate name(#{args.map(&:inspect).join(', ')}) to "@author".name(*(any args))) }
       end
 
       shared_examples 'a delegator with anything' do |*args|
         let(:matcher) { delegate(:name).with(*args).to(:@author).with(anything) }
 
         it { should matcher }
-        it { expect(matcher.description).to eq %(delegate name(#{args.map{|a| a.inspect}.join(', ')}) to "@author".name(anything)) }
+        it { expect(matcher.description).to eq %(delegate name(#{args.map(&:inspect).join(', ')}) to "@author".name(anything)) }
       end
 
       describe 'argument matching' do
         include_context 'Post delegation'
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With no parameters
           def name
             @author.name
@@ -73,10 +74,10 @@ module RSpec
           it_behaves_like 'a delegator with same args'
           it_behaves_like 'a delegator with any args'
 
-          it { should_not delegate(:name).with().to(:@author).with(anything) }
+          it { should_not delegate(:name).with.to(:@author).with(anything) }
         end
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With optional parameters
           def name(*args)
             @author.name(*args)
@@ -94,7 +95,7 @@ module RSpec
           it { should_not delegate(:name).with('Ms.').to(:@author).with(no_args) }
         end
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With a required parameter
           def name(title)
             @author.name(title)
@@ -113,7 +114,7 @@ module RSpec
           it { should_not delegate(:name).with('Ms.').to(:@author).with(no_args) }
         end
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With an optional parameter
           def name(title = 'Ms.')
             @author.name(title)
@@ -131,7 +132,7 @@ module RSpec
           it { expect(matcher.failure_message_when_negated).to match(/was called with \("Ms."\)/) }
         end
 
-        context <<-END.gsub /^\s{6}/, '' do
+        context <<-END.gsub(/^\s{6}/, '') do
           # With arguments changed
           def name(title)
             @author.name(title.downcase)

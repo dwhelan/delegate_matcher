@@ -161,6 +161,11 @@ describe Post do
 end
 ```
 
+If the `proc` passed to `with_block` is not the same `proc` used y the delegator
+then the sources of the `proc`'s will be compared for equality using the `proc_extensions` gem.
+For this comparison to work the `proc` must not be not have been created via an `eval` of a string
+and must be the only `proc` declared on that line of source code.
+
 See [proc_extensions](https://github.com/dwhelan/proc_extensions/) for more details on how the source for procs is compared.
 
 ### Return Value
@@ -268,6 +273,7 @@ module ActiveSupportDelegation
     it { should delegate(:name).to(:author).with_prefix(:writer) }
     it { should delegate(:name).to(:author).with_block }
     it { should delegate(:name).to(:author).with('Ms.') }
+    it { should delegate(:name).to(:author).with('Ms.').with_block }
 
     it { should delegate(:name).to(:class).with_prefix   }
     it { should delegate(:count).to(:@@authors)   }
@@ -329,6 +335,7 @@ module ForwardableDelegation
     it { should delegate(:name).to(:author) }
     it { should delegate(:name).to(:author).with('Ms.') }
     it { should delegate(:name).to(:author).with_block }
+    it { should delegate(:name).to(:author).with('Ms.').with_block }
     it { should delegate(:name).to(:author).with_prefix }
     it { should delegate(:writer).to(:author).as(:name) }
 
