@@ -15,10 +15,6 @@ module ForwardableDelegation
     def_delegator :author, :name, :writer
 
     def_delegator :'author.name', :length, :name_length
-
-    def inspect
-      'post'
-    end
   end
 
   class Author

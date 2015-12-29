@@ -39,6 +39,10 @@ module RSpec
           expect { should delegate(:name).to(author).allow_nil(false) }.to \
             raise_error RuntimeError, 'cannot verify "allow_nil" expectations when delegating to an object'
         end
+
+        it 'prefex should be ignored' do
+          should delegate(:name).to(author).with_prefix
+        end
       end
     end
   end

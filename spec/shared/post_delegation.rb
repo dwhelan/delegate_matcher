@@ -13,10 +13,6 @@ module RSpec
             def initialize
               @author = Author.new
             end
-
-            def name
-              @author.name
-            end
           end
         end
 
@@ -31,8 +27,6 @@ module RSpec
             return klass.description if klass.respond_to?(:description) && klass.description =~ /def \w*name/
             klass = klass.parent
           end
-
-          '# Could not find "def \w*name..." method definition'
         end
 
         let(:matcher) { delegate(:name).to(:@author) }

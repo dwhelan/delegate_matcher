@@ -7,18 +7,6 @@ module RSpec
         let(:klass) do
           Class.new do
             include PostMethods
-
-            def initialize
-              @author = Author.new
-            end
-
-            def name
-              @author.name
-            end
-
-            def name_allow_nil
-              @author.name if @author
-            end
           end
         end
 
