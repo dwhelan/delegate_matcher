@@ -43,25 +43,30 @@ module RSpec
           delegate.all? { |delegate| args_matcher.args_match?(*delegate.args) }
         end
 
-        # rubocop:disable Metrics/AbcSize
         def block_ok?
-          case
-          when expected.block.nil?
-            true
-          when expected.block == false
-            delegate.all? { |d| d.block.nil? }
-          when expected.block == true
-            delegate.all? { |d| d.block == dispatcher.block }
-          else
-            delegate.all? { |d| d.block_source == expected.block_source }
+          expected_block = expected.block
+          return true if expected_block.nil?
+
+          delegate.all? do |d|
+            case
+            when expected_block == false
+              d.block.nil?
+            when expected_block == true
+              d.block == dispatcher.block
+            else
+              d.block_source == expected.block_source
+            end
           end
         end
 
         def return_value_ok?
           case
-          when !expected.check_return then true
-          when expected.return_value.nil? then  dispatcher.return_value == delegate_return_value
-          else dispatcher.return_value == expected.return_value
+          when !expected.check_return
+            true
+          when expected.return_value.nil?
+            dispatcher.return_value == delegate_return_value
+          else
+            dispatcher.return_value == expected.return_value
           end
         end
 
@@ -90,6 +95,7 @@ module RSpec
 
         def block_failure_message(negated)
           proc_source = ProcSource.new(delegate[0].block)
+
           case
           when expected.block.nil? || negated ^ block_ok?
             ''
@@ -108,10 +114,8 @@ module RSpec
             ''
           when negated
             ''
-          when !expected.return_value.nil?
-            "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value}\""
           else
-            "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{delegate_return_value}\""
+            "a value of \"#{dispatcher.return_value}\" was returned instead of \"#{expected.return_value || delegate_return_value}\""
           end
         end
 
