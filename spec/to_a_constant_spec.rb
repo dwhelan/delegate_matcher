@@ -4,33 +4,33 @@ module RSpec
   module Matchers
     module DelegateMatcher
       describe 'class delegation' do
-        # Note that defining Post as an anonymous class caused the constant AUTHOR to not be available,
-        # so we create an explicit Post class and remove it after all specs are run
-        before(:all) do
-          class Post
+        let(:klass) do
+          Class.new do
             include PostMethods
 
-            AUTHOR = Author.new
+            const_set(:AUTHOR, Author.new)
+
+            def author
+              self.class.const_get(:AUTHOR)
+            end
 
             def name
-              AUTHOR.name
+              author.name
             end
 
             def name_allow_nil
-              AUTHOR.name if AUTHOR
+              author.name if author
             end
           end
         end
 
-        subject { Post.new }
+        subject { klass.new }
 
         let(:receiver) { :AUTHOR }
 
         it_behaves_like 'a basic delegator'
         it_behaves_like 'a delegator without a nil check'
         it_behaves_like 'a delegator with a nil check'
-
-        after(:all) { DelegateMatcher.module_eval { remove_const :Post } }
       end
     end
   end

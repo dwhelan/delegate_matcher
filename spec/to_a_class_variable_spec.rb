@@ -4,34 +4,33 @@ module RSpec
   module Matchers
     module DelegateMatcher
       describe 'delegation to a class variable' do
-        # Note that defining Post as an anonymous class caused the class variable @@author to not be available,
-        # so we create an explicit Post class and remove it after all specs are run
-        before(:all) do
-          class Post
+        let(:klass) do
+          Class.new do
             include PostMethods
 
-            # rubocop:disable Style/ClassVars
-            @@author = Author.new
+            class_variable_set(:@@author, Author.new)
+
+            def author
+              self.class.class_variable_get(:@@author)
+            end
 
             def name
-              @@author.name
+              author.name
             end
 
             def name_allow_nil
-              @@author.name if @@author
+              author.name if author
             end
           end
         end
 
-        subject { Post.new }
+        subject { klass.new }
 
         let(:receiver) { :@@author }
 
         it_behaves_like 'a basic delegator'
         it_behaves_like 'a delegator without a nil check'
         it_behaves_like 'a delegator with a nil check'
-
-        after(:all) { DelegateMatcher.module_eval { remove_const :Post } }
       end
     end
   end
